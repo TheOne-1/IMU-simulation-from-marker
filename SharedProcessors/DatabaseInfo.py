@@ -161,7 +161,6 @@ class DatabaseInfo:
             'r_thigh': ['RGTRO.PosX', 'RGTRO.PosY', 'RGTRO.PosZ',  # center of the right greater trochanter
                         'RLEK.PosX', 'RLEK.PosY', 'RLEK.PosZ'],  # right knee
 
-
             'l_shank': ['LLEK.PosX', 'LLEK.PosY', 'LLEK.PosZ',
                         'LLM.PosX', 'LLM.PosY', 'LLM.PosZ'],  # left knee
 
@@ -176,7 +175,6 @@ class DatabaseInfo:
                        'RMT5.PosX', 'RMT5.PosY', 'RMT5.PosZ']  # right 5th metatarsal
         }
         return segment_marker[segment]
-
 
 
 

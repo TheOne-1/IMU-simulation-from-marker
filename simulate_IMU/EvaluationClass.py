@@ -4,50 +4,33 @@ from keras.callbacks import EarlyStopping
 from sklearn.metrics import r2_score
 from keras.models import *
 from sklearn import preprocessing
+import pandas as pd
 
 
 class Evaluation:
-
-    def __init__(self, x_train, x_test, y_train, y_test, y_column_names, do_scaling=True, sub_num=10, gait_num=1):
-        self.__x_training = x_train
-        self.__x_testing = x_test
-        self.__y_training = y_train
-        self.__y_testing = y_test
-        self.__gait_num = gait_num
-        self.__sub_num = sub_num
-        self.__train_set_len = 0
-        self.__test_set_len = 0
+    def __init__(self, x_train, x_test, y_train, y_test, y_column_names, do_scaling=True):
+        self.__x_train = x_train
+        self.__x_test = x_test
+        self.__y_train = y_train
+        self.__y_test = y_test
         self.__params_column_names = y_column_names
         self.__do_scaling = do_scaling
         self.__nn_model = None
+        self.__sklearn_model = None
         self.__batch_size = 50  # the size of data that be trained together
 
         if self.__do_scaling:
-            self.__x_scalar = preprocessing.StandardScaler().fit(self.__x_training)
-            self.__y_scalar = preprocessing.StandardScaler().fit(self.__y_training)
-            self.__x_training = self.__x_scalar.transform(self.__x_training)
-            self.__y_training = self.__y_scalar.transform(self.__y_training)
-            self.__x_testing = self.__x_scalar.transform(self.__x_testing)
-            self.__y_testing = self.__y_scalar.transform(self.__y_testing)
+            self.__x_scalar = preprocessing.StandardScaler().fit(self.__x_train)
+            self.__y_scalar = preprocessing.StandardScaler().fit(self.__y_train)
+            self.__x_train = self.__x_scalar.transform(self.__x_train)
+            self.__y_train = self.__y_scalar.transform(self.__y_train)
+            self.__x_test = self.__x_scalar.transform(self.__x_test)
+            self.__y_test = self.__y_scalar.transform(self.__y_test)
         else:  # transfer dataframe to ndarray
-            self.__x_training = self.__x_training.as_matrix()
-            self.__y_training = self.__y_training.as_matrix()
-            self.__x_testing = self.__x_testing.as_matrix()
-            self.__y_testing = self.__y_testing.as_matrix()
-
-    def set_testing_data(self, x, y, x_scalar, y_scalar):
-        self.__x_testing = x
-        self.__y_testing = y
-        self.__test_set_len = int(self.__x_testing.shape[0] / self.__gait_num / self.__sub_num)
-        self.__x_scalar = x_scalar
-        self.__y_scalar = y_scalar
-
-        if self.__do_scaling:
-            self.__x_testing = self.__x_scalar.transform(self.__x_testing)
-            self.__y_testing = self.__y_scalar.transform(self.__y_testing)
-        else:  # transfer dataframe to ndarray
-            self.__x_testing = self.__x_testing.as_matrix()
-            self.__y_testing = self.__y_testing.as_matrix()
+            self.__x_train = self.__x_train.as_matrix()
+            self.__y_train = self.__y_train.as_matrix()
+            self.__x_test = self.__x_test.as_matrix()
+            self.__y_test = self.__y_test.as_matrix()
 
     def train_nn(self, model):
         # lr = learning rate, the other params are default values
@@ -57,54 +40,73 @@ class Evaluation:
         early_stopping = EarlyStopping(monitor='val_loss', patience=5)
         # epochs is the maximum training round, validation split is the size of the validation set,
         # callback stops the training if the validation was not approved
-        model.fit(self.__x_training, self.__y_training, batch_size=self.__batch_size,
+        model.fit(self.__x_train, self.__y_train, batch_size=self.__batch_size,
                   epochs=100, validation_split=0.2, callbacks=[early_stopping])
         self.__nn_model = model
 
-    def evaluate_nn(self, trial_name):
-        result = self.__nn_model.predict(self.__x_testing, batch_size=self.__batch_size)
+    def evaluate_nn(self):
+        result = self.__nn_model.predict(self.__x_test, batch_size=self.__batch_size)
         if self.__do_scaling:
-            self.__y_testing = self.__y_scalar.inverse_transform(self.__y_testing)
+            self.__y_test = self.__y_scalar.inverse_transform(self.__y_test)
             result = self.__y_scalar.inverse_transform(result)
 
-        score = r2_score(self.__y_testing, result, multioutput='raw_values')
-        for i_plot in range(result.shape[1]):
-            plt.figure()
-            plt.plot(self.__y_testing[:, i_plot], 'b', label='true value')
-            plt.plot(result[:, i_plot], 'r', label='predicted value')
-            plt.title(trial_name + '  ' + self.__params_column_names[i_plot] + '  R2: ' + str(score[i_plot])[0:5])
-            plt.legend()
-            for i_subject in range(0, self.__sub_num):
-                for i_gait in range(1, self.__gait_num):
-                    line_x_gait = self.__test_set_len * i_gait + i_subject * (self.__test_set_len * self.__gait_num)
-                    plt.plot((line_x_gait, line_x_gait), (-0.5, 0.5), 'y--')
-                if i_subject != 0:
-                    line_x_sub = self.__x_testing.shape[0] / self.__sub_num * i_subject
-                    plt.plot((line_x_sub, line_x_sub), (-0.5, 0.5), 'black')
+        score = r2_score(self.__y_test, result, multioutput='raw_values')
 
     def train_sklearn(self, model):
-        model.fit(self.__x_training, self.__y_training)
+        model.fit(self.__x_train, self.__y_train)
         self.__sklearn_model = model
 
-    def evaluate_sklearn(self, show_plot=False):
-        result = self.__sklearn_model.predict(self.__x_testing)
-        score = r2_score(self.__y_testing, result)
-        if show_plot:
-            if self.__do_scaling:
-                self.__y_testing = self.__y_scalar.inverse_transform(self.__y_testing)
-                result = self.__y_scalar.inverse_transform(result)
-            # plot
-            for i_plot in range(result.shape[1]):
-                plt.figure()
-                plt.plot(self.__y_testing[:, i_plot], 'b', label='true value')
-                plt.plot(result[:, i_plot], 'r', label='predicted value')
-                plt.title(self.__params_column_names[i_plot] + '  R2: ' + str(score[i_plot])[0:5])
-                plt.legend()
-                for i_subject in range(0, self.__sub_num):
-                    for i_gait in range(1, self.__gait_num):
-                        line_x_gait = self.__test_set_len * i_gait + i_subject * (self.__test_set_len * self.__gait_num)
-                        plt.plot((line_x_gait, line_x_gait), (-0.5, 0.5), 'y--')
-                    if i_subject != 0:
-                        line_x_sub = self.__x_testing.shape[0] / self.__sub_num * i_subject
-                        plt.plot((line_x_sub, line_x_sub), (-0.5, 0.5), 'black')
+    def evaluate_sklearn(self):
+        result = self.__sklearn_model.predict(self.__x_test)
+        score = r2_score(self.__y_test, result)
         return score
+
+    # 修改的简单些
+    @staticmethod
+    def show_result(score_list, xy_generator, show_plot=True):
+        x_range, y_range = xy_generator.get_point_range()
+        i_pos = 0
+        result = np.zeros([score_list.__len__(), 3])
+        for score in score_list:
+            result[i_pos, :] = [score[0], score[1], score[2]]
+            i_pos += 1
+
+        result_df = pd.DataFrame(result)
+        result_df.columns = ['score', 'x', 'y']
+        result_df.to_csv('D:\Tian\Research\Projects\ML Project\simulatedIMU\python\\0517GaitDatabase\data_' +
+                         xy_generator.get_moved_segment() + '.csv')
+
+        if show_plot:
+            # change result as an image
+            result_im = np.zeros([y_range.__len__(), x_range.__len__()])
+            i_y, i_result = 0, 0
+            for i_x in range(x_range.__len__()):
+                for i_y in range(y_range.__len__()):
+                    # for image, row and column are exchanged compared to ndarray
+                    result_im[i_y, i_x] = score_list[i_result][0]
+                    i_result += 1
+
+            fig, ax = plt.subplots()
+            plt.imshow(result_im)
+            x_label = list(x_range)
+            ax.set_xticks(range(result_im.shape[0]))
+            ax.set_xticklabels(x_label)
+            y_label = list(y_range)
+            ax.set_yticks(range(result_im.shape[1]))
+            ax.set_yticklabels(y_label)
+
+            plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
