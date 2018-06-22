@@ -9,10 +9,6 @@ import pandas as pd
 
 class Evaluation:
     def __init__(self, x_train, x_test, y_train, y_test, y_column_names, do_scaling=True):
-        self.__x_train = x_train
-        self.__x_test = x_test
-        self.__y_train = y_train
-        self.__y_test = y_test
         self.__params_column_names = y_column_names
         self.__do_scaling = do_scaling
         self.__nn_model = None
@@ -20,17 +16,23 @@ class Evaluation:
         self.__batch_size = 50  # the size of data that be trained together
 
         if self.__do_scaling:
-            self.__x_scalar = preprocessing.StandardScaler().fit(self.__x_train)
-            self.__y_scalar = preprocessing.StandardScaler().fit(self.__y_train)
-            self.__x_train = self.__x_scalar.transform(self.__x_train)
-            self.__y_train = self.__y_scalar.transform(self.__y_train)
-            self.__x_test = self.__x_scalar.transform(self.__x_test)
-            self.__y_test = self.__y_scalar.transform(self.__y_test)
+            self.__x_scalar = preprocessing.StandardScaler().fit(x_train)
+            self.__y_scalar = preprocessing.StandardScaler().fit(y_train)
+            self.__x_train = self.__x_scalar.transform(x_train)
+            self.__y_train = self.__y_scalar.transform(y_train)
+            self.__x_test = self.__x_scalar.transform(x_test)
+            self.__y_test = self.__y_scalar.transform(y_test)
         else:  # transfer dataframe to ndarray
-            self.__x_train = self.__x_train.as_matrix()
-            self.__y_train = self.__y_train.as_matrix()
-            self.__x_test = self.__x_test.as_matrix()
-            self.__y_test = self.__y_test.as_matrix()
+            self.__x_train = x_train.as_matrix()
+            self.__y_train = y_train.as_matrix()
+            self.__x_test = x_test.as_matrix()
+            self.__y_test = y_test.as_matrix()
+
+    def set_x_test(self, x_test):
+        if self.__do_scaling:
+            self.__x_test = self.__x_scalar.transform(x_test)
+        else:
+            self.__x_test = x_test.as_matrix()
 
     def train_nn(self, model):
         # lr = learning rate, the other params are default values
@@ -63,8 +65,28 @@ class Evaluation:
 
     # 修改的简单些
     @staticmethod
-    def show_result(score_list, xy_generator, show_plot=True):
+    def show_result(score_list, xy_generator):
         x_range, y_range = xy_generator.get_point_range()
+        # change result as an image
+        result_im = np.zeros([y_range.__len__(), x_range.__len__()])
+        i_y, i_result = 0, 0
+        for i_x in range(x_range.__len__()):
+            for i_y in range(y_range.__len__()):
+                # for image, row and column are exchanged compared to ndarray
+                result_im[i_y, i_x] = score_list[i_result][0]
+                i_result += 1
+        fig, ax = plt.subplots()
+        plt.imshow(result_im)
+        x_label = list(x_range)
+        ax.set_xticks(range(result_im.shape[1]))
+        ax.set_xticklabels(x_label)
+        y_label = list(y_range)
+        ax.set_yticks(range(result_im.shape[0]))
+        ax.set_yticklabels(y_label)
+        plt.show()
+
+    @staticmethod
+    def save_result(score_list, xy_generator):
         i_pos = 0
         result = np.zeros([score_list.__len__(), 3])
         for score in score_list:
@@ -75,27 +97,6 @@ class Evaluation:
         result_df.columns = ['score', 'x', 'y']
         result_df.to_csv('D:\Tian\Research\Projects\ML Project\simulatedIMU\python\\0517GaitDatabase\data_' +
                          xy_generator.get_moved_segment() + '.csv')
-
-        if show_plot:
-            # change result as an image
-            result_im = np.zeros([y_range.__len__(), x_range.__len__()])
-            i_y, i_result = 0, 0
-            for i_x in range(x_range.__len__()):
-                for i_y in range(y_range.__len__()):
-                    # for image, row and column are exchanged compared to ndarray
-                    result_im[i_y, i_x] = score_list[i_result][0]
-                    i_result += 1
-
-            fig, ax = plt.subplots()
-            plt.imshow(result_im)
-            x_label = list(x_range)
-            ax.set_xticks(range(result_im.shape[0]))
-            ax.set_xticklabels(x_label)
-            y_label = list(y_range)
-            ax.set_yticks(range(result_im.shape[1]))
-            ax.set_yticklabels(y_label)
-
-            plt.show()
 
 
 

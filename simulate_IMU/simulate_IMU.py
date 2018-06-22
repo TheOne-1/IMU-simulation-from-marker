@@ -38,7 +38,7 @@ input_names = [
 ]
 
 my_database_info = DatabaseInfo()
-segment_moved = SEGMENT_NAMES[1]
+segment_moved = SEGMENT_NAMES[0]
 
 for i_sub in range(SUB_NUM):
     subject_data = SubjectData(PROCESSED_DATA_PATH, i_sub)
@@ -50,6 +50,7 @@ for i_sub in range(SUB_NUM):
 
         score_list = my_xy_generator.get_score_list(x_train, x_test, y_train, y_test)
         Evaluation.show_result(score_list, my_xy_generator)
+        Evaluation.save_result(score_list, my_xy_generator)
 
 
 

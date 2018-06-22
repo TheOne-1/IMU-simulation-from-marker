@@ -46,14 +46,14 @@ class TrainTestGenerator:
         # range are in millimeter
         x_range, y_range = [], []
         if segment == 'trunk':
-            trunk_limit = 80
+            trunk_limit = 120
             x_range = range(-trunk_limit, trunk_limit+1, 20)
             y_range = range(-trunk_limit, trunk_limit+1, 20)
         elif segment == 'pelvis':
-            pelvis_x_limit = 20
-            pelvis_y_limit = 5
-            x_range = range(-pelvis_x_limit, pelvis_x_limit+1, 10)
-            y_range = range(-pelvis_y_limit, pelvis_y_limit+1, 5)
+            pelvis_x_limit = 40
+            pelvis_y_limit = 20
+            x_range = range(-pelvis_x_limit, pelvis_x_limit+1, 20)
+            y_range = range(-pelvis_y_limit, pelvis_y_limit+1, 20)
 
         point_list = []
         for x in x_range:
@@ -65,19 +65,17 @@ class TrainTestGenerator:
     # cylinder surface for thigh and shank
     def __get_cylinder_surface(self, center_point, segment):
         # range are in millimeter
-        z_limit, y_limit = 100, 50
-        z_range = range(-z_limit, z_limit+1, 10)
-        y_range = range(-y_limit, y_limit+1, 10)
+        z_limit, y_limit = 40, 20
+        z_range = range(-z_limit, z_limit+1, 20)
+        y_range = range(-y_limit, y_limit+1, 20)
         cylinder_diameter = self.__subject_data.get_cylinder_diameter(segment)
 
         point_list = []
         for z in z_range:
             for y in y_range:
                 x = - np.sqrt((cylinder_diameter/2)**2-y**2)
-                plt.plot(x, y)      # !! for test
-                plt.show()      # !! for test
                 point = center_point + [x, y, z]
-                point_list.append(point)
+                point_list.append([point, y, z])
         return point_list, y_range, z_range
 
     # get train and test data
@@ -99,7 +97,7 @@ class TrainTestGenerator:
             marker_cali_matrix = segment_data.get_marker_cali_matrix(speed)
             virtual_marker, R_IMU_transform = Processor.get_virtual_marker(center_marker, segment_data_walking_1_df,
                                                                            marker_cali_matrix, R_standing_to_ground)
-            # self.check_virtual_marker(virtual_marker, walking_data_1_df)    # for check
+            # Processor.check_virtual_marker(virtual_marker, walking_data_1_df, segment_name)    # for check
             acc_IMU = Processor.get_acc(virtual_marker, R_IMU_transform)
             x[:, 3*i_segment:3*(i_segment+1)] = acc_IMU
             i_segment += 1
@@ -113,13 +111,14 @@ class TrainTestGenerator:
 
     def get_score_list(self, x_train, x_test, y_train, y_test):
         score_list = []
-        point_list, x_range, y_range = self.__get_simulate_position()
-        for point in point_list:
+        # point_list, x_range, y_range = self.__get_simulate_position()
+        model_random_forest = ensemble.RandomForestRegressor(random_state=10)
+        my_evaluator = Evaluation(x_train, x_test, y_train, y_test, self.__output_names)
+        my_evaluator.train_sklearn(model_random_forest)
+        for point in self.__point_list:
             simulated_marker = point[0]
             x_test = self.__modify_acc_test(simulated_marker, x_test)
-            my_evaluator = Evaluation(x_train, x_test, y_train, y_test, self.__output_names)
-            model_random_forest = ensemble.RandomForestRegressor(random_state=10)
-            my_evaluator.train_sklearn(model_random_forest)
+            my_evaluator.set_x_test(x_test)
             score_list.append([my_evaluator.evaluate_sklearn(), point[1], point[2]])     # score, x offset, y offset
         return score_list
 
@@ -131,6 +130,7 @@ class TrainTestGenerator:
         marker_cali_matrix = segment_data.get_marker_cali_matrix(self.__speed)
         virtual_marker, R_IMU_transform = Processor.get_virtual_marker(simulated_marker, walking_data_1_df,
                                                                        marker_cali_matrix, R_standing_to_ground)
+        # Processor.check_virtual_marker(virtual_marker, walking_data_1_df, self.__moved_segment)  # for check
         acc_IMU = Processor.get_acc(virtual_marker, R_IMU_transform)
 
         changed_columns = []

@@ -51,9 +51,8 @@ class SubjectData:
 
     # get the diameter of the shank and thigh
     def get_cylinder_diameter(self, segment):
-        marker_1 = ['LGTRO.PosX', 'LGTRO.PosY', 'LGTRO.PosZ']
-        marker_2 = ['RGTRO.PosX', 'RGTRO.PosY', 'RGTRO.PosZ']
-        data = self.get_cali_data(speed=SPEEDS[0])[marker_1, marker_2].as_matrix()
+        markers = ['LGTRO.PosX', 'LGTRO.PosY', 'LGTRO.PosZ', 'RGTRO.PosX', 'RGTRO.PosY', 'RGTRO.PosZ']
+        data = self.get_cali_data(speed=SPEEDS[0])[markers].as_matrix()
         great_trochanter_vector = data[:, 0:3] - data[:, 3:6]
         # data_mean = np.mean(data, axis=0)
         great_trochanter_dis = np.linalg.norm(great_trochanter_vector, axis=0)

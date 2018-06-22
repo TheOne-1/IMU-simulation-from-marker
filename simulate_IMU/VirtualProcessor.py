@@ -5,7 +5,7 @@ from Initializer import Initializer
 import matplotlib.pyplot as plt
 import scipy.interpolate as interpo
 from const import *
-
+from DatabaseInfo import DatabaseInfo
 
 # 这个类原则上只能存放静态方法
 class Processor:
@@ -37,14 +37,13 @@ class Processor:
 
     # 和setsegment联系过于紧密
     @staticmethod
-    def check_virtual_marker(virtual_marker, real_marker_pos):
-        # segment_name = self.__segment_info.get_segment_name()
-        # center_marker_name = DatabaseInfo.get_center_marker_names(segment_name)
-        # center_marker_num = int(center_marker_name.__len__() / 3)
-        # # check the virtual marker data
-        # real_marker_pos = walking_data_df[center_marker_name].as_matrix()
-        # if center_marker_num != 1:
-        #     real_marker_pos = (real_marker_pos[:, 0:3] + real_marker_pos[:, 3:6])/2
+    def check_virtual_marker(virtual_marker, walking_df, segment_name):
+        center_marker_name = DatabaseInfo.get_center_marker_names(segment_name)
+        center_marker_num = int(center_marker_name.__len__() / 3)
+        # check the virtual marker data
+        real_marker_pos = walking_df[center_marker_name].as_matrix()
+        if center_marker_num != 1:
+            real_marker_pos = (real_marker_pos[:, 0:3] + real_marker_pos[:, 3:6])/2
         error = virtual_marker - real_marker_pos
         error_combined = np.linalg.norm(error, axis=1)
         plt.figure()
@@ -53,7 +52,6 @@ class Processor:
         plt.xlabel('frame')
         plt.ylabel('mm')
         plt.show()
-        x = 1
 
     @staticmethod
     def get_acc(virtual_marker, R_IMU_transform):
