@@ -1,5 +1,5 @@
 # this file is used to generate virtual marker and IMU
-
+import math
 import numpy as np
 from Initializer import Initializer
 import matplotlib.pyplot as plt
@@ -17,13 +17,7 @@ class Processor:
     # get virtual marker and R_IMU_transform
     @staticmethod
     def get_virtual_marker(simulated_marker, walking_data, marker_cali_matrix, R_standing_to_ground):
-        # segment_name = self.__segment_info.get_segment_name()
-        # marker_cali_matrix = self.__segment_info.get_marker_cali_matrix()
-        # R_standing_to_ground = self.__segment_info.get_segment_R()
         segment_marker_num = marker_cali_matrix.shape[0]
-        #
-        # segment_marker = DatabaseInfo.get_segment_marker_names(segment_name)
-        # walking_data = walking_data_df[segment_marker].as_matrix()
         walking_data = walking_data.as_matrix()
         data_len = walking_data.shape[0]
         virtual_marker = np.zeros([data_len, 3])
@@ -70,3 +64,18 @@ class Processor:
         for i_frame in range(data_len):
             acc_to_IMU[i_frame, :] = np.dot(R_IMU_transform[:, :, i_frame], acc_to_ground[i_frame, :].T)
         return acc_to_IMU
+
+    @staticmethod
+    def get_cylinder_surface_rotation(theta):
+        # theta should be in radians
+        return np.array([[1, 0, 0],
+                         [0, np.cos(theta), -np.sin(theta)],
+                         [0, np.sin(theta), np.cos(theta)]])
+
+
+
+
+
+
+
+

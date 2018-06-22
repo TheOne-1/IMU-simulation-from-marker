@@ -66,21 +66,21 @@ class Evaluation:
     # 修改的简单些
     @staticmethod
     def show_result(score_list, xy_generator):
-        x_range, y_range = xy_generator.get_point_range()
+        axis_1_range, axis_2_range = xy_generator.get_point_range()
         # change result as an image
-        result_im = np.zeros([y_range.__len__(), x_range.__len__()])
+        result_im = np.zeros([axis_2_range.__len__(), axis_1_range.__len__()])
         i_y, i_result = 0, 0
-        for i_x in range(x_range.__len__()):
-            for i_y in range(y_range.__len__()):
+        for i_x in range(axis_1_range.__len__()):
+            for i_y in range(axis_2_range.__len__()):
                 # for image, row and column are exchanged compared to ndarray
                 result_im[i_y, i_x] = score_list[i_result][0]
                 i_result += 1
         fig, ax = plt.subplots()
         plt.imshow(result_im)
-        x_label = list(x_range)
+        x_label = list(axis_1_range)
         ax.set_xticks(range(result_im.shape[1]))
         ax.set_xticklabels(x_label)
-        y_label = list(y_range)
+        y_label = list(axis_2_range)
         ax.set_yticks(range(result_im.shape[0]))
         ax.set_yticklabels(y_label)
         plt.show()

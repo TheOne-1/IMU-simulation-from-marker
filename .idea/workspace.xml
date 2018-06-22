@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e70d5058-3213-4ea2-8af2-87fbf1c44904" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_pelvis.csv" afterPath="$PROJECT_DIR$/data_pelvis.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_trunk.csv" afterPath="$PROJECT_DIR$/data_trunk.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SharedProcessors/DatabaseInfo.py" afterPath="$PROJECT_DIR$/SharedProcessors/DatabaseInfo.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SharedProcessors/const.py" afterPath="$PROJECT_DIR$/SharedProcessors/const.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_l_thigh.csv" afterPath="$PROJECT_DIR$/data_l_thigh.csv" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/simulate_IMU/EvaluationClass.py" afterPath="$PROJECT_DIR$/simulate_IMU/EvaluationClass.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/simulate_IMU/SubjectData.py" afterPath="$PROJECT_DIR$/simulate_IMU/SubjectData.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/simulate_IMU/TrainTestGenerator.py" afterPath="$PROJECT_DIR$/simulate_IMU/TrainTestGenerator.py" />
@@ -20,11 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="simulate_IMU.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="simulate_IMU.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/simulate_IMU/simulate_IMU.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="343">
-              <caret line="52" column="58" lean-forward="false" selection-start-line="52" selection-start-column="58" selection-end-line="52" selection-end-column="58" />
+            <state relative-caret-position="170">
+              <caret line="40" column="31" lean-forward="false" selection-start-line="40" selection-start-column="31" selection-end-line="40" selection-end-column="31" />
               <folding>
                 <element signature="e#119#156#0" expanded="true" />
               </folding>
@@ -35,15 +35,12 @@
       <file leaf-file-name="EvaluationClass.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/simulate_IMU/EvaluationClass.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="875">
-              <caret line="88" column="46" lean-forward="false" selection-start-line="88" selection-start-column="46" selection-end-line="88" selection-end-column="46" />
+            <state relative-caret-position="1404">
+              <caret line="98" column="55" lean-forward="false" selection-start-line="98" selection-start-column="38" selection-end-line="98" selection-end-column="55" />
               <folding>
                 <element signature="e#1817#1908#0" expanded="false" />
-                <element signature="e#2210#2532#0" expanded="false" />
-                <element signature="e#2330#2457#0" expanded="false" />
-                <element signature="e#2698#2819#0" expanded="false" />
-                <element signature="e#3148#3354#0" expanded="false" />
-                <element signature="e#3201#3354#0" expanded="false" />
+                <element signature="e#3173#3384#0" expanded="false" />
+                <element signature="e#3231#3384#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -52,33 +49,23 @@
       <file leaf-file-name="VirtualProcessor.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/simulate_IMU/VirtualProcessor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1034">
-              <caret line="56" column="47" lean-forward="false" selection-start-line="56" selection-start-column="32" selection-end-line="56" selection-end-column="47" />
+            <state relative-caret-position="241">
+              <caret line="71" column="42" lean-forward="false" selection-start-line="71" selection-start-column="29" selection-end-line="71" selection-end-column="42" />
               <folding>
-                <element signature="e#56#74#0" expanded="true" />
+                <element signature="e#55#66#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TrainTestGenerator.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TrainTestGenerator.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/simulate_IMU/TrainTestGenerator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="808">
-              <caret line="116" column="32" lean-forward="false" selection-start-line="116" selection-start-column="32" selection-end-line="116" selection-end-column="32" />
+            <state relative-caret-position="233">
+              <caret line="33" column="65" lean-forward="false" selection-start-line="33" selection-start-column="65" selection-end-line="33" selection-end-column="65" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="const.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SharedProcessors/const.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
-              <caret line="10" column="52" lean-forward="true" selection-start-line="10" selection-start-column="52" selection-end-line="10" selection-end-column="68" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -146,14 +133,14 @@
         <option value="$PROJECT_DIR$/simulate_IMU/SubjectDataGetter.py" />
         <option value="$PROJECT_DIR$/simulate_IMU/SegmentData.py" />
         <option value="$PROJECT_DIR$/test.py" />
+        <option value="$PROJECT_DIR$/data_pelvis.csv" />
         <option value="$PROJECT_DIR$/SharedProcessors/const.py" />
         <option value="$PROJECT_DIR$/SharedProcessors/DatabaseInfo.py" />
-        <option value="$PROJECT_DIR$/data_pelvis.csv" />
-        <option value="$PROJECT_DIR$/simulate_IMU/SubjectData.py" />
         <option value="$PROJECT_DIR$/simulate_IMU/VirtualProcessor.py" />
+        <option value="$PROJECT_DIR$/simulate_IMU/EvaluationClass.py" />
+        <option value="$PROJECT_DIR$/simulate_IMU/SubjectData.py" />
         <option value="$PROJECT_DIR$/simulate_IMU/TrainTestGenerator.py" />
         <option value="$PROJECT_DIR$/simulate_IMU/simulate_IMU.py" />
-        <option value="$PROJECT_DIR$/simulate_IMU/EvaluationClass.py" />
       </list>
     </option>
   </component>
@@ -335,12 +322,12 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1433902" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32861805" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32861805" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32861805" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297062" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5571273" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297062" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3297062" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32861805" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39934713" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5378465" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -378,13 +365,8 @@
           <line>16</line>
           <option name="timeStamp" value="110" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/simulate_IMU/TrainTestGenerator.py</url>
-          <line>142</line>
-          <option name="timeStamp" value="139" />
-        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="140" />
+      <option name="time" value="161" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -639,18 +621,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://E:/ProgramFiles/Python36/Lib/site-packages/sklearn/ensemble/forest.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3103">
-          <caret line="1213" column="8" lean-forward="false" selection-start-line="1213" selection-start-column="8" selection-end-line="1213" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://E:/ProgramFiles/Python36/Lib/site-packages/pandas/core/frame.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="197">
           <caret line="2539" column="0" lean-forward="false" selection-start-line="2539" selection-start-column="0" selection-end-line="2539" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -693,14 +668,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SharedProcessors/DatabaseInfo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="473">
-          <caret line="177" column="0" lean-forward="false" selection-start-line="177" selection-start-column="0" selection-end-line="177" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data_pelvis.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -717,65 +684,78 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/simulate_IMU/SubjectData.py">
+    <entry file="file://E:/ProgramFiles/Python36/Lib/site-packages/sklearn/ensemble/forest.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="196">
-          <caret line="52" column="25" lean-forward="true" selection-start-line="52" selection-start-column="25" selection-end-line="52" selection-end-column="25" />
+          <caret line="680" column="0" lean-forward="false" selection-start-line="680" selection-start-column="0" selection-end-line="680" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SharedProcessors/DatabaseInfo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2393">
+          <caret line="174" column="0" lean-forward="false" selection-start-line="174" selection-start-column="0" selection-end-line="174" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SharedProcessors/const.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="28" column="67" lean-forward="true" selection-start-line="21" selection-start-column="63" selection-end-line="28" selection-end-column="67" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/simulate_IMU/SubjectData.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="60" column="0" lean-forward="false" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
           <folding>
             <element signature="e#46#65#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/simulate_IMU/simulate_IMU.py">
+    <entry file="file://$PROJECT_DIR$/simulate_IMU/EvaluationClass.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="343">
-          <caret line="52" column="58" lean-forward="false" selection-start-line="52" selection-start-column="58" selection-end-line="52" selection-end-column="58" />
+        <state relative-caret-position="1404">
+          <caret line="98" column="55" lean-forward="false" selection-start-line="98" selection-start-column="38" selection-end-line="98" selection-end-column="55" />
           <folding>
-            <element signature="e#119#156#0" expanded="true" />
+            <element signature="e#1817#1908#0" expanded="false" />
+            <element signature="e#3173#3384#0" expanded="false" />
+            <element signature="e#3231#3384#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SharedProcessors/const.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="10" column="52" lean-forward="true" selection-start-line="10" selection-start-column="52" selection-end-line="10" selection-end-column="68" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/simulate_IMU/VirtualProcessor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1034">
-          <caret line="56" column="47" lean-forward="false" selection-start-line="56" selection-start-column="32" selection-end-line="56" selection-end-column="47" />
+        <state relative-caret-position="241">
+          <caret line="71" column="42" lean-forward="false" selection-start-line="71" selection-start-column="29" selection-end-line="71" selection-end-column="42" />
           <folding>
-            <element signature="e#56#74#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/simulate_IMU/EvaluationClass.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="875">
-          <caret line="88" column="46" lean-forward="false" selection-start-line="88" selection-start-column="46" selection-end-line="88" selection-end-column="46" />
-          <folding>
-            <element signature="e#1817#1908#0" expanded="false" />
-            <element signature="e#2210#2532#0" expanded="false" />
-            <element signature="e#2330#2457#0" expanded="false" />
-            <element signature="e#2698#2819#0" expanded="false" />
-            <element signature="e#3148#3354#0" expanded="false" />
-            <element signature="e#3201#3354#0" expanded="false" />
+            <element signature="e#55#66#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/simulate_IMU/TrainTestGenerator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="808">
-          <caret line="116" column="32" lean-forward="false" selection-start-line="116" selection-start-column="32" selection-end-line="116" selection-end-column="32" />
+        <state relative-caret-position="233">
+          <caret line="33" column="65" lean-forward="false" selection-start-line="33" selection-start-column="65" selection-end-line="33" selection-end-column="65" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/simulate_IMU/simulate_IMU.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="40" column="31" lean-forward="false" selection-start-line="40" selection-start-column="31" selection-end-line="40" selection-end-column="31" />
+          <folding>
+            <element signature="e#119#156#0" expanded="true" />
           </folding>
         </state>
       </provider>

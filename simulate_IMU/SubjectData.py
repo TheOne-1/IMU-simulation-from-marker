@@ -55,7 +55,7 @@ class SubjectData:
         data = self.get_cali_data(speed=SPEEDS[0])[markers].as_matrix()
         great_trochanter_vector = data[:, 0:3] - data[:, 3:6]
         # data_mean = np.mean(data, axis=0)
-        great_trochanter_dis = np.linalg.norm(great_trochanter_vector, axis=0)
+        great_trochanter_dis = np.linalg.norm(great_trochanter_vector, axis=1)
         great_trochanter_dis_mean = np.mean(great_trochanter_dis)
 
         if segment in ['l_thigh', 'r_thigh']:
