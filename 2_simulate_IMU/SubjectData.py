@@ -25,6 +25,9 @@ class SubjectData:
                 str(self.__subject_id) + '\\' + speed + '_walking_2.csv'
             self.__walking_2_data[speed] = pd.read_csv(walking_file_path_2)
 
+    def get_subject_id(self):
+        return self.__subject_id
+
     def get_all_data(self, speed):
         return self.__cali_data[speed], self.__walking_1_data[speed], self.__walking_2_data[speed]
 

@@ -72,11 +72,11 @@ class DatabaseInfo:
             'FP2.ForX', 'FP2.ForY', 'FP2.ForZ']
 
     @staticmethod
-    def get_marker_column():
+    def get_marker_column_num():
         return range(3, 144)
 
     @staticmethod
-    def get_force_column():
+    def get_force_column_num():
         return range(144, 156)
 
     def get_file_names(self, sub=0, speed=0, path=''):
@@ -173,3 +173,10 @@ class DatabaseInfo:
         }
         return segment_marker[segment]
 
+    @staticmethod
+    def get_force_column_names():
+        return ['FP1.ForX', 'FP1.ForY', 'FP1.ForZ', 'FP2.ForX', 'FP2.ForY', 'FP2.ForZ']
+
+    @staticmethod
+    def get_cop_column_names():
+        return ['FP1.CopX', 'FP1.CopY', 'FP2.CopX', 'FP2.CopY']

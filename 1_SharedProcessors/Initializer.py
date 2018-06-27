@@ -2,6 +2,7 @@ from numpy import *
 import pandas as pd
 from scipy.signal import butter, filtfilt
 import numpy as np
+from const import *
 
 
 class Initializer:
@@ -30,7 +31,8 @@ class Initializer:
         t = -dot(R, centroid_A.T) + centroid_B.T
         return R, t
 
-    def filtering(self, data, wn, filter_order=4):
+    @staticmethod
+    def filtering(data, wn, filter_order=4):
         b, a = butter(filter_order, wn, btype='low')
         return filtfilt(b, a, data, axis=0)
 
@@ -50,16 +52,33 @@ class Initializer:
         data = data_df.as_matrix()
 
         # marker filtering
-        marker_unfilt = data[:, marker_column_num] * 1000       # transfer to meter
+        marker_unfilt = data[:, marker_column_num]
         marker_num = int(marker_unfilt.shape[1] / 3)
         for i_marker in range(marker_num):
-            marker_unfilt[:, 3*i_marker:3*(i_marker+1)] = self.__coordinate_transfer(marker_unfilt[:, 3*i_marker:3*(i_marker+1)])
+            marker_unfilt[:, 3*i_marker:3*(i_marker+1)] = \
+                Initializer.__coordinate_transfer(marker_unfilt[:, 3*i_marker:3*(i_marker+1)])
         marker_filt = self.filtering(marker_unfilt, wn_marker, filter_order)
         data[:, marker_column_num] = marker_filt
 
         # force filtering
         force_unfilt = data[:, force_column_num]
+        force_1_norm = np.linalg.norm(force_unfilt[:, 3:6], axis=1)
+        plate_1_zero_index = np.where(force_1_norm < FORCE_PLATE_THRESHOLD)
+        force_2_norm = np.linalg.norm(force_unfilt[:, 9:12], axis=1)
+        plate_2_zero_index = np.where(force_2_norm < FORCE_PLATE_THRESHOLD)
+
+        force_unfilt[plate_1_zero_index, 0:6] = 0
+        force_unfilt[plate_2_zero_index, 6:12] = 0
+
+
+        for i_force_plate in range(4):      # there are two forces, two cops
+            force_unfilt[:, 3*i_force_plate:3*(i_force_plate+1)] = \
+                Initializer.__coordinate_transfer(force_unfilt[:, 3*i_force_plate:3*(i_force_plate+1)])
         force_filt = self.filtering(force_unfilt, wn_force, filter_order)
+
+        force_filt[plate_1_zero_index, 0:6] = 0       # zero data again after filtering
+        force_filt[plate_2_zero_index, 6:12] = 0
+
         data[:, force_column_num] = force_filt
 
         data_df = pd.DataFrame(data)

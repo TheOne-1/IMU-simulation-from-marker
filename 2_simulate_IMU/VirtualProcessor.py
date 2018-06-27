@@ -63,7 +63,68 @@ class Processor:
         acc_to_IMU = np.zeros([data_len, 3])
         for i_frame in range(data_len):
             acc_to_IMU[i_frame, :] = np.dot(R_IMU_transform[:, :, i_frame], acc_to_ground[i_frame, :].T)
+        #
+        # plt.figure()
+        # plt.subplot(221)
+        # plt.plot(acc_to_IMU[:, 0])
+        # plt.subplot(222)
+        # plt.plot(acc_to_IMU[:, 1])
+        # plt.subplot(223)
+        # plt.plot(acc_to_IMU[:, 2])
+        # acc_to_IMU_norm = np.linalg.norm(acc_to_IMU, axis=1)
+        # plt.subplot(224)
+        # plt.plot(acc_to_IMU_norm)
+        # plt.show()
+
         return acc_to_IMU
+
+    @staticmethod
+    def get_gyr(walking_data_df, R_IMU_transform):
+        walking_data = walking_data_df.as_matrix()
+        data_len = walking_data.shape[0]
+        marker_number = int(walking_data.shape[1] / 3)
+        next_marker_matrix = walking_data[0, :].reshape([marker_number, 3])
+        gyr_middle = np.zeros([data_len, 3])
+        for i_frame in range(data_len - 1):
+            current_marker_matrix = next_marker_matrix
+            next_marker_matrix = walking_data[i_frame + 1, :].reshape([marker_number, 3])
+            [R_one_sample, t] = Processor.rigid_transform_3D(current_marker_matrix, next_marker_matrix)
+            theta = np.math.acos((np.matrix.trace(R_one_sample) - 1) / 2)
+            a, b = np.linalg.eig(R_one_sample)
+            for i_eig in range(a.__len__()):
+                if abs(a[i_eig].imag) < 1e-12:
+                    vector = b[:, i_eig].real
+                    break
+                if i_eig == a.__len__():
+                    raise RuntimeError('no eig')
+
+            if (R_one_sample[2, 1] - R_one_sample[1, 2]) * vector[0] < 0:  # check the direction of the rotation axis
+                vector = -vector
+            vector = np.dot(R_IMU_transform[:, :, i_frame].T, vector)
+            gyr_middle[i_frame, :] = theta * vector * MOCAP_SAMPLE_RATE
+
+        step_middle = np.arange(0.5 / MOCAP_SAMPLE_RATE, data_len / MOCAP_SAMPLE_RATE + 0.5 / MOCAP_SAMPLE_RATE,
+                                1 / MOCAP_SAMPLE_RATE)
+        step_gyr = np.arange(0, data_len / MOCAP_SAMPLE_RATE, 1 / MOCAP_SAMPLE_RATE)
+        # in splprep, s the amount of smoothness. 6700 might be appropriate
+        tck, step = interpo.splprep(gyr_middle.T, u=step_middle, s=0)
+        gyr = interpo.splev(step_gyr, tck, der=0)
+        gyr = np.column_stack([gyr[0], gyr[1], gyr[2]])
+
+
+        # plt.figure()
+        # plt.subplot(221)
+        # plt.plot(gyr[:, 0])
+        # plt.subplot(222)
+        # plt.plot(gyr[:, 1])
+        # plt.subplot(223)
+        # plt.plot(gyr[:, 2])
+        # gyr_norm = np.linalg.norm(gyr, axis=1)
+        # plt.subplot(224)
+        # plt.plot(gyr_norm)
+        # plt.show()
+
+        return gyr
 
     @staticmethod
     def get_cylinder_surface_rotation(theta):

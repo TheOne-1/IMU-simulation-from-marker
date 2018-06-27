@@ -18,8 +18,8 @@ processed_data_path = 'D:\Tian\Research\Projects\ML Project\gait_database_proces
 my_database_info = DatabaseInfo()
 my_initializer = Initializer()
 necessary_columns = my_database_info.get_necessary_columns()
-marker_column_num = my_database_info.get_marker_column()        # get column numbers
-force_column_num = my_database_info.get_force_column()
+marker_column_num = my_database_info.get_marker_column_num()        # get column numbers
+force_column_num = my_database_info.get_force_column_num()
 all_column_names = my_database_info.get_all_column_names()
 
 for i_sub in range(0, sub_num-2):
