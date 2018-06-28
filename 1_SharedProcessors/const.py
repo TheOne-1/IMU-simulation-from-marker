@@ -16,6 +16,9 @@ MOCAP_SAMPLE_RATE = 100
 THIGH_COEFF = 0.4  # D_thigh = THIGH_COEFF * D_great_trochanter
 SHANK_COEFF = 0.3  # D_shank = SHANK_COEFF * D_great_trochanter
 
+WN_MARKER = 10 / (MOCAP_SAMPLE_RATE / 2)
+WN_FORCE = 25 / (MOCAP_SAMPLE_RATE / 2)
+
 # IM_VMIN = 0.5
 # IM_VMAX = 1
 

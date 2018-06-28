@@ -71,6 +71,7 @@ class Evaluation:
         return score
 
     def train_sklearn(self, model):
+        # for i_output in range(self.__y_train.shape[1]):
         model.fit(self.__x_train, self.__y_train)
         self.__sklearn_model = model
 
@@ -136,7 +137,7 @@ class Evaluation:
 
     # save the dataframe and an introduction file
     @staticmethod
-    def save_total_result(total_score_df, input_names, output_names):
+    def save_total_result(total_score_df, input_names, output_names, model):
         date = time.strftime('%Y%m%d')
         file_path = RESULT_PATH + 'result_' + date + '.csv'
         specification_txt_file = RESULT_PATH + 'result_' + date + '_specification.txt'
@@ -160,9 +161,10 @@ class Evaluation:
         else:
             pca_str = 'Feature selection: None'
 
-        content = 'Machine learning model: Random Forest \n'\
-                  + 'Input: ' + input_str + '\n'\
-                  + 'Output: ' + output_str + '\n' + scaling_str + pca_str
+        content = 'Machine learning model: ' + model.__class__.__name__ + '\n' + \
+                  'Model parameters: ' + model.get_params() + '\n' + \
+                  'Input: ' + input_str + '\n' + \
+                  'Output: ' + output_str + '\n' + scaling_str + '\n' + pca_str + '\n'
 
         with open(specification_txt_file, 'w') as file:
             file.write(content)

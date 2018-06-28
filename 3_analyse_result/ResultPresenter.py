@@ -11,7 +11,7 @@ from DatabaseInfo import DatabaseInfo
 
 class Presenter:
     @staticmethod
-    def show_segment_result(segment_df):
+    def show_segment_result(segment_df, date):
         segment = segment_df.iloc[0, 0]
         if segment in ['trunk', 'pelvis']:
             axis_1_range = Presenter.__array_to_range(segment_df['x_offset'].as_matrix())
@@ -34,22 +34,22 @@ class Presenter:
                 sub_force_im = Presenter.__get_score_im(force_scores, axis_1_range, axis_2_range)
                 average_force_im += sub_force_im
 
-                # cop_scores = np.mean(trial_df[DatabaseInfo.get_cop_column_names()].as_matrix(), axis=1)
-                # sub_cop_im = Presenter.__get_score_im(cop_scores, axis_1_range, axis_2_range)
-                # average_cop_im += sub_cop_im
+                cop_scores = np.mean(trial_df[DatabaseInfo.get_cop_column_names()].as_matrix(), axis=1)
+                sub_cop_im = Presenter.__get_score_im(cop_scores, axis_1_range, axis_2_range)
+                average_cop_im += sub_cop_im
         total_im_number = SUB_NUM * SPEEDS.__len__()
         average_force_im = average_force_im / total_im_number
         average_force_title = segment + ', average force'
         Presenter.__show_score_im(average_force_im, axis_1_range, axis_2_range, average_force_title, axis_1_label,
-                                  axis_2_label, segment)
+                                  axis_2_label, segment, date)
 
-        # average_cop_im = average_cop_im / total_im_number
-        # average_cop_title = segment + ', average COP'
-        # Presenter.__show_score_im(average_cop_im, axis_1_range, axis_2_range, average_cop_title)
+        average_cop_im = average_cop_im / total_im_number
+        average_cop_title = segment + ', average COP'
+        Presenter.__show_score_im(average_cop_im, axis_1_range, axis_2_range, average_cop_title, axis_1_label,
+                                  axis_2_label, segment, date)
 
     # @staticmethod
     # def show_speed_result(speed_df):
-
 
 
     # show the decrease amount and std among subjects for all the speeds
@@ -141,8 +141,8 @@ class Presenter:
 
     # this show result is different from the one in EvaluationClass because it serves analyse result
     @staticmethod
-    def __show_score_im(score_im, axis_1_range, axis_2_range, title, axis_1_label, axis_2_label, segment):
-        fig, ax = plt.subplots()
+    def __show_score_im(score_im, axis_1_range, axis_2_range, title, axis_1_label, axis_2_label, segment, date):
+        fig, ax = plt.subplots(figsize=(8, 6))
         im = plt.imshow(score_im, cmap=plt.cm.gray)
         plt.colorbar(im)
         if segment in ['trunk', 'pelvis']:
@@ -150,14 +150,15 @@ class Presenter:
         else:
             x_label = [str(tick)+'°' for tick in axis_1_range]
         ax.set_xticks(range(score_im.shape[1]))
-        ax.set_xticklabels(x_label)
-        ax.set_xlabel(axis_1_label)
+        ax.set_xticklabels(x_label, fontdict={'fontsize': 8})
+        ax.set_xlabel(axis_1_label, fontdict={'fontsize': 12})
         y_label = [str(tick)+'mm' for tick in axis_2_range]
         ax.set_yticks(range(score_im.shape[0]))
-        ax.set_yticklabels(y_label)
-        ax.set_ylabel(axis_2_label)
+        ax.set_yticklabels(y_label, fontdict={'fontsize': 8})
+        ax.set_ylabel(axis_2_label, fontdict={'fontsize': 12})
         plt.title(title)
-        plt.savefig(segment)
+        file_path = RESULT_PATH + 'result_' + date + '\\' + title
+        plt.savefig(file_path)
         plt.show()  # show plot at last
 
     @staticmethod
@@ -169,7 +170,7 @@ class Presenter:
         for i_x in range(axis_1_len):
             for i_y in range(axis_2_len):
                 # for image, row and column are exchanged compared to ndarray
-                decrease_matrix[i_y, i_x] = scores[i_score] - center_score
+                decrease_matrix[i_y, i_x] = (scores[i_score] - center_score) * 100
                 i_score += 1
         return decrease_matrix
 

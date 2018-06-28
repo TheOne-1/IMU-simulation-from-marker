@@ -5,8 +5,9 @@ from DatabaseInfo import DatabaseInfo
 from SubjectData import SubjectData
 from EvaluationClass import Evaluation
 from const import *
-from sklearn import ensemble, neighbors
-from sklearn.model_selection import train_test_split
+from sklearn import ensemble, neighbors, tree
+from sklearn.svm import SVR
+from sklearn.model_selection import train_test_split, GridSearchCV
 from XYGenerator import XYGenerator
 
 
@@ -45,9 +46,11 @@ my_database_info = DatabaseInfo()
 total_score_df = Evaluation.initialize_result_df(total_result_columns)
 
 # model = neighbors.KNeighborsRegressor()
-model = ensemble.RandomForestRegressor(random_state=100)
+# model = ensemble.RandomForestRegressor(random_state=100)
 # model = ensemble.AdaBoostRegressor()
-# model = Ridge()
+model = tree.DecisionTreeRegressor()
+# model =
+
 
 for segment_moved in moved_segments:
     print('Segment: ' + segment_moved)     # to show how much data have been processed
@@ -61,9 +64,9 @@ for segment_moved in moved_segments:
             x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=2)
             # my_xy_generator.check_acc_difference(x)
             score_list = my_xy_generator.get_score_list(x_train, x_test, y_train, y_test, model, do_scaling=DO_SCALING, do_PCA=DO_PCA)
-            # Evaluation.show_result(score_list, my_xy_generator, output_names)
+            Evaluation.show_result(score_list, my_xy_generator, output_names)
             total_score_df = total_score_df.append(Evaluation.store_current_result(score_list, my_xy_generator, total_result_columns))
-Evaluation.save_total_result(total_score_df, input_names, output_names)
+Evaluation.save_total_result(total_score_df, input_names, output_names, model)
 
 
 
