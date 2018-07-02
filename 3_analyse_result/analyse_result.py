@@ -7,7 +7,7 @@ from ResultPresenter import Presenter
 
 average_all_force = True
 
-file_date = '20180628_1'
+file_date = '20180702'
 result_file = RESULT_PATH + 'result_' + file_date + '.csv'
 result_df = pd.read_csv(result_file)
 
@@ -17,8 +17,8 @@ sheet = wb.add_sheet('Sheet1')
 
 
 for segment_moved in MOVED_SEGMENT_NAMES:
-    Presenter.show_segment_result(result_df[result_df['segment'] == segment_moved], file_date)
-    Presenter.get_segment_matrix(result_df[result_df['segment'] == segment_moved], sheet)
+    # Presenter.show_segment_result(result_df[result_df['segment'] == segment_moved], file_date)
+    Presenter.get_segment_cop_matrix(result_df[result_df['segment'] == segment_moved], sheet)
 wb.save(file_path)
 
 

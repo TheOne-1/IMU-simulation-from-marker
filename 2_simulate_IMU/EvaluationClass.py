@@ -1,8 +1,9 @@
 
 import matplotlib.pyplot as plt
 # from keras.callbacks import EarlyStopping
-from sklearn.metrics import r2_score
 # from keras.models import *
+import sklearn
+from sklearn.metrics import r2_score
 from const import *
 from sklearn import preprocessing
 import numpy as np
@@ -10,23 +11,28 @@ import pandas as pd
 import time
 import os
 from sklearn.decomposition import PCA
+import json
+
 
 class Evaluation:
-    def __init__(self, x_train, x_test, y_train, y_test, y_column_names, do_scaling=True, do_PCA=False):
+    def __init__(self, x_train, x_test, y_train, y_test, y_column_names, base_model):
         self.__params_column_names = y_column_names
-        self.__do_scaling = do_scaling
-        self.__do_PCA = do_PCA
-        self.__nn_model = None
-        self.__sklearn_model = None
+        self.__do_scaling = DO_SCALING
+        self.__do_PCA = DO_PCA
+        self.__base_model = base_model
         self.__batch_size = 50  # the size of data that be trained together
+        self.__base_scaler = preprocessing.StandardScaler()
+        self.__pca = PCA(n_components=N_COMPONENT)
 
         if self.__do_scaling:
-            self.__x_scalar = preprocessing.StandardScaler().fit(x_train)
-            self.__y_scalar = preprocessing.StandardScaler().fit(y_train)
-            self.__x_train = self.__x_scalar.transform(x_train)
-            self.__y_train = self.__y_scalar.transform(y_train)
-            self.__x_test = self.__x_scalar.transform(x_test)
-            self.__y_test = self.__y_scalar.transform(y_test)
+            x_scalar = sklearn.clone(self.__base_scaler)
+            y_scalar = sklearn.clone(self.__base_scaler)
+            x_scalar.fit(x_train)
+            y_scalar.fit(y_train)
+            self.__x_train = x_scalar.transform(x_train)
+            self.__y_train = y_scalar.transform(y_train)
+            self.__x_test = x_scalar.transform(x_test)
+            self.__y_test = y_scalar.transform(y_test)
         else:  # transfer dataframe to ndarray
             self.__x_train = x_train.as_matrix()
             self.__y_train = y_train.as_matrix()
@@ -34,50 +40,38 @@ class Evaluation:
             self.__y_test = y_test.as_matrix()
 
         if self.__do_PCA:
-            self.__pca = PCA(n_components=N_COMPONENT)
             self.__pca.fit(self.__x_train)
             self.__x_train = self.__pca.transform(self.__x_train)
             self.__x_test = self.__pca.transform(self.__x_test)
 
+        self.__models = []
+        for i_model in range(self.__y_train.shape[1]):
+            self.__models.append(sklearn.clone(self.__base_model))
 
-    def set_x_test(self, x_test):
+    def set_x(self, x_train, x_test):
         if self.__do_scaling:
-            self.__x_test = self.__x_scalar.transform(x_test)
+            x_scalar = sklearn.clone(self.__base_scaler)
+            x_scalar.fit(x_train)
+            self.__x_test = x_scalar.transform(x_test)
         else:
             self.__x_test = x_test.as_matrix()
 
         if self.__do_PCA:
             self.__x_test = self.__pca.transform(self.__x_test)
 
-    def train_nn(self, model):
-        # lr = learning rate, the other params are default values
-        optimizer = optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
-        model.compile(loss='mean_squared_error', optimizer=optimizer)
-        # val_loss = validation loss, patience is the tolerance
-        early_stopping = EarlyStopping(monitor='val_loss', patience=5)
-        # epochs is the maximum training round, validation split is the size of the validation set,
-        # callback stops the training if the validation was not approved
-        model.fit(self.__x_train, self.__y_train, batch_size=self.__batch_size,
-                  epochs=100, validation_split=0.2, callbacks=[early_stopping])
-        self.__nn_model = model
-
-    def evaluate_nn(self):
-        result = self.__nn_model.predict(self.__x_test, batch_size=self.__batch_size)
-        if self.__do_scaling:
-            self.__y_test = self.__y_scalar.inverse_transform(self.__y_test)
-            result = self.__y_scalar.inverse_transform(result)
-
-        score = r2_score(self.__y_test, result, multioutput='raw_values')
-        return score
-
-    def train_sklearn(self, model):
-        # for i_output in range(self.__y_train.shape[1]):
-        model.fit(self.__x_train, self.__y_train)
-        self.__sklearn_model = model
+    def train_sklearn(self):
+        i_output = 0
+        for model in self.__models:
+            model.fit(self.__x_train, self.__y_train[:, i_output])
+            i_output += 1
 
     def evaluate_sklearn(self):
-        result = self.__sklearn_model.predict(self.__x_test)
-        scores = r2_score(self.__y_test, result, multioutput='raw_values')
+        scores = []
+        i_output = 0
+        for model in self.__models:
+            result = model.predict(self.__x_test)
+            scores.append(r2_score(self.__y_test[:, i_output], result))
+            i_output += 1
         return scores
 
     @staticmethod
@@ -100,7 +94,8 @@ class Evaluation:
                     i_result += 1
             # plt.figure()
             fig, ax = plt.subplots()
-            plt.imshow(result_im)
+            im = plt.imshow(result_im)
+            plt.colorbar(im)
             x_label = list(axis_1_range)
             ax.set_xticks(range(result_im.shape[1]))
             ax.set_xticklabels(x_label)
@@ -162,7 +157,7 @@ class Evaluation:
             pca_str = 'Feature selection: None'
 
         content = 'Machine learning model: ' + model.__class__.__name__ + '\n' + \
-                  'Model parameters: ' + model.get_params() + '\n' + \
+                  'Model parameters: ' + json.dumps(model.get_params()) + '\n' + \
                   'Input: ' + input_str + '\n' + \
                   'Output: ' + output_str + '\n' + scaling_str + '\n' + pca_str + '\n'
 
@@ -170,6 +165,26 @@ class Evaluation:
             file.write(content)
 
 
+    # def train_nn(self, model):
+    #     # lr = learning rate, the other params are default values
+    #     optimizer = optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
+    #     model.compile(loss='mean_squared_error', optimizer=optimizer)
+    #     # val_loss = validation loss, patience is the tolerance
+    #     early_stopping = EarlyStopping(monitor='val_loss', patience=5)
+    #     # epochs is the maximum training round, validation split is the size of the validation set,
+    #     # callback stops the training if the validation was not approved
+    #     model.fit(self.__x_train, self.__y_train, batch_size=self.__batch_size,
+    #               epochs=100, validation_split=0.2, callbacks=[early_stopping])
+    #     self.__nn_model = model
+    #
+    # def evaluate_nn(self):
+    #     result = self.__nn_model.predict(self.__x_test, batch_size=self.__batch_size)
+    #     if self.__do_scaling:
+    #         self.__y_test = self.__y_scalar.inverse_transform(self.__y_test)
+    #         result = self.__y_scalar.inverse_transform(result)
+    #
+    #     score = r2_score(self.__y_test, result, multioutput='raw_values')
+    #     return score
 
 
 

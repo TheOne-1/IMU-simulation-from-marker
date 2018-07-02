@@ -30,18 +30,19 @@ class Presenter:
         for i_sub in range(SUB_NUM):
             for speed in SPEEDS:
                 trial_df = segment_df[(segment_df['subject_id'] == i_sub) & (segment_df['speed'] == float(speed))]
-                force_scores = np.mean(trial_df[DatabaseInfo.get_force_column_names()].as_matrix(), axis=1)
-                sub_force_im = Presenter.__get_score_im(force_scores, axis_1_range, axis_2_range)
-                average_force_im += sub_force_im
+
+                # force_scores = np.mean(trial_df[DatabaseInfo.get_force_column_names()].as_matrix(), axis=1)
+                # sub_force_im = Presenter.__get_score_im(force_scores, axis_1_range, axis_2_range)
+                # average_force_im += sub_force_im
 
                 cop_scores = np.mean(trial_df[DatabaseInfo.get_cop_column_names()].as_matrix(), axis=1)
                 sub_cop_im = Presenter.__get_score_im(cop_scores, axis_1_range, axis_2_range)
                 average_cop_im += sub_cop_im
         total_im_number = SUB_NUM * SPEEDS.__len__()
-        average_force_im = average_force_im / total_im_number
-        average_force_title = segment + ', average force'
-        Presenter.__show_score_im(average_force_im, axis_1_range, axis_2_range, average_force_title, axis_1_label,
-                                  axis_2_label, segment, date)
+        # average_force_im = average_force_im / total_im_number
+        # average_force_title = segment + ', average force'
+        # Presenter.__show_score_im(average_force_im, axis_1_range, axis_2_range, average_force_title, axis_1_label,
+        #                           axis_2_label, segment, date)
 
         average_cop_im = average_cop_im / total_im_number
         average_cop_title = segment + ', average COP'
@@ -54,7 +55,7 @@ class Presenter:
 
     # show the decrease amount and std among subjects for all the speeds
     @staticmethod
-    def get_segment_matrix(segment_df, sheet):
+    def get_segment_force_matrix(segment_df, sheet):
         segment = segment_df.iloc[0, 0]
         if segment in ['trunk', 'pelvis']:
             axis_1_range = Presenter.__array_to_range(segment_df['x_offset'].as_matrix())
@@ -81,6 +82,34 @@ class Presenter:
         force_title = segment + ', mean and one standard deviation of R2 decrease'
         Presenter.__store_matrix(force_mean_matrix, force_std_matrix, force_title, axis_1_range, axis_2_range, sheet, segment)
 
+    # show the decrease amount and std among subjects for all the speeds
+    @staticmethod
+    def get_segment_cop_matrix(segment_df, sheet):
+        segment = segment_df.iloc[0, 0]
+        if segment in ['trunk', 'pelvis']:
+            axis_1_range = Presenter.__array_to_range(segment_df['x_offset'].as_matrix())
+            axis_2_range = Presenter.__array_to_range(segment_df['z_offset'].as_matrix())
+        else:
+            axis_1_range = Presenter.__array_to_range(segment_df['theta_offset'].as_matrix())
+            axis_2_range = Presenter.__array_to_range(segment_df['z_offset'].as_matrix())
+        axis_1_len = axis_1_range.__len__()
+        axis_2_len = axis_2_range.__len__()
+        total_matrix_number = SUB_NUM * SPEEDS.__len__()
+        cop_matrix = np.zeros([axis_2_len, axis_1_len, total_matrix_number])
+        i_matrix = 0
+        for i_sub in range(SUB_NUM):
+            for speed in SPEEDS:
+                trial_df = segment_df[(segment_df['subject_id'] == i_sub) & (segment_df['speed'] == float(speed))]
+                center_df = trial_df[(trial_df['x_offset'] == 0) & (trial_df['y_offset'] == 0) &
+                                     (trial_df['z_offset'] == 0) & (trial_df['theta_offset'] == 0)]
+                cop_center_score = np.mean(center_df[DatabaseInfo.get_cop_column_names()].as_matrix())
+                cop_scores = np.mean(trial_df[DatabaseInfo.get_cop_column_names()].as_matrix(), axis=1)
+                cop_matrix[:, :, i_matrix] = Presenter.__get_decrease_matrix(cop_scores, cop_center_score, axis_1_range, axis_2_range)
+                i_matrix += 1
+        cop_mean_matrix = np.mean(cop_matrix, axis=2)
+        cop_std_matrix = np.std(cop_matrix, axis=2)
+        cop_title = segment + ', mean and one standard deviation of R2 decrease'
+        Presenter.__store_matrix(cop_mean_matrix, cop_std_matrix, cop_title, axis_1_range, axis_2_range, sheet, segment)
 
 
 

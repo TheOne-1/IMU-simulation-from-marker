@@ -179,4 +179,6 @@ class DatabaseInfo:
 
     @staticmethod
     def get_cop_column_names():
-        return ['FP1.CopX', 'FP1.CopY', 'FP2.CopX', 'FP2.CopY']
+        return [
+            # 'FP1.CopX', 'FP1.CopY',
+            'FP2.CopX', 'FP2.CopY']

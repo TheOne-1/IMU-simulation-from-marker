@@ -128,46 +128,47 @@ class XYGenerator:
 
         return x, y
 
-    def get_score_list(self, x_train, x_test, y_train, y_test, model, do_scaling=True, do_PCA=False):
-        my_evaluator = Evaluation(x_train, x_test, y_train, y_test, self.__output_names, do_scaling, do_PCA)
-        my_evaluator.train_sklearn(model)
+    def get_score_list(self, x_train, x_test, y_train, y_test, model):
+        my_evaluator = Evaluation(x_train, x_test, y_train, y_test, self.__output_names, model)
+        my_evaluator.train_sklearn()
         score_list = []
         if self.__moved_segment in ['trunk', 'pelvis']:
-            score_list = self.get_plane_score_list(my_evaluator, x_test)
+            score_list = self.get_plane_score_list(my_evaluator, x_train, x_test)
         if self.__moved_segment in ['l_thigh', 'r_thigh', 'l_shank', 'r_shank']:
-            score_list = self.get_cylinder_score_list(my_evaluator, x_test)
+            score_list = self.get_cylinder_score_list(my_evaluator, x_train, x_test)
         return score_list
 
-    def get_plane_score_list(self, evaluator, x_test):
+    def get_plane_score_list(self, evaluator, x_train, x_test):
         score_list = []
         point_list, x_range, z_range = self.__get_plane_position()
         for point in point_list:
             simulated_marker = point[0]
             if self.__acc_data:
-                x_test = self.__modify_acc_test(simulated_marker, x_test)
-            # if self.__gyr_data:
-            #     x_test = self.__modify_gyr_test(simulated_marker, x_test)
-            evaluator.set_x_test(x_test)
+                x_train_changed, x_test_changed = self.__modify_acc_test(simulated_marker, x_train, x_test)
+            if self.__gyr_data:
+                x_train_changed, x_test_changed = self.__modify_gyr_test(simulated_marker, x_train, x_test)
+            evaluator.set_x(x_train_changed, x_test_changed)
             score_list.append([evaluator.evaluate_sklearn(), point[1], point[2]])  # score, x offset, y offset
         return score_list
 
-    def get_cylinder_score_list(self, evaluator, x_test):
+    def get_cylinder_score_list(self, evaluator, x_train, x_test):
         score_list = []
         point_list, theta_range, z_range = self.__get_cylinder_position()
         for point in point_list:
             simulated_marker = point[0]
             R_cylinder = point[3]
             if self.__acc_data:
-                x_test = self.__modify_acc_test(simulated_marker, x_test, R_cylinder)
+                x_train_changed, x_test_changed = self.__modify_acc_test(simulated_marker, x_train, x_test, R_cylinder)
             if self.__gyr_data:
-                x_test = self.__modify_gyr_test(simulated_marker, x_test, R_cylinder)
-            evaluator.set_x_test(x_test)
+                x_train_changed, x_test_changed = self.__modify_gyr_test(simulated_marker, x_train, x_test, R_cylinder)
+            evaluator.set_x(x_train_changed, x_test_changed)
             score_list.append([evaluator.evaluate_sklearn(), point[1], point[2]])  # score, x offset, y offset
         return score_list
 
-    def __modify_acc_test(self, simulated_marker, x_test, R_cylinder=[]):
+    def __modify_acc_test(self, simulated_marker, x_train, x_test, R_cylinder=[]):
         segment_data = SegmentData(self.__subject_data, self.__moved_segment)
         walking_data_1_df = segment_data.get_segment_walking_1_data(self.__speed)
+        train_index = x_train.index
         test_index = x_test.index
         R_standing_to_ground = segment_data.get_segment_R()
         marker_cali_matrix = segment_data.get_marker_cali_matrix(self.__speed)
@@ -187,13 +188,16 @@ class XYGenerator:
 
         acc_IMU_df = pd.DataFrame(acc_IMU)
         # x_test is just a quote of the original x_test, deep copy so that no warning will show up
+        x_train_changed = x_train.copy()
         x_test_changed = x_test.copy()
+        x_train_changed[changed_columns] = acc_IMU_df.loc[train_index]
         x_test_changed[changed_columns] = acc_IMU_df.loc[test_index]
-        return x_test_changed
+        return x_train_changed, x_test_changed
 
-    def __modify_gyr_test(self, simulated_marker, x_test, R_cylinder=[]):
+    def __modify_gyr_test(self, simulated_marker, x_train, x_test, R_cylinder=[]):
         segment_data = SegmentData(self.__subject_data, self.__moved_segment)
         walking_data_1_df = segment_data.get_segment_walking_1_data(self.__speed)
+        train_index = x_train.index
         test_index = x_test.index
         R_standing_to_ground = segment_data.get_segment_R()
         marker_cali_matrix = segment_data.get_marker_cali_matrix(self.__speed)
@@ -213,9 +217,11 @@ class XYGenerator:
 
         gyr_IMU_df = pd.DataFrame(gyr_IMU)
         # x_test is just a quote of the original x_test, deep copy so that no warning will show up
+        x_train_changed = x_train.copy()
         x_test_changed = x_test.copy()
+        x_train_changed[changed_columns] = gyr_IMU_df.loc[train_index]
         x_test_changed[changed_columns] = gyr_IMU_df.loc[test_index]
-        return x_test_changed
+        return x_train_changed, x_test_changed
 
     # this function is used to check how much have the IMU data changed
     def check_acc_difference(self, x, R_cylinder=[]):

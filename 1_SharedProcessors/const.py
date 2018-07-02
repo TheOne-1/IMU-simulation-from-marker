@@ -1,11 +1,11 @@
 FORCE_PLATE_THRESHOLD = 50      # set 50N as the threshold of the force plate
 
 DO_SCALING = True
-DO_PCA = True
+DO_PCA = False
 
 PROCESSED_DATA_PATH = 'D:\Tian\Research\Projects\ML Project\gait_database_processed\GaitDatabase\data\\'
 RESULT_PATH = 'D:\Tian\Research\Projects\ML Project\gait_database_processed\\result\\'
-N_COMPONENT = 0.95
+N_COMPONENT = 12
 SUB_NUM = 10
 SPEEDS = ['0.8', '1.2', '1.6']
 SPEED_NUM = SPEEDS.__len__()
