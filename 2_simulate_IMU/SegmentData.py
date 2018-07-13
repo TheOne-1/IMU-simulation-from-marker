@@ -39,13 +39,13 @@ class SegmentData:
     def get_segment_R(self):
         R = {
             'trunk': np.array([[0, 0, 1], [-1, 0, 0], [0, -1, 0]]),  # R for trunk
-            'pelvis': np.array([[0, 0, 1], [-1, 0, 0], [0, -1, 0]]),  # R for trunk
-            'l_thigh': np.array([[0, 0, 1], [0, 1, 0], [-1, 0, 0]]),  # R for trunk
-            'r_thigh': np.array([[0, 0, 1], [0, -1, 0], [1, 0, 0]]),  # R for trunk
-            'l_shank': np.array([[0, 0, -1], [0, -1, 0], [-1, 0, 0]]),  # R for trunk
-            'r_shank': np.array([[0, 0, -1], [0, 1, 0], [1, 0, 0]]),  # R for trunk
-            'l_feet': np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]]),  # R for trunk
-            'r_feet': np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]]),  # R for trunk
+            'pelvis': np.array([[0, 0, 1], [-1, 0, 0], [0, -1, 0]]),  # R for pelvis
+            'l_thigh': np.array([[0, 0, 1], [0, 1, 0], [-1, 0, 0]]),  # R for l_thigh
+            'r_thigh': np.array([[0, 0, 1], [0, -1, 0], [1, 0, 0]]),  # R for r_thigh
+            'l_shank': np.array([[0, 0, -1], [0, -1, 0], [-1, 0, 0]]),  # R for l_shank
+            'r_shank': np.array([[0, 0, -1], [0, 1, 0], [1, 0, 0]]),  # R for r_shank
+            'l_feet': np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]]),  # R for l_feet
+            'r_feet': np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]]),  # R for r_feet
         }
         return R[self.__segment_name]
 

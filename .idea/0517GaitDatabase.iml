@@ -6,6 +6,8 @@
       <sourceFolder url="file://$MODULE_DIR$/0_initialize_data" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/2_simulate_IMU" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3_analyse_result" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/4_model_param_selection" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/5_simulate_IMU_universal" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
