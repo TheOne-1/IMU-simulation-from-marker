@@ -8,7 +8,7 @@ from EvaluationClass import Evaluation
 import matplotlib.pyplot as plt
 
 
-class XYGenerator_uni:
+class XYGeneratorUni:
 
     def __init__(self, subject_data, moved_segment, speed, output_names, input_names):
         self.__subject_data = subject_data
@@ -53,7 +53,7 @@ class XYGenerator_uni:
         segment_data = SegmentData(self.__subject_data, self.__moved_segment)
         center_point_mean = segment_data.get_center_point_mean(self.__speed)
         # range are in millimeter
-        x_range, z_range = XYGenerator_uni.get_move_range(self.__moved_segment)
+        x_range, z_range = XYGeneratorUni.get_move_range(self.__moved_segment)
         point_list = []
         for x in x_range:
             for z in z_range:
@@ -72,7 +72,7 @@ class XYGenerator_uni:
         segment_data = SegmentData(self.__subject_data, self.__moved_segment)
         center_point_mean = segment_data.get_center_point_mean(self.__speed)
         # range are in millimeter
-        theta_range, z_range = XYGenerator_uni.get_move_range(self.__moved_segment)
+        theta_range, z_range = XYGeneratorUni.get_move_range(self.__moved_segment)
         cylinder_diameter = self.__subject_data.get_cylinder_diameter(self.__moved_segment)
         point_list = []
         for theta in theta_range:
