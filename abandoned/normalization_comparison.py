@@ -77,7 +77,7 @@ for X_NORM_ALL in [False]:
             x[i_sub] = x_sub
             y[i_sub] = y_sub
 
-        for i_sub_test in range(SUB_NUM):
+        for i_sub_test in range(1):
             print('subject: ' + str(i_sub_test))
             # get training data
             x_train, y_train = np.zeros([0, input_names.__len__()]), np.zeros([0, output_names.__len__()])

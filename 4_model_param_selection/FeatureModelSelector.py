@@ -1,9 +1,9 @@
 import pandas as pd
-import xlwt
+import matplotlib.pyplot as plt
 import numpy as np
 from const import *
 
-class ModelSelector:
+class FeatureModelSelector:
     @staticmethod
     def store_impt_matrix(mean_matrice, column_names, row_names):
         # store mean matrice
@@ -39,3 +39,51 @@ class ModelSelector:
             all_df = all_df.append(trial_df, ignore_index=True)
         # store mean matrice
         all_df.to_csv(RESULT_PATH + 'importance_matrix\impt_matrice_all.csv', index=False)
+
+    @staticmethod
+    def show_selection_outputs(selector, x, y, input_names, output_names, fit_len=None):
+        feature_selected = np.zeros([len(output_names), len(input_names)])
+        plt.figure()
+        for i_output in range(len(output_names)):
+            if fit_len:
+                selector.fit(x[:fit_len, :], y[:fit_len, i_output])
+            else:
+                selector.fit(x, y[:, i_output])
+            trial_scores = 100 / selector.ranking_
+            feature_selected[i_output, :] = trial_scores
+            plt.plot(feature_selected[i_output, :], label=output_names[i_output])
+
+        plt.xticks(range(len(input_names)))
+        plt.legend()
+
+    @staticmethod
+    def normalize_array(array, axis=0):
+        max_score, min_score = array.max(axis=axis), array.min(axis=axis)
+        return (array - min_score) / (max_score - min_score)
+
+    # @staticmethod
+    # def show_selection_o
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

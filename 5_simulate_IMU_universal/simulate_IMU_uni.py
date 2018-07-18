@@ -52,63 +52,55 @@ model = ensemble.GradientBoostingRegressor(
     learning_rate=0.1, min_impurity_decrease=0.001, min_samples_split=6, n_estimators=500)
 x_scalar, y_scalar = preprocessing.StandardScaler(), preprocessing.StandardScaler()
 
-# # for test
-# SUB_NUM = 2
 
-X_NORM_ALL = True     # if true, normalize along all the subjects, if false, normalize each subject independently
-Y_NORM = False        # if true, normalize along all the subjects, if false, do not do normalize
 
-for X_NORM_ALL in [False]:
-    for Y_NORM in [True]:
-        print('X_NORM_ALL: ' + str(X_NORM_ALL) + '\tY_NORM: ' + str(Y_NORM))
-        x, y = {}, {}
-        for i_sub in range(SUB_NUM):
-            subject_data = SubjectData(PROCESSED_DATA_PATH, i_sub)
-            x_sub, y_sub = {}, {}
+for i_sub in range(SUB_NUM):
+    subject_data = SubjectData(PROCESSED_DATA_PATH, i_sub)
+    x_sub, y_sub = {}, {}
+    for speed in SPEEDS:
+        my_xy_generator = XYGeneratorUni(subject_data, SEGMENT_NAMES[0], speed, output_names, input_names)
+        x_trial, y_trial = my_xy_generator.get_xy()
+        x_sub[speed] = x_trial.as_matrix()
+        y_sub[speed] = y_trial.as_matrix()
+    if not X_NORM_ALL:
+        x_scalar.fit(np.row_stack([x_sub[SPEEDS[0]], x_sub[SPEEDS[1]], x_sub[SPEEDS[2]]]))
+        for speed in SPEEDS:
+            x_sub[speed] = x_scalar.transform(x_sub[speed])
+    x[i_sub] = x_sub
+    y[i_sub] = y_sub
+
+for i_sub_test in range(1):
+    print('subject: ' + str(i_sub_test))
+    # get training data
+    x_train, y_train = np.zeros([0, input_names.__len__()]), np.zeros([0, output_names.__len__()])
+    for i_sub in range(SUB_NUM):
+        if i_sub != i_sub_test:     # test data will not be added into train data
             for speed in SPEEDS:
-                my_xy_generator = XYGeneratorUni(subject_data, SEGMENT_NAMES[0], speed, output_names, input_names)
-                x_trial, y_trial = my_xy_generator.get_xy()
-                x_sub[speed] = x_trial.as_matrix()
-                y_sub[speed] = y_trial.as_matrix()
-            if not X_NORM_ALL:
-                x_scalar.fit(np.row_stack([x_sub[SPEEDS[0]], x_sub[SPEEDS[1]], x_sub[SPEEDS[2]]]))
-                for speed in SPEEDS:
-                    x_sub[speed] = x_scalar.transform(x_sub[speed])
-            x[i_sub] = x_sub
-            y[i_sub] = y_sub
+                x_train = np.row_stack([x_train, x[i_sub][speed]])
+                y_train = np.row_stack([y_train, y[i_sub][speed]])
 
-        for i_sub_test in range(SUB_NUM):
-            print('subject: ' + str(i_sub_test))
-            # get training data
-            x_train, y_train = np.zeros([0, input_names.__len__()]), np.zeros([0, output_names.__len__()])
-            for i_sub in range(SUB_NUM):
-                if i_sub != i_sub_test:     # test data will not be added into train data
-                    for speed in SPEEDS:
-                        x_train = np.row_stack([x_train, x[i_sub][speed]])
-                        y_train = np.row_stack([y_train, y[i_sub][speed]])
+    x_test = np.row_stack([x[i_sub_test][SPEEDS[0]], x[i_sub_test][SPEEDS[1]], x[i_sub_test][SPEEDS[2]]])
+    y_test = np.row_stack([y[i_sub_test][SPEEDS[0]], y[i_sub_test][SPEEDS[1]], y[i_sub_test][SPEEDS[2]]])
 
-            x_test = np.row_stack([x[i_sub_test][SPEEDS[0]], x[i_sub_test][SPEEDS[1]], x[i_sub_test][SPEEDS[2]]])
-            y_test = np.row_stack([y[i_sub_test][SPEEDS[0]], y[i_sub_test][SPEEDS[1]], y[i_sub_test][SPEEDS[2]]])
+    if X_NORM_ALL:
+        x_scalar.fit(x_train)
+        x_train = x_scalar.transform(x_train)
+        x_test = x_scalar.transform(x_test)
+    else:
+        x_test = x_scalar.transform(x_test)
 
-            if X_NORM_ALL:
-                x_scalar.fit(x_train)
-                x_train = x_scalar.transform(x_train)
-                x_test = x_scalar.transform(x_test)
-            else:
-                x_test = x_scalar.transform(x_test)
+    if Y_NORM:
+        y_scalar.fit(y_train)
+        y_train = y_scalar.transform(y_train)
 
-            if Y_NORM:
-                y_scalar.fit(y_train)
-                y_train = y_scalar.transform(y_train)
+    my_evaluator = EvaluationUni(x_train, x_test, y_train, y_test, output_names, model)
+    my_evaluator.train_sklearn()
+    y_pred = my_evaluator.evaluate_sklearn()
 
-            my_evaluator = EvaluationUni(x_train, x_test, y_train, y_test, output_names, model)
-            my_evaluator.train_sklearn()
-            y_pred = my_evaluator.evaluate_sklearn()
-
-            if Y_NORM:
-                y_pred = y_scalar.inverse_transform(y_pred)
-            scores = EvaluationUni.get_scores(y_test, y_pred)
-            df_item = EvaluationUni.scores_df_item(scores, total_result_columns, i_sub_test, X_NORM_ALL, Y_NORM)
-            total_score_df = total_score_df.append(df_item)
+    if Y_NORM:
+        y_pred = y_scalar.inverse_transform(y_pred)
+    scores = EvaluationUni.get_scores(y_test, y_pred)
+    df_item = EvaluationUni.scores_df_item(scores, total_result_columns, i_sub_test, X_NORM_ALL, Y_NORM)
+    total_score_df = total_score_df.append(df_item)
 
 EvaluationUni.save_uni_result(total_score_df, input_names, output_names, model, X_NORM_ALL, Y_NORM)

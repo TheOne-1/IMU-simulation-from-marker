@@ -14,7 +14,7 @@ from sklearn.utils import shuffle
 import numpy as np
 import pandas as pd
 from sklearn import preprocessing
-from ModelSelector import ModelSelector
+from FeatureModelSelector import FeatureModelSelector
 import matplotlib.pyplot as plt
 
 output_names = [
@@ -83,34 +83,12 @@ for i_sub in range(SUB_NUM):
         i_matrice += 1
 
 
-ModelSelector.store_impt_matrix_trial(impt_trials, input_names, output_names)
+FeatureModelSelector.store_impt_matrix_trial(impt_trials, input_names, output_names)
 
 impt_mean = np.mean(impt_trials, axis=2)
 impt_std = np.std(impt_trials, axis=2)
-ModelSelector.store_impt_matrix(impt_mean, input_names, output_names)
-ModelSelector.store_std_matrix(impt_mean, impt_std, input_names, output_names)
-
-
-
-# kf = KFold(n_splits=3)
-# for i_output in range(output_names.__len__()):
-#     x_trial, y_trial = x, y[:, i_output]
-#     for train_index, test_index in kf.split(x):
-#         x_train, x_test = x_trial[train_index], x_trial[test_index]
-#         y_train, y_test = y_trial[train_index], y_trial[test_index]
-#         model = sklearn.clone(base_model)
-#         model.fit(x, y[:, 0])
-#         model.
-
-
-
-# # print feature importances
-# print('\n')
-# feature_importance = model.best_estimator_.feature_importances_
-# print(feature_importance)
-# plt.bar(input_names, feature_importance)
-# plt.show()
-
+FeatureModelSelector.store_impt_matrix(impt_mean, input_names, output_names)
+FeatureModelSelector.store_std_matrix(impt_mean, impt_std, input_names, output_names)
 
 
 

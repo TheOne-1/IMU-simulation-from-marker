@@ -79,8 +79,9 @@ class DatabaseInfo:
     def get_force_column_num():
         return range(144, 156)
 
-    def get_file_names(self, sub=0, speed=0, path=''):
-        trial_num_str = str(self.get_trial_num(sub, speed))
+    @staticmethod
+    def get_file_names(sub=0, speed=0, path=''):
+        trial_num_str = str(DatabaseInfo.get_trial_num(sub, speed))
         mocap_name = path + 'T0' + trial_num_str + '\\mocap-0' + trial_num_str + '.txt'
         record_name = path + 'T0' + trial_num_str + '\\record-0' + trial_num_str + '.txt'
         meta_name = path + 'T0' + trial_num_str + '\\meta-0' + trial_num_str + '.yml'
