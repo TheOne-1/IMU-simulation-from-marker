@@ -50,8 +50,43 @@ class Presenter:
                                   axis_2_label, segment, date)
 
     # @staticmethod
-    # def show_speed_result(speed_df):
-
+    # def show_combined_result(result_df, date):
+    #     segment = result_df.iloc[0, 0]
+    #     if segment in ['trunk', 'pelvis']:
+    #         axis_1_range = Presenter.__array_to_range(result_df['x_offset'].as_matrix())
+    #         axis_2_range = Presenter.__array_to_range(result_df['z_offset'].as_matrix())
+    #         axis_1_label, axis_2_label = 'x offset to center', 'z offset to center'
+    #
+    #     else:
+    #         axis_1_range = Presenter.__array_to_range(result_df['theta_offset'].as_matrix())
+    #         axis_2_range = Presenter.__array_to_range(result_df['z_offset'].as_matrix())
+    #         axis_1_label, axis_2_label = 'theta offset to center', 'z offset to center'
+    #
+    #     axis_1_len = axis_1_range.__len__()
+    #     axis_2_len = axis_2_range.__len__()
+    #     average_force_im = np.zeros([axis_2_len, axis_1_len])
+    #     average_cop_im = np.zeros([axis_2_len, axis_1_len])
+    #     for i_sub in range(SUB_NUM):
+    #         for speed in SPEEDS:
+    #             trial_df = result_df[(result_df['subject_id'] == i_sub) & (result_df['speed'] == float(speed))]
+    #
+    #             force_scores = np.mean(trial_df[DatabaseInfo.get_force_column_names()].as_matrix(), axis=1)
+    #             sub_force_im = Presenter.__get_score_im(force_scores, axis_1_range, axis_2_range)
+    #             average_force_im += sub_force_im
+    #
+    #             cop_scores = np.mean(trial_df[DatabaseInfo.get_cop_column_names()].as_matrix(), axis=1)
+    #             sub_cop_im = Presenter.__get_score_im(cop_scores, axis_1_range, axis_2_range)
+    #             average_cop_im += sub_cop_im
+    #     total_number = SUB_NUM * SPEEDS.__len__()
+    #     average_force_im = average_force_im / total_number
+    #     average_force_title = segment + ', average force'
+    #     Presenter.__show_score_im(average_force_im, axis_1_range, axis_2_range, average_force_title, axis_1_label,
+    #                               axis_2_label, segment, date)
+    #
+    #     average_cop_im = average_cop_im / total_number
+    #     average_cop_title = segment + ', average COP'
+    #     Presenter.__show_score_im(average_cop_im, axis_1_range, axis_2_range, average_cop_title, axis_1_label,
+    #                               axis_2_label, segment, date)
 
     # show the decrease amount and std among subjects for all the speeds
     @staticmethod

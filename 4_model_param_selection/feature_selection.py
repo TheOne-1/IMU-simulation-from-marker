@@ -59,8 +59,7 @@ model = ensemble.GradientBoostingRegressor(
     learning_rate=0.1, min_impurity_decrease=0.001, min_samples_split=6, n_estimators=500)
 x_scalar, y_scalar = preprocessing.MinMaxScaler(), preprocessing.MinMaxScaler()
 
-path = 'D:\Tian\Research\Projects\ML Project\gait_database_processed\GaitDatabase\data_all_sub\\all_sub.csv'
-all_data = pd.read_csv(path, index_col=False)
+all_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
 
 # normalize x
 x, y = all_data[input_names].as_matrix(), all_data[output_names].as_matrix()

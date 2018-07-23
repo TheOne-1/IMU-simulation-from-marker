@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 # from keras.models import *
 import sklearn
 from sklearn.metrics import r2_score
+from sklearn.utils import shuffle
 from const import *
 from sklearn import preprocessing
 import numpy as np
@@ -15,49 +16,52 @@ import json
 
 
 class EvaluationUni:
-    def __init__(self, x_train, x_test, y_train, y_test, y_column_names, base_model):
+    def __init__(self, y_column_names, base_model):
         self.__params_column_names = y_column_names
-        self.__do_scaling = False
-        self.__do_PCA = False
         self.__base_model = base_model
         self.__batch_size = 50  # the size of data that be trained together
         self.__base_scaler = preprocessing.StandardScaler()
         self.__pca = PCA(n_components=N_COMPONENT)
 
-        if self.__do_scaling:
-            x_scalar = sklearn.clone(self.__base_scaler)
-            y_scalar = sklearn.clone(self.__base_scaler)
-            x_scalar.fit(x_train)
-            y_scalar.fit(y_train)
-            self.__x_train = x_scalar.transform(x_train)
-            self.__y_train = y_scalar.transform(y_train)
-            self.__x_test = x_scalar.transform(x_test)
-            self.__y_test = y_scalar.transform(y_test)
-        else:  # transfer dataframe to ndarray
-            self.__x_train = x_train
-            self.__y_train = y_train
-            self.__x_test = x_test
-            self.__y_test = y_test
-
-        if self.__do_PCA:
-            self.__pca.fit(self.__x_train)
-            self.__x_train = self.__pca.transform(self.__x_train)
-            self.__x_test = self.__pca.transform(self.__x_test)
-
+    def set_train(self, x_train, y_train):
+        if DO_SCALING:
+            self.__x_scalar = sklearn.clone(self.__base_scaler)
+            self.__y_scalar = sklearn.clone(self.__base_scaler)
+            x_train = self.__x_scalar.fit_transform(x_train)
+            y_train = self.__y_scalar.fit_transform(y_train)
+        if DO_PCA:
+            self.__pca.fit(x_train)
+            x_train = self.__pca.transform(x_train)
+        if DO_SHUFFLING:
+            x_train, y_train = shuffle(x_train, y_train)
+        self.__x_train = x_train
+        self.__y_train = y_train
         self.__models = []
         for i_model in range(self.__y_train.shape[1]):
             self.__models.append(sklearn.clone(self.__base_model))
 
-    def set_x(self, x_train, x_test):
-        if self.__do_scaling:
-            x_scalar = sklearn.clone(self.__base_scaler)
-            x_scalar.fit(x_train)
-            self.__x_test = x_scalar.transform(x_test)
-        else:
-            self.__x_test = x_test.as_matrix()
+    def set_test(self, x_test, y_test):
+        if DO_SCALING:
+            x_test = self.__x_scalar.transform(x_test)
+            y_test = self.__y_scalar.transform(y_test)
+        if DO_PCA:
+            x_test = self.__pca.transform(x_test)
+        self.__x_test = x_test
+        self.__y_test = y_test
 
-        if self.__do_PCA:
-            self.__x_test = self.__pca.transform(self.__x_test)
+    def set_y_test(self, y_test):
+        if DO_SCALING:
+            y_test = self.__y_scalar.transform(y_test)
+        self.__y_test = y_test
+
+    def set_x_test(self, x_test):
+        if DO_SCALING:
+            x_test = self.__x_scalar.transform(x_test)
+        else:
+            x_test = x_test.as_matrix()
+        if DO_PCA:
+            x_test = self.__pca.transform(x_test)
+        self.__x_test = x_test
 
     def train_sklearn(self):
         i_output = 0
@@ -71,14 +75,14 @@ class EvaluationUni:
         for model in self.__models:
             y_pred[:, i_output] = model.predict(self.__x_test)
             i_output += 1
+        self.__y_pred = y_pred
         return y_pred
 
-    @staticmethod
-    def get_scores(y_real, y_pred):
-        output_num = y_real.shape[1]
+    def get_scores(self):
+        output_num = self.__y_test.shape[1]
         scores = []
         for i_output in range(output_num):
-            score = r2_score(y_real[:, i_output], y_pred[:, i_output])
+            score = r2_score(self.__y_test[:, i_output], self.__y_pred[:, i_output])
             scores.append(score)
         return scores
 
@@ -124,74 +128,16 @@ class EvaluationUni:
         return result_im
 
     @staticmethod
-    # save the current result to the total result
-    def store_current_result(score_list, xy_generator, total_result_columns):
-        result_df = EvaluationUni.initialize_result_df(total_result_columns)
-        segment_name = xy_generator.get_moved_segment()
-        subject_id = xy_generator.get_subject_id()
-        cylinder_diameter = xy_generator.get_cylinder_diameter()
-        speed = xy_generator.get_speed()
-        for score in score_list:
-            score_numbers = score[0]
-            if segment_name in ['trunk', 'pelvis']:
-                x_offset, z_offset = score[1], score[2]
-                y_offset, theta_offset = 0, 0
-            else:
-                theta_offset, z_offset = score[1], score[2]
-                theta_radians = theta_offset * np.pi / 180     # change degree to radians
-                x_offset = cylinder_diameter / 2 * (1 - np.cos(theta_radians))
-                y_offset = cylinder_diameter / 2 * np.sin(theta_radians)
-            result_item = [segment_name, subject_id, speed, x_offset, y_offset, z_offset, theta_offset]
-            result_item.extend(score_numbers)
-            df_item = pd.DataFrame([result_item], columns=total_result_columns)
-            result_df = result_df.append(df_item)
-        return result_df
-
-    # save the dataframe and an introduction file
-    @staticmethod
-    def save_total_result(total_score_df, input_names, output_names, model):
+    def save_uni_result(total_result_df, model, input_names, output_names):
         date = time.strftime('%Y%m%d')
-        file_path = RESULT_PATH + 'result_' + date + '.csv'
-        specification_txt_file = RESULT_PATH + 'result_' + date + '_specification.txt'
+        file_path = RESULT_PATH + 'result_uni\\' + date + '.csv'
+        specification_txt_file = RESULT_PATH + 'result_uni\\' + date + '_specification.txt'
         i_file = 0
         while os.path.isfile(file_path):
             i_file += 1
-            file_path = RESULT_PATH + 'result_' + date + '_' + str(i_file) + '.csv'
-            specification_txt_file = RESULT_PATH + 'result_' + date + '_' + str(i_file) + '_specification.txt'
-        total_score_df.to_csv(file_path, index=False)
-
-        # write a specification file about details
-        input_str = ', '.join(input_names)
-        output_str = ', '.join(output_names)
-
-        if DO_SCALING:
-            scaling_str = 'Scaling: StandardScaler'
-        else:
-            scaling_str = 'Scaling: None'
-        if DO_PCA:
-            pca_str = 'Feature selection: PCA, n component = ' + str(N_COMPONENT)
-        else:
-            pca_str = 'Feature selection: None'
-
-        content = 'Machine learning model: ' + model.__class__.__name__ + '\n' + \
-                  'Model parameters: ' + json.dumps(model.get_params()) + '\n' + \
-                  'Input: ' + input_str + '\n' + \
-                  'Output: ' + output_str + '\n' + scaling_str + '\n' + pca_str + '\n'
-
-        with open(specification_txt_file, 'w') as file:
-            file.write(content)
-
-    @staticmethod
-    def save_uni_result(total_score_df, input_names, output_names, model, X_NORM_ALL, Y_NORM):
-        date = time.strftime('%Y%m%d')
-        file_path = RESULT_PATH + 'normalization_comparasion\\' + date + '.csv'
-        specification_txt_file = RESULT_PATH + 'normalization_comparasion\\' + date + '_specification.txt'
-        i_file = 0
-        while os.path.isfile(file_path):
-            i_file += 1
-            file_path = RESULT_PATH + 'normalization_comparasion\\' + date + '_' + str(i_file) + '.csv'
-            specification_txt_file = RESULT_PATH + 'normalization_comparasion\\' + date + '_' + str(i_file) + '_specification.txt'
-        total_score_df.to_csv(file_path, index=False)
+            file_path = RESULT_PATH + 'result_uni\\' + date + '_' + str(i_file) + '.csv'
+            specification_txt_file = RESULT_PATH + 'result_uni\\' + date + '_' + str(i_file) + '_specification.txt'
+        total_result_df.to_csv(file_path, index=False)
 
         # write a specification file about details
         input_str = ', '.join(input_names)

@@ -40,17 +40,18 @@ input_names = [
 column_names = []
 column_names.extend(input_names)
 column_names.extend(output_names)
-column_names.extend(['speed', 'subject_id', 'age', 'mass', 'height'])
+column_names.extend(['speed', 'subject_id', 'age', 'mass', 'height', 'knee_width', 'ankle_width'])
 
 all_data_df = pd.DataFrame()
 for i_sub in range(SUB_NUM):
+    print(str(i_sub))
     file_names = DatabaseInfo.get_file_names(sub=i_sub, speed=0, path=data_path)
     subject_data_dflow = DFlowData(file_names[0], file_names[1], file_names[2])
     subject_data = SubjectData(PROCESSED_DATA_PATH, i_sub)
     x_sub, y_sub = {}, {}
     subject_data_df = pd.DataFrame()
     for speed in SPEEDS:
-        my_xy_generator = XYGeneratorUni(subject_data, SEGMENT_NAMES[0], speed, output_names, input_names)
+        my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
         x_trial, y_trial = my_xy_generator.get_xy()
         speed_data = pd.DataFrame(np.column_stack([x_trial, y_trial]))
         speed_data['speed'] = speed
@@ -59,10 +60,18 @@ for i_sub in range(SUB_NUM):
     mass = subject_data_dflow.meta['subject']['mass']
     height = subject_data_dflow.meta['subject']['height']
     age = subject_data_dflow.meta['subject']['age']
+    knee_width_left = subject_data_dflow.meta['subject']['knee-width-left'] / 1000
+    knee_width_right = subject_data_dflow.meta['subject']['knee-width-right'] / 1000
+    knee_width = (knee_width_left + knee_width_right) / 2
+    ankle_width_left = subject_data_dflow.meta['subject']['ankle-width-left'] / 1000
+    ankle_width_right = subject_data_dflow.meta['subject']['ankle-width-right'] / 1000
+    ankle_width = (ankle_width_left + ankle_width_right) / 2
     subject_data_df['subject_id'] = i_sub
     subject_data_df['age'] = age
     subject_data_df['mass'] = mass
     subject_data_df['height'] = height
+    subject_data_df['knee_width'] = knee_width
+    subject_data_df['ankle_width'] = ankle_width
 
     all_data_df = all_data_df.append(subject_data_df)
 
