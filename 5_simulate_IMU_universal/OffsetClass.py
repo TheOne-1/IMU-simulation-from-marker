@@ -118,11 +118,13 @@ class MultiAxisOffset:
         offset_df = pd.DataFrame(columns=OFFSET_COLUMN_NAMES)
         zero_row = np.zeros([1, len(OFFSET_COLUMN_NAMES)])
         for combo in offset_combos:
-            df_item = pd.DataFrame(zero_row, columns=OFFSET_COLUMN_NAMES)
+            df_item = pd.DataFrame(zero_row.copy(), columns=OFFSET_COLUMN_NAMES)
             for offset in combo:
                 offset_names = offset.get_offset_names()
                 all_offsets = offset.get_all_offsets()
-                df_item.loc[0, offset_names] = all_offsets
+                for i_dim in range(len(offset_names)):
+                    if df_item.loc[0, offset_names[i_dim]] == 0:
+                        df_item.loc[0, offset_names[i_dim]] = all_offsets[i_dim]
             offset_df = offset_df.append(df_item)
         offset_df = offset_df.reset_index(drop=True)
         return offset_df

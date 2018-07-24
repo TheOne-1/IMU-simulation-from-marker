@@ -111,4 +111,4 @@ for X_NORM_ALL in [False]:
             df_item = EvaluationUni.scores_df_item(scores, total_result_columns, i_sub_test, X_NORM_ALL, Y_NORM)
             total_score_df = total_score_df.append(df_item)
 
-EvaluationUni.save_uni_result(total_score_df, input_names, output_names, model, X_NORM_ALL, Y_NORM)
+EvaluationUni.save_result(total_score_df, input_names, output_names, model, X_NORM_ALL, Y_NORM)

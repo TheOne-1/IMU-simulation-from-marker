@@ -13,78 +13,68 @@ import time
 import os
 from sklearn.decomposition import PCA
 import json
+from sklearn.model_selection import KFold
 
-
-class EvaluationUni:
-    def __init__(self, y_column_names, base_model):
+class CrossValidation:
+    def __init__(self, y_column_names, base_model, n_fold):
         self.__params_column_names = y_column_names
         self.__base_model = base_model
         self.__batch_size = 50  # the size of data that be trained together
         self.__base_scaler = preprocessing.StandardScaler()
         self.__pca = PCA(n_components=N_COMPONENT)
+        self.__n_fold = n_fold
+        self.__k_fold = KFold(n_fold, shuffle=True, random_state=0)
 
-    def set_train(self, x_train, y_train):
+    def set_original_xy(self, x_original, y_original):
+        x_original = x_original.copy()
+        y_original = y_original.copy()
         if DO_SCALING:
             self.__x_scalar = sklearn.clone(self.__base_scaler)
             self.__y_scalar = sklearn.clone(self.__base_scaler)
-            x_train = self.__x_scalar.fit_transform(x_train)
-            y_train = self.__y_scalar.fit_transform(y_train)
+            x_original = self.__x_scalar.fit_transform(x_original)
+            y_original = self.__y_scalar.fit_transform(y_original)
         if DO_PCA:
-            self.__pca.fit(x_train)
-            x_train = self.__pca.transform(x_train)
+            self.__pca.fit(x_original)
+            x_original = self.__pca.transform(x_original)
         if DO_SHUFFLING:
-            x_train, y_train = shuffle(x_train, y_train)
-        self.__x_train = x_train
-        self.__y_train = y_train
+            x_original, y_original = shuffle(x_original, y_original)
+        self.__x_original = x_original
+        self.__y_original = y_original
         self.__models = []
-        for i_model in range(self.__y_train.shape[1]):
-            self.__models.append(sklearn.clone(self.__base_model))
+        for i_model in range(self.__y_original.shape[1]):
+            for i_fold in range(self.__n_fold):
+                self.__models.append(sklearn.clone(self.__base_model))
 
-    def set_test(self, x_test, y_test):
+    def set_modified_x(self, x_modified):
+        x_modified = x_modified.copy()
         if DO_SCALING:
-            x_test = self.__x_scalar.transform(x_test)
-            y_test = self.__y_scalar.transform(y_test)
+            x_modified = self.__x_scalar.transform(x_modified)
         if DO_PCA:
-            x_test = self.__pca.transform(x_test)
-        self.__x_test = x_test
-        self.__y_test = y_test
+            x_modified = self.__pca.transform(x_modified)
+        self.__x_modified = x_modified
 
-    def set_y_test(self, y_test):
-        if DO_SCALING:
-            y_test = self.__y_scalar.transform(y_test)
-        self.__y_test = y_test
+    def train_cross_validation(self):
+        i_model = 0
+        for i_output in range(self.__y_original.shape[1]):
+            for i_fold in range(self.__n_fold):
+                train_indices, test_indices = self.__k_fold.split(self.__x_original, groups=i_fold)
+                x_train = self.__x_original[train_indices]
+                y_train = self.__y_original[train_indices]
+                self.__models[i_model].fit(x_train, y_train[:, i_output])
+                i_model += 1
 
-    def set_x_test(self, x_test):
-        if DO_SCALING:
-            x_test = self.__x_scalar.transform(x_test)
-        else:
-            x_test = x_test.as_matrix()
-        if DO_PCA:
-            x_test = self.__pca.transform(x_test)
-        self.__x_test = x_test
-
-    def train_sklearn(self):
-        i_output = 0
-        for model in self.__models:
-            model.fit(self.__x_train, self.__y_train[:, i_output])
-            i_output += 1
-
-    def evaluate_sklearn(self):
-        y_pred = self.__y_test.copy()
-        i_output = 0
-        for model in self.__models:
-            y_pred[:, i_output] = model.predict(self.__x_test)
-            i_output += 1
-        self.__y_pred = y_pred
-        return y_pred
-
-    def get_scores(self):
-        output_num = self.__y_test.shape[1]
+    def test_get_scores(self):
+        i_model = 0
         scores = []
-        for i_output in range(output_num):
-            score = r2_score(self.__y_test[:, i_output], self.__y_pred[:, i_output])
-            scores.append(score)
-        return scores
+        score_fold = np.zeros([self.__n_fold])
+        for i_output in range(self.__y_original.shape[1]):
+            for i_fold in range(self.__n_fold):
+                train_indices, test_indices = self.__k_fold.split(self.__x_original, groups=i_fold)
+                x_test = self.__x_modified[test_indices]
+                y_test = self.__y_original[test_indices]
+                y_pred = self.__models[i_model].predict(x_test)
+                score_fold[i_fold] = r2_score(y_test, y_pred)
+            scores.append(np.mean(score_fold))
 
     @staticmethod
     # save the current result to the total result

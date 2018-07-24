@@ -125,7 +125,7 @@ for i_sub_test in range(SUB_NUM):
         speed_df.insert(loc=0, column='subject_id', value=i_sub_test)
         total_result_df = pd.concat([total_result_df, speed_df], axis=0)
 
-EvaluationUni.save_uni_result(total_result_df, model, input_names, output_names)
+EvaluationUni.save_result(total_result_df, model, input_names, output_names, 'result_uni')
 
 
 
