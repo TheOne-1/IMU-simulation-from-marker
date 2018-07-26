@@ -130,6 +130,78 @@ class MultiAxisOffset:
         return offset_df
 
 
+# this class is used to return offset combinations between all 8 segments
+class SegmentOffsets:
+
+    def __init__(self, offset_value_list):
+        if len(offset_value_list) != 16:
+            raise RuntimeError('Incorrect offset length')
+
+        # add trunk offset
+        trunk_list = []
+        trunk_list.append(Offset('trunk', x_offset=offset_value_list[0]))
+        trunk_list.append(Offset('trunk', z_offset=offset_value_list[1]))
+        self.__trunk_list = trunk_list
+
+        # add pelvis offset
+        pelvis_list = []
+        pelvis_list.append(Offset('pelvis', x_offset=offset_value_list[2]))
+        pelvis_list.append(Offset('pelvis', z_offset=offset_value_list[3]))
+        self.__pelvis_list = pelvis_list
+
+        # add l_thigh offset
+        l_thigh_list = []
+        l_thigh_list.append(Offset('l_thigh', theta_offset=offset_value_list[4]))
+        l_thigh_list.append(Offset('l_thigh', z_offset=offset_value_list[5]))
+        self.__l_thigh_list = l_thigh_list
+
+        # add r_thigh offset
+        r_thigh_list = []
+        r_thigh_list.append(Offset('r_thigh', theta_offset=offset_value_list[6]))
+        r_thigh_list.append(Offset('r_thigh', z_offset=offset_value_list[7]))
+        self.__r_thigh_list = r_thigh_list
+
+        # add l_shank offset
+        l_shank_list = []
+        l_shank_list.append(Offset('l_shank', theta_offset=offset_value_list[8]))
+        l_shank_list.append(Offset('l_shank', z_offset=offset_value_list[9]))
+        self.__l_shank_list = l_shank_list
+
+        # add r_shank offset
+        r_shank_list = []
+        r_shank_list.append(Offset('r_shank', theta_offset=offset_value_list[10]))
+        r_shank_list.append(Offset('r_shank', z_offset=offset_value_list[11]))
+        self.__r_shank_list = r_shank_list
+
+        self.__list_all = [trunk_list, pelvis_list, l_thigh_list, r_thigh_list, l_shank_list, r_shank_list]
+
+
+
+    # this function returns combos between different segments
+    def get_segment_combos(self):
+        x = SegmentOffsets.__get_segment_combos_recursive(self.__list_all)
+        return x
+
+
+    @staticmethod
+    def __get_segment_combos_recursive(list_all):
+        if len(list_all) == 1:
+            return_list = [list_all[0], list_all[1]]
+        else:
+            return_list = []
+            first_segment = list_all[0]
+            last_return_list = SegmentOffsets.__get_segment_combos_recursive(list_all[1:])
+            for last_combo in last_return_list:
+                new_combo = first_segment[0]
+                new_combo.extend(last_combo)
+                return_list.append(new_combo)
+                new_combo = first_segment[1]
+                new_combo.extend(last_combo)
+                return_list.append(new_combo)
+
+        return return_list
+
+
 
 
 

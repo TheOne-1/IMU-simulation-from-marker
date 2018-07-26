@@ -13,13 +13,15 @@ output_names = [
     'FP1.CopX', 'FP1.CopY',
     'FP2.CopX', 'FP2.CopY'
 ]
-file_date = '20180721'
-result_file = RESULT_PATH + 'result_uni\\' + file_date + '.csv'
+file_date = '20180725'
+folder_name = 'result_multi_axis'
+
+result_file = RESULT_PATH + folder_name + '\\' + file_date + '.csv'
 result_df = pd.read_csv(result_file)
 
-file_path = RESULT_PATH + 'result_uni\\' + file_date + '_matrix.xls'
+file_path = RESULT_PATH + folder_name + '\\' + file_date + '_matrix.xls'
 wb = xlwt.Workbook()
 sheet = wb.add_sheet('Sheet1')
 
-Presenter.show_combined_result(result_df, ['l_shank_theta_offset', 'l_shank_z_offset'], 'FP1.ForZ')
+Presenter.show_result_multi_axis(result_df, ['r_thigh_theta_offset', 'l_shank_z_offset'], 'FP1.ForZ')
 wb.save(file_path)

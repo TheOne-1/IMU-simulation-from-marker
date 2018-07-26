@@ -2,7 +2,7 @@ FORCE_PLATE_THRESHOLD = 50      # set 50N as the threshold of the force plate
 
 DO_SCALING = True
 DO_PCA = False
-DO_SHUFFLING = True
+DO_SHUFFLING = False
 
 RAW_DATA_PATH = 'D:\Tian\Research\Projects\ML Project\gait_database\GaitDatabase\data\\'
 PROCESSED_DATA_PATH = 'D:\Tian\Research\Projects\ML Project\gait_database_processed\GaitDatabase\data\\'

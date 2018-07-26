@@ -1,5 +1,5 @@
 # this file build individual model for each subject and study the combined effect of multiple movement axis
-
+# this file do not do cross validation to save time
 from DatabaseInfo import DatabaseInfo
 from SubjectData import SubjectData
 from CrossEvaluation import CrossValidation

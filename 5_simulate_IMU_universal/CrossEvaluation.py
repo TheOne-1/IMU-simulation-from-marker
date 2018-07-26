@@ -23,7 +23,7 @@ class CrossValidation:
         self.__base_scaler = preprocessing.StandardScaler()
         self.__pca = PCA(n_components=N_COMPONENT)
         self.__n_fold = n_fold
-        self.__k_fold = KFold(n_fold, shuffle=True, random_state=0)
+        self.__k_fold = KFold(n_fold, shuffle=False)
 
     def set_original_xy(self, x_original, y_original):
         x_original = x_original.copy()
@@ -56,10 +56,10 @@ class CrossValidation:
     def train_cross_validation(self):
         i_model = 0
         for i_output in range(self.__y_original.shape[1]):
-            for i_fold in range(self.__n_fold):
-                train_indices, test_indices = self.__k_fold.split(self.__x_original, groups=i_fold)
+            for train_indices, test_indices in self.__k_fold.split(self.__x_original):
                 x_train = self.__x_original[train_indices]
                 y_train = self.__y_original[train_indices]
+                x_train, y_train = shuffle(x_train, y_train)
                 self.__models[i_model].fit(x_train, y_train[:, i_output])
                 i_model += 1
 
@@ -68,13 +68,16 @@ class CrossValidation:
         scores = []
         score_fold = np.zeros([self.__n_fold])
         for i_output in range(self.__y_original.shape[1]):
-            for i_fold in range(self.__n_fold):
-                train_indices, test_indices = self.__k_fold.split(self.__x_original, groups=i_fold)
+            i_fold = 0
+            for train_indices, test_indices in self.__k_fold.split(self.__x_original):
                 x_test = self.__x_modified[test_indices]
                 y_test = self.__y_original[test_indices]
                 y_pred = self.__models[i_model].predict(x_test)
-                score_fold[i_fold] = r2_score(y_test, y_pred)
+                score_fold[i_fold] = r2_score(y_test[:, i_output], y_pred)
+                i_model += 1
+                i_fold += 1
             scores.append(np.mean(score_fold))
+        return scores
 
     @staticmethod
     # save the current result to the total result
