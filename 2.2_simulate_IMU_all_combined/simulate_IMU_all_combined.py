@@ -1,16 +1,14 @@
 # this file is used to evaluate all the thigh marker position and find the best location
 
-from DatabaseInfo import DatabaseInfo
-from SubjectData import SubjectData
-from EvaluationUniClass import EvaluationUni
-from const import *
-from sklearn import ensemble, neighbors, tree
-from sklearn.svm import SVR
-from sklearn import preprocessing
-from XYGeneratorUni import XYGeneratorUni
-import numpy as np
-from OffsetClass import *
 import pandas as pd
+from sklearn import ensemble
+from sklearn import preprocessing
+
+from DatabaseInfo import DatabaseInfo
+from EvaluationUniClass import EvaluationUni
+from OffsetClass import *
+from SubjectData import SubjectData
+from XYGeneratorUni import XYGeneratorUni
 
 output_names = [
     'FP1.ForX',
@@ -20,6 +18,12 @@ output_names = [
     # 'FP1.CopX', 'FP1.CopY',
     # 'FP2.CopX', 'FP2.CopY'
 ]
+
+force_names = []
+for output in output_names:
+    if 'For' in output:
+        force_names.append(output)
+
 total_result_columns = ['subject_id', 'X_NORM_ALL', 'Y_NORM']
 total_result_columns.extend(output_names)  # change TOTAL_RESULT_COLUMNS
 
@@ -42,6 +46,8 @@ input_names = [
     'r_foot_gyr_x', 'r_foot_gyr_y', 'r_foot_gyr_z',
 ]
 
+offset_value_list = [20, 20, 20, 20, 5, 20, 5, 20, 5, 20, 5, 20]
+
 my_database_info = DatabaseInfo()
 total_score_df = EvaluationUni.initialize_result_df(total_result_columns)
 
@@ -50,9 +56,13 @@ model = ensemble.RandomForestRegressor(n_jobs=6)
 # model = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=400)
 # model = ensemble.GradientBoostingRegressor(
 #     learning_rate=0.1, min_impurity_decrease=0.001, min_samples_split=6, n_estimators=500)
-x_scalar, y_scalar = preprocessing.StandardScaler(), preprocessing.StandardScaler()
+x_scalar, y_scalar = preprocessing.MinMaxScaler(), preprocessing.MinMaxScaler()
 
 all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
+
+
+
+
 total_result_df = pd.DataFrame()
 
 for i_sub_test in range(SUB_NUM):
@@ -69,55 +79,31 @@ for i_sub_test in range(SUB_NUM):
 
     shank_diameter = subject_data.get_cylinder_diameter('l_shank')
     thigh_diameter = subject_data.get_cylinder_diameter('l_thigh')
-    multi_offset_axis = MultiAxisOffset()
 
-    # offset_axis_1 = OneAxisOffset('trunk', 'x', range(-100, 101, 100))
-    # multi_offset_axis.add_offset_axis(offset_axis_1)
-    # offset_axis_2 = OneAxisOffset('trunk', 'z', range(-100, 101, 100))
-    # multi_offset_axis.add_offset_axis(offset_axis_2)
-    # offset_axis_3 = OneAxisOffset('pelvis', 'x', range(-100, 101, 100))
-    # multi_offset_axis.add_offset_axis(offset_axis_3)
-    # offset_axis_4 = OneAxisOffset('pelvis', 'z', range(-100, 101, 100))
-    # multi_offset_axis.add_offset_axis(offset_axis_4)
-    # offset_axis_5 = OneAxisOffset('l_thigh', 'z', range(-100, 101, 100))
-    # multi_offset_axis.add_offset_axis(offset_axis_5)
-    # offset_axis_6 = OneAxisOffset('l_thigh', 'theta', range(-30, 31, 30), shank_diameter)
-    # multi_offset_axis.add_offset_axis(offset_axis_6)
-    # offset_axis_7 = OneAxisOffset('r_thigh', 'z', range(-100, 101, 100))
-    # multi_offset_axis.add_offset_axis(offset_axis_7)
-    offset_axis_8 = OneAxisOffset('r_thigh', 'theta', range(-30, 31, 30), shank_diameter)
-    multi_offset_axis.add_offset_axis(offset_axis_8)
-    offset_axis_9 = OneAxisOffset('l_shank', 'z', range(-100, 101, 100))
-    multi_offset_axis.add_offset_axis(offset_axis_9)
-    offset_axis_10 = OneAxisOffset('l_shank', 'theta', range(-30, 31, 30), shank_diameter)
-    multi_offset_axis.add_offset_axis(offset_axis_10)
-    # offset_axis_11 = OneAxisOffset('r_shank', 'z', range(-100, 101, 100))
-    # multi_offset_axis.add_offset_axis(offset_axis_11)
-    # offset_axis_12 = OneAxisOffset('r_shank', 'theta', range(-30, 31, 30), shank_diameter)
-    # multi_offset_axis.add_offset_axis(offset_axis_12)
-
-    offset_list = multi_offset_axis.get_combos()
-    combo_len = len(offset_list)  # the length of the combos
-    all_offsets_df = multi_offset_axis.get_offset_df()
+    segment_combo_class = SegmentCombos(offset_value_list, thigh_diameter, shank_diameter)
+    combos_list = segment_combo_class.get_segment_combos()
+    combo_len = len(combos_list)
+    all_offsets_df = segment_combo_class.get_offset_df()
 
     my_evaluator.train_sklearn()        # very time consuming
 
     for speed in SPEEDS:
         test_sub_data = all_sub_data[all_sub_data['subject_id'] == i_sub_test]
         test_speed_data = test_sub_data[test_sub_data['speed'] == float(speed)]
+        height = test_speed_data['height'].as_matrix()[0]
         x_test = test_speed_data[input_names]
         y_test = test_speed_data[output_names]
+        my_evaluator.set_x_test(x_test)
         my_evaluator.set_y_test(y_test)
+        my_evaluator.evaluate_sklearn()
+        scores = np.zeros([combo_len+1, len(output_names)])
+        scores[0, :] = my_evaluator.get_scores()
         my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
-        scores = np.zeros([combo_len, len(output_names)])
-        for i_combo in range(len(offset_list)):
-            x_test_modified = my_xy_generator.modify_x(x_test, offset_list[i_combo])
+        for i_combo in range(len(combos_list)):
+            x_test_modified = my_xy_generator.modify_x(x_test, combos_list[i_combo], height)
             my_evaluator.set_x_test(x_test_modified)
-            y_pred = my_evaluator.evaluate_sklearn()
-            scores[i_combo, :] = my_evaluator.get_scores()
-            # for offset in offset_list[i_combo]:
-            #     offset.to_string()
-            # print('scores: ' + str(scores[i_combo]) + '\n')
+            my_evaluator.evaluate_sklearn()
+            scores[i_combo+1, :] = my_evaluator.get_scores()
         scores_df = pd.DataFrame(scores, columns=output_names)
         scores_df = scores_df.reset_index(drop=True)
         speed_df = pd.concat([all_offsets_df, scores_df], axis=1)
@@ -125,31 +111,7 @@ for i_sub_test in range(SUB_NUM):
         speed_df.insert(loc=0, column='subject_id', value=i_sub_test)
         total_result_df = pd.concat([total_result_df, speed_df], axis=0)
 
-EvaluationUni.save_result(total_result_df, model, input_names, output_names, 'result_uni')
-
-
-
-
-# for i_sub in range(SUB_NUM):
-#     print('\tSubject: ' + str(i_sub))
-#     subject_data = SubjectData(PROCESSED_DATA_PATH, i_sub)
-#     for speed in SPEEDS:
-#         x, y = my_xy_generator.get_xy()
-#         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, shuffle=False)
-#         test_index = x_test.index
-#         for offset_combo in offset_list:
-#             x_modified = my_xy_generator.modify_x(x, offset_combo)
-#             x_test = x_modified.loc[test_index]
-
-
-
-
-
-
-
-
-
-
+EvaluationUni.save_result(total_result_df, model, input_names, output_names, 'result_all_combined')
 
 
 

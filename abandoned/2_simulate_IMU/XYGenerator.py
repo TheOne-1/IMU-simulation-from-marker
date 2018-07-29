@@ -1,11 +1,12 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.metrics import r2_score
-from const import *
+
+from EvaluationClass import Evaluation
 from SegmentData import SegmentData
 from VirtualProcessor import Processor
-from EvaluationClass import Evaluation
-import matplotlib.pyplot as plt
+from const import *
 
 
 class XYGenerator:

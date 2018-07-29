@@ -1,13 +1,12 @@
 # this file is used to evaluate all the thigh marker position and find the best location
-from const import *
-from SubjectData import SubjectData
-from const import *
-from XYGeneratorUni import XYGeneratorUni
 import numpy as np
-from gaitanalysis.motek import DFlowData
-from DatabaseInfo import DatabaseInfo
 import pandas as pd
+from gaitanalysis.motek import DFlowData
 
+from DatabaseInfo import DatabaseInfo
+from SubjectData import SubjectData
+from XYGeneratorUni import XYGeneratorUni
+from const import *
 
 data_path = 'D:\Tian\Research\Projects\ML Project\gait_database\GaitDatabase\data\\'
 
@@ -50,16 +49,20 @@ for i_sub in range(SUB_NUM):
     subject_data = SubjectData(PROCESSED_DATA_PATH, i_sub)
     x_sub, y_sub = {}, {}
     subject_data_df = pd.DataFrame()
+    mass = subject_data_dflow.meta['subject']['mass']
+    height = subject_data_dflow.meta['subject']['height']
+    age = subject_data_dflow.meta['subject']['age']
     for speed in SPEEDS:
         my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
         x_trial, y_trial = my_xy_generator.get_xy()
+        if NORMALIZE_ACC:
+            x_trial.loc[:, ALL_ACC_NAMES] /= height      # normalize acceleration by height
+        if NORMALIZE_GRF:
+            y_trial.loc[:, ALL_FORCE_NAMES] /= mass      # normalize GRF by mass
         speed_data = pd.DataFrame(np.column_stack([x_trial, y_trial]))
         speed_data['speed'] = speed
         subject_data_df = subject_data_df.append(speed_data)
 
-    mass = subject_data_dflow.meta['subject']['mass']
-    height = subject_data_dflow.meta['subject']['height']
-    age = subject_data_dflow.meta['subject']['age']
     knee_width_left = subject_data_dflow.meta['subject']['knee-width-left'] / 1000
     knee_width_right = subject_data_dflow.meta['subject']['knee-width-right'] / 1000
     knee_width = (knee_width_left + knee_width_right) / 2

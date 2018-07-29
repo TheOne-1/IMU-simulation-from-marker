@@ -1,18 +1,13 @@
 # this file build individual model for each subject and study the combined effect of multiple movement axis
 
-from DatabaseInfo import DatabaseInfo
-from SubjectData import SubjectData
-from CrossEvaluation import CrossValidation
-from const import *
-import sklearn
-from sklearn import ensemble, neighbors, tree
-from sklearn.svm import SVR
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn import ensemble
 from sklearn import preprocessing
-from XYGeneratorUni import XYGeneratorUni
-import numpy as np
-from OffsetClass import *
 
+from CrossEvaluation import CrossValidation
+from DatabaseInfo import DatabaseInfo
+from OffsetClass import *
+from SubjectData import SubjectData
+from XYGeneratorUni import XYGeneratorUni
 
 output_names = [
     'FP1.ForX',

@@ -2,7 +2,10 @@ FORCE_PLATE_THRESHOLD = 50      # set 50N as the threshold of the force plate
 
 DO_SCALING = True
 DO_PCA = False
-DO_SHUFFLING = False
+DO_SHUFFLING = True
+
+NORMALIZE_ACC = True
+NORMALIZE_GRF = True
 
 RAW_DATA_PATH = 'D:\Tian\Research\Projects\ML Project\gait_database\GaitDatabase\data\\'
 PROCESSED_DATA_PATH = 'D:\Tian\Research\Projects\ML Project\gait_database_processed\GaitDatabase\data\\'
@@ -52,6 +55,7 @@ ALL_ACC_GYR_NAMES = ['trunk_acc_x', 'trunk_acc_y', 'trunk_acc_z',
                      'l_foot_gyr_x', 'l_foot_gyr_y', 'l_foot_gyr_z',
                      'r_foot_gyr_x', 'r_foot_gyr_y', 'r_foot_gyr_z']
 
+ALL_FORCE_NAMES = ['FP1.ForX', 'FP2.ForX', 'FP1.ForY', 'FP2.ForY', 'FP1.ForZ', 'FP2.ForZ']
 
 OFFSET_COLUMN_NAMES = ['trunk_x_offset', 'trunk_y_offset', 'trunk_z_offset', 'trunk_theta_offset',
                        'pelvis_x_offset', 'pelvis_y_offset', 'pelvis_z_offset', 'pelvis_theta_offset',

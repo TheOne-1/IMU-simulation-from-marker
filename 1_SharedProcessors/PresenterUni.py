@@ -1,12 +1,9 @@
 import matplotlib.pyplot as plt
-import numpy as np
-import xlrd
 import xlwt
-from xlutils.copy import copy as xl_copy
+
+from DatabaseInfo import DatabaseInfo
 from OffsetClass import *
 from const import *
-from XYGenerator import XYGenerator
-from DatabaseInfo import DatabaseInfo
 
 
 class Presenter:
@@ -50,53 +47,15 @@ class Presenter:
                                   axis_2_label, date)
 
     @staticmethod
-    def show_result_uni(result_df, axes_names, output):
-        if len(axes_names) == 1:
-            axis_name = axes_names[0]
-            axis_values = result_df[axis_name]
-            axis_range = list(set(axis_values))
-            axis_range.sort()
-            score_im = np.zeros([1, len(axis_range)])
+    def show_result_uni(result_df):
+        for speed in SPEEDS:
+            speed_df = result_df[result_df['speed'] == float(speed)].copy()
+            speed_df = speed_df.reset_index(drop=True)
+            combo_num = 64
+            scores = np.zeros([combo_num, 10])
             for i_sub in range(SUB_NUM):
-                for speed in SPEEDS:
-                    irrelevant_offset = Presenter.__get_all_offset_names()
-                    irrelevant_offset.remove(axis_name)
-                    trial_df = result_df[(result_df['subject_id'] == i_sub) & (result_df['speed'] == float(speed))]
-                    for offset in irrelevant_offset:
-                        trial_df = trial_df[trial_df[offset] == 0]
+                sub_df = speed_df[]
 
-                    scores = trial_df[output].as_matrix()
-                    sub_score_im = Presenter.__get_score_im(scores, axis_range, range(1))
-                    score_im += sub_score_im
-            im_len = SUB_NUM * len(SPEEDS)
-            score_im /= im_len
-
-        if len(axes_names) == 2:
-            axis_0_name = axes_names[0]
-            axis_values_0 = result_df[axis_0_name]
-            axis_0_range = list(set(axis_values_0))
-            axis_0_range.sort()
-
-            axis_1_name = axes_names[1]
-            axis_values_1 = result_df[axis_1_name]
-            axis_1_range = list(set(axis_values_1))
-            axis_1_range.sort()
-            score_im = np.zeros([len(axis_0_range), len(axis_1_range)])
-            for i_sub in range(SUB_NUM):
-                for speed in SPEEDS:
-                    irrelevant_offset = Presenter.__get_all_offset_names()
-                    irrelevant_offset.remove(axis_0_name)
-                    irrelevant_offset.remove(axis_1_name)
-                    trial_df = result_df[(result_df['subject_id'] == i_sub) & (result_df['speed'] == float(speed))]
-                    for offset in irrelevant_offset:
-                        trial_df = trial_df[trial_df[offset] == 0]
-
-                    sub_score_im = Presenter.__get_score_im_uni(trial_df[[axis_0_name, axis_1_name, output]],
-                                                                axis_0_range, axis_1_range, axis_0_name, axis_1_name)
-                    score_im += sub_score_im
-            im_len = SUB_NUM * len(SPEEDS)
-            score_im /= im_len
-            Presenter.__show_score_im(score_im, axis_0_range, axis_1_range, 'title', axis_0_name, axis_1_name, '77')
 
     @staticmethod
     def show_result_multi_axis(result_df, axes_names, output):

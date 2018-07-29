@@ -1,12 +1,6 @@
-import numpy as np
-import pandas as pd
-from sklearn.metrics import r2_score
-from const import *
-from SegmentData import SegmentData
-from VirtualProcessor import Processor
-from EvaluationClass import Evaluation
-import matplotlib.pyplot as plt
 from OffsetClass import *
+from SegmentData import SegmentData
+
 
 class XYGeneratorUni:
 
@@ -78,17 +72,17 @@ class XYGeneratorUni:
 
         return x, y
 
-    def modify_x(self, x, offset_combo):
+    def modify_x(self, x, offset_combo, height=None):
         # x needs to be deep copied so that it won't be affected by the modification
         x_changed = x.copy()
         for offset in offset_combo:      # each offset represents one sensor movement
             if self.__acc_data:
-                x_changed = self.__modify_acc(x_changed, offset)
+                x_changed = self.__modify_acc(x_changed, offset, height)
             if self.__gyr_data:
                 x_changed = self.__modify_gyr(x_changed, offset)
         return x_changed
 
-    def __modify_acc(self, x, offset):
+    def __modify_acc(self, x, offset, height):
         segment = offset.get_segment()
         segment_data = SegmentData(self.__subject_data, segment)
         walking_data_1_df = segment_data.get_segment_walking_1_data(self.__speed)
@@ -104,6 +98,8 @@ class XYGeneratorUni:
         # if it was simulated on cylinder, a rotation around the cylinder surface is necessary
         if R_cylinder is not None:
             acc_IMU = np.matmul(R_cylinder, acc_IMU.T).T
+        if NORMALIZE_ACC:
+            acc_IMU = acc_IMU / height
 
         changed_columns = []
         for acc_name in ['_acc_x', '_acc_y', '_acc_z']:

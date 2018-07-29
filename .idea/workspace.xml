@@ -2,18 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e70d5058-3213-4ea2-8af2-87fbf1c44904" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/3_multi_axis/simulate_IMU_multi_axis.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/3_uni/analyse_uni.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/5_simulate_IMU_universal/test.py" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/1_SharedProcessors/PresenterUni.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/2.2_simulate_IMU_all_combined/analyse_all_combined.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/2.2_simulate_IMU_all_combined/simulate_IMU_all_combined.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2_simulate_IMU/EvaluationClass.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2_simulate_IMU/SegmentData.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2_simulate_IMU/SubjectData.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2_simulate_IMU/XYGenerator.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2_simulate_IMU/simulate_IMU.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/test.py" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/0517GaitDatabase.iml" afterPath="$PROJECT_DIR$/.idea/0517GaitDatabase.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/0_initialize_data/initialize_data_all_sub.py" afterPath="$PROJECT_DIR$/0_initialize_data/initialize_data_all_sub.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/1_SharedProcessors/const.py" afterPath="$PROJECT_DIR$/1_SharedProcessors/const.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/3_analyse_result/ResultPresenter.py" afterPath="$PROJECT_DIR$/3_analyse_result/ResultPresenter.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/5_simulate_IMU_universal/CrossEvaluation.py" afterPath="$PROJECT_DIR$/5_simulate_IMU_universal/CrossEvaluation.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/3_analyse_result/analyse_all.py" afterPath="$PROJECT_DIR$/3_analyse_result/analyse_all.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/3_analyse_result/analyse_error_combo.py" afterPath="$PROJECT_DIR$/3_analyse_result/analyse_error_combo.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/3_analyse_result/analyse_selected.py" afterPath="$PROJECT_DIR$/3_analyse_result/analyse_selected.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/4_model_param_selection/param_selection.py" afterPath="$PROJECT_DIR$/4_model_param_selection/param_selection.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/5_simulate_IMU_universal/OffsetClass.py" afterPath="$PROJECT_DIR$/5_simulate_IMU_universal/OffsetClass.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test.py" afterPath="$PROJECT_DIR$/test.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/3_analyse_result/analyse_all_uni.py" afterPath="$PROJECT_DIR$/3_multi_axis/analyse_multi_axis.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/5_simulate_IMU_universal/simulate_IMU_multi_axis.py" afterPath="$PROJECT_DIR$/3_multi_axis/simulate_IMU_multi_axis_quick.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/5_simulate_IMU_universal/simulate_IMU_uni.py" afterPath="$PROJECT_DIR$/3_uni/simulate_IMU_uni.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/5_simulate_IMU_universal/XYGeneratorUni.py" afterPath="$PROJECT_DIR$/5_simulate_IMU_universal/XYGeneratorUni.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/abandoned/feature_importance.py" afterPath="$PROJECT_DIR$/abandoned/feature_importance.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/2_simulate_IMU/VirtualProcessor.py" afterPath="$PROJECT_DIR$/1_SharedProcessors/VirtualProcessor.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/2_simulate_IMU/acc_gyr_check.py" afterPath="$PROJECT_DIR$/1_SharedProcessors/acc_gyr_check.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/3_analyse_result/ResultPresenter.py" afterPath="$PROJECT_DIR$/abandoned/ResultPresenter.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/3_multi_axis/analyse_multi_axis.py" afterPath="$PROJECT_DIR$/abandoned/3_multi_axis/analyse_multi_axis.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/3_multi_axis/simulate_IMU_multi_axis.py" afterPath="$PROJECT_DIR$/abandoned/3_multi_axis/simulate_IMU_multi_axis.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/3_multi_axis/simulate_IMU_multi_axis_quick.py" afterPath="$PROJECT_DIR$/abandoned/3_multi_axis/simulate_IMU_multi_axis_quick.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/3_uni/analyse_uni.py" afterPath="$PROJECT_DIR$/2.1_simulate_IMU_segment/analyse_segment.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/3_uni/simulate_IMU_uni.py" afterPath="$PROJECT_DIR$/2.1_simulate_IMU_segment/simulate_IMU_segment.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -24,35 +40,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="simulate_IMU_multi_axis.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/3_multi_axis/simulate_IMU_multi_axis.py">
+      <file leaf-file-name="simulate_IMU_segment.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/2.1_simulate_IMU_segment/simulate_IMU_segment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1232">
-              <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
+            <state relative-caret-position="158">
+              <caret line="78" column="0" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
               <folding>
-                <element signature="e#109#146#0" expanded="true" />
+                <element signature="e#89#118#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="simulate_IMU_uni.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/3_uni/simulate_IMU_uni.py">
+      <file leaf-file-name="XYGeneratorUni.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/5_simulate_IMU_universal/XYGeneratorUni.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="770">
-              <caret line="98" column="40" lean-forward="true" selection-start-line="98" selection-start-column="40" selection-end-line="98" selection-end-column="40" />
-              <folding>
-                <element signature="e#90#127#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="OffsetClass.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/5_simulate_IMU_universal/OffsetClass.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1221">
-              <caret line="184" column="0" lean-forward="true" selection-start-line="184" selection-start-column="0" selection-end-line="184" selection-end-column="0" />
+            <state relative-caret-position="358">
+              <caret line="85" column="0" lean-forward="false" selection-start-line="85" selection-start-column="0" selection-end-line="85" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -128,24 +132,16 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/simulate_IMU/simulate_IMU.py" />
-        <option value="$PROJECT_DIR$/analyse_result.py" />
-        <option value="$PROJECT_DIR$/3_analyse_result/Presenter.py" />
-        <option value="$PROJECT_DIR$/1_SharedProcessors/Initializer.py" />
-        <option value="$PROJECT_DIR$/2_simulate_IMU/EvaluationClass.py" />
         <option value="$PROJECT_DIR$/0_initialize_data/initialize_data_id.py" />
         <option value="E:/ProgramFiles/Python36/Lib/site-packages/gaitanalysis/octave/2d_inverse_dynamics/leg2d.m" />
         <option value="E:/ProgramFiles/Python36/Lib/site-packages/gaitanalysis/gait.py" />
         <option value="$PROJECT_DIR$/5_universal_model/universal_model" />
         <option value="$PROJECT_DIR$/3_analyse_result/analyse_result.py" />
         <option value="$PROJECT_DIR$/3_analyse_result/analyse_single.py" />
-        <option value="$PROJECT_DIR$/3_analyse_result/analyse_selected.py" />
         <option value="$PROJECT_DIR$/2_simulate_IMU/SegmentData.py" />
         <option value="$PROJECT_DIR$/2_simulate_IMU/acc_gyr_check.py" />
         <option value="$PROJECT_DIR$/2_simulate_IMU/simulate_IMU_universal.py" />
         <option value="$PROJECT_DIR$/5_simulate_IMU_universal/XYGenerator_universal.py" />
-        <option value="$PROJECT_DIR$/3_analyse_result/analyse_all.py" />
-        <option value="$PROJECT_DIR$/3_analyse_result/analyse_error_combo.py" />
         <option value="$PROJECT_DIR$/5_simulate_IMU_universal/simulate_IMU_universal.py" />
         <option value="$PROJECT_DIR$/5_simulate_IMU_universal/normalization_comparison.py" />
         <option value="$PROJECT_DIR$/0_initialize_data/initialize_all_sub_data.py" />
@@ -153,7 +149,6 @@
         <option value="$PROJECT_DIR$/0_initialize_data/initialize_data.py" />
         <option value="$PROJECT_DIR$/4_model_param_selection/feature_importance.py" />
         <option value="$PROJECT_DIR$/4_model_param_selection/ModelSelector.py" />
-        <option value="$PROJECT_DIR$/4_model_param_selection/param_selection.py" />
         <option value="$PROJECT_DIR$/4_model_param_selection/FeatureModelSelector.py" />
         <option value="$PROJECT_DIR$/4_model_param_selection/analyze_feature_selection.py" />
         <option value="$PROJECT_DIR$/2_simulate_IMU/SubjectData.py" />
@@ -163,27 +158,36 @@
         <option value="$PROJECT_DIR$/4_model_param_selection/feature_selection.py" />
         <option value="$PROJECT_DIR$/2_simulate_IMU/XYGenerator.py" />
         <option value="$PROJECT_DIR$/5_simulate_IMU_universal/SubjectDataUni.py" />
-        <option value="$PROJECT_DIR$/0_initialize_data/initialize_data_all_sub.py" />
-        <option value="$PROJECT_DIR$/5_simulate_IMU_universal/XYGeneratorUni.py" />
         <option value="$PROJECT_DIR$/5_simulate_IMU_universal/simulate_IMU_uni.py" />
         <option value="$PROJECT_DIR$/5_simulate_IMU_universal/EvaluationUniClass.py" />
         <option value="$PROJECT_DIR$/5_simulate_IMU_universal/simulate_IMU_multi_axis_quick.py" />
-        <option value="$PROJECT_DIR$/1_SharedProcessors/const.py" />
         <option value="$PROJECT_DIR$/5_simulate_IMU_universal/simulate_IMU_multi_axis.py" />
         <option value="$PROJECT_DIR$/3_analyse_result/analyse_all_uni.py" />
         <option value="$PROJECT_DIR$/3_uni/analyse_uni.py" />
         <option value="$PROJECT_DIR$/3_multi_axis/analyse_multi_axis.py" />
-        <option value="$PROJECT_DIR$/3_analyse_result/ResultPresenter.py" />
         <option value="$PROJECT_DIR$/5_simulate_IMU_universal/CrossEvaluation.py" />
         <option value="$PROJECT_DIR$/3_multi_axis/simulate_IMU_multi_axis.py" />
+        <option value="$PROJECT_DIR$/0_initialize_data/initialize_data_all_sub.py" />
+        <option value="$PROJECT_DIR$/abandoned/ResultPresenterUni.py" />
         <option value="$PROJECT_DIR$/3_uni/simulate_IMU_uni.py" />
-        <option value="$PROJECT_DIR$/5_simulate_IMU_universal/OffsetClass.py" />
+        <option value="$PROJECT_DIR$/3_analyse_result/ResultPresenter.py" />
         <option value="$PROJECT_DIR$/test.py" />
+        <option value="$PROJECT_DIR$/5_simulate_IMU_universal/XYGeneratorUni.py" />
+        <option value="$PROJECT_DIR$/4_model_param_selection/param_selection.py" />
+        <option value="$PROJECT_DIR$/2.1_simulate_IMU_segment/analyse_segment.py" />
+        <option value="$PROJECT_DIR$/2.2_simulate_IMU_all_combined/analyse_all_combined.py" />
+        <option value="$PROJECT_DIR$/3_analyse_result/analyse_all.py" />
+        <option value="$PROJECT_DIR$/3_analyse_result/analyse_error_combo.py" />
+        <option value="$PROJECT_DIR$/3_analyse_result/analyse_selected.py" />
+        <option value="$PROJECT_DIR$/2.2_simulate_IMU_all_combined/simulate_IMU_all_combined.py" />
+        <option value="$PROJECT_DIR$/5_simulate_IMU_universal/OffsetClass.py" />
+        <option value="$PROJECT_DIR$/1_SharedProcessors/const.py" />
+        <option value="$PROJECT_DIR$/2.1_simulate_IMU_segment/simulate_IMU_segment.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-1910" />
+    <option name="x" value="-1822" />
     <option name="width" value="1936" />
     <option name="height" value="1056" />
   </component>
@@ -214,12 +218,17 @@
             <path>
               <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
               <item name="0517GaitDatabase" type="462c0819:PsiDirectoryNode" />
-              <item name="0_initialize_data" type="462c0819:PsiDirectoryNode" />
+              <item name="1_SharedProcessors" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
               <item name="0517GaitDatabase" type="462c0819:PsiDirectoryNode" />
-              <item name="2_simulate_IMU" type="462c0819:PsiDirectoryNode" />
+              <item name="2.1_simulate_IMU_segment" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
+              <item name="0517GaitDatabase" type="462c0819:PsiDirectoryNode" />
+              <item name="2.2_simulate_IMU_all_combined" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
@@ -229,12 +238,7 @@
             <path>
               <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
               <item name="0517GaitDatabase" type="462c0819:PsiDirectoryNode" />
-              <item name="3_multi_axis" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="0517GaitDatabase" type="462c0819:PsiDirectoryNode" />
-              <item name="3_uni" type="462c0819:PsiDirectoryNode" />
+              <item name="5_simulate_IMU_universal" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -249,19 +253,19 @@
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://D:/Tian/Research/Projects/ML Project/simulatedIMU/python/0517GaitDatabase/3_analyse_result/analyse_result.py" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\1_SharedProcessors" />
+      <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase" />
       <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\3_multi_axis" />
-      <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\3_uni" />
-      <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\abandoned" />
       <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\5_simulate_IMU_universal" />
       <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\3_analyse_result" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\abandoned" />
+      <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\1_SharedProcessors" />
       <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\3_multi_axis" />
+      <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\3_uni" />
       <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\5_simulate_IMU_universal" />
-      <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\3_analyse_result" />
-      <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\0_initialize_data" />
-      <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -276,7 +280,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.analyse_multi_axis">
+  <component name="RunManager" selected="Python.simulate_IMU_segment">
     <configuration name="analyse_multi_axis" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -311,33 +315,71 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <configuration name="simulate_IMU_multi_axis" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="initialize_data_all_sub" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/3_multi_axis" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/0_initialize_data" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="0517GaitDatabase" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/3_multi_axis/simulate_IMU_multi_axis.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/0_initialize_data/initialize_data_all_sub.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <list size="3">
+    <configuration name="simulate_IMU_segment" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/2.1_simulate_IMU_segment" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="0517GaitDatabase" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/2.1_simulate_IMU_segment/simulate_IMU_segment.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="simulate_IMU_uni" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/3_uni" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="0517GaitDatabase" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/3_uni/simulate_IMU_uni.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.analyse_uni" />
       <item index="1" class="java.lang.String" itemvalue="Python.analyse_multi_axis" />
-      <item index="2" class="java.lang.String" itemvalue="Python.simulate_IMU_multi_axis" />
+      <item index="2" class="java.lang.String" itemvalue="Python.simulate_IMU_uni" />
+      <item index="3" class="java.lang.String" itemvalue="Python.initialize_data_all_sub" />
+      <item index="4" class="java.lang.String" itemvalue="Python.simulate_IMU_segment" />
     </list>
     <recent_temporary>
-      <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Python.analyse_multi_axis" />
-        <item index="1" class="java.lang.String" itemvalue="Python.analyse_uni" />
-        <item index="2" class="java.lang.String" itemvalue="Python.simulate_IMU_multi_axis" />
+      <list size="5">
+        <item index="0" class="java.lang.String" itemvalue="Python.simulate_IMU_segment" />
+        <item index="1" class="java.lang.String" itemvalue="Python.simulate_IMU_uni" />
+        <item index="2" class="java.lang.String" itemvalue="Python.initialize_data_all_sub" />
+        <item index="3" class="java.lang.String" itemvalue="Python.analyse_multi_axis" />
+        <item index="4" class="java.lang.String" itemvalue="Python.analyse_uni" />
       </list>
     </recent_temporary>
   </component>
@@ -369,23 +411,23 @@
   <component name="ToolWindowManager">
     <frame x="-1928" y="0" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18763326" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18976545" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32861805" sideWeight="0.4978678" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32861805" sideWeight="0.5021322" order="6" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32861805" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297062" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5571273" sideWeight="0.4978678" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35038084" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32861805" sideWeight="0.4978678" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4624592" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.62899786" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.42763874" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.48187634" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32861805" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -401,13 +443,13 @@
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/3_analyse_result/ResultPresenter.py</url>
-          <line>416</line>
+          <url>file://$PROJECT_DIR$/abandoned/ResultPresenter.py</url>
+          <line>375</line>
           <option name="timeStamp" value="318" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/abandoned/feature_importance.py</url>
-          <line>87</line>
+          <line>84</line>
           <option name="timeStamp" value="342" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -426,24 +468,33 @@
           <option name="timeStamp" value="374" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/3_analyse_result/ResultPresenter.py</url>
-          <line>17</line>
+          <url>file://$PROJECT_DIR$/abandoned/ResultPresenter.py</url>
+          <line>14</line>
           <option name="timeStamp" value="442" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/3_uni/simulate_IMU_uni.py</url>
-          <line>102</line>
-          <option name="timeStamp" value="450" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/3_analyse_result/ResultPresenter.py</url>
-          <line>142</line>
-          <option name="timeStamp" value="510" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/3_multi_axis/simulate_IMU_multi_axis.py</url>
-          <line>115</line>
+          <url>file://$PROJECT_DIR$/abandoned/3_multi_axis/simulate_IMU_multi_axis.py</url>
+          <line>110</line>
           <option name="timeStamp" value="515" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/0_initialize_data/initialize_data_all_sub.py</url>
+          <line>58</line>
+          <option name="timeStamp" value="531" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/1_SharedProcessors/PresenterUni.py</url>
+          <option name="timeStamp" value="539" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/2.1_simulate_IMU_segment/analyse_segment.py</url>
+          <line>1</line>
+          <option name="timeStamp" value="540" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/2.1_simulate_IMU_segment/simulate_IMU_segment.py</url>
+          <line>97</line>
+          <option name="timeStamp" value="548" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -453,47 +504,11 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="516" />
+      <option name="time" value="549" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/4_model_param_selection/impt_matrice_all.csv" />
-    <entry file="file://E:/ProgramFiles/Python36/Lib/site-packages/sklearn/model_selection/_search.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="747" column="0" lean-forward="true" selection-start-line="747" selection-start-column="0" selection-end-line="747" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/Initializer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="50" column="10" lean-forward="false" selection-start-line="50" selection-start-column="9" selection-end-line="50" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/3_analyse_result/analyse_selected.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="23" column="11" lean-forward="true" selection-start-line="23" selection-start-column="11" selection-end-line="23" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/DatabaseInfo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="297">
-          <caret line="82" column="35" lean-forward="false" selection-start-line="82" selection-start-column="30" selection-end-line="82" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/0_initialize_data/SaveData.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="18" column="41" lean-forward="true" selection-start-line="18" selection-start-column="41" selection-end-line="18" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://E:/ProgramFiles/Python36/Lib/site-packages/sklearn/feature_selection/base.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2">
@@ -512,13 +527,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="164">
           <caret line="1213" column="8" lean-forward="false" selection-start-line="1213" selection-start-column="8" selection-end-line="1213" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/3_analyse_result/analyse_all.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="17" column="44" lean-forward="true" selection-start-line="17" selection-start-column="44" selection-end-line="17" selection-end-column="44" />
         </state>
       </provider>
     </entry>
@@ -575,17 +583,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="297">
           <caret line="3697" column="8" lean-forward="false" selection-start-line="3697" selection-start-column="8" selection-end-line="3697" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/5_simulate_IMU_universal/test.py" />
-    <entry file="file://$PROJECT_DIR$/2_simulate_IMU/SegmentData.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-440">
-          <caret line="6" column="8" lean-forward="false" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://E:/ProgramFiles/Python36/Lib/site-packages/pandas/core/indexes/base.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
@@ -597,6 +599,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
           <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -607,13 +610,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/0_initialize_data/initialize_data_all_sub.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="29">
-          <caret line="42" column="95" lean-forward="false" selection-start-line="42" selection-start-column="95" selection-end-line="42" selection-end-column="95" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/5_simulate_IMU_universal/SubjectDataUni.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="990">
@@ -621,17 +617,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/2_simulate_IMU/SubjectData.py">
+    <entry file="file://$PROJECT_DIR$/abandoned/2_simulate_IMU/SubjectData.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="410">
           <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/4_model_param_selection/param_selection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="63" column="76" lean-forward="false" selection-start-line="63" selection-start-column="75" selection-end-line="63" selection-end-column="76" />
         </state>
       </provider>
     </entry>
@@ -645,24 +634,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/2_simulate_IMU/VirtualProcessor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/2_simulate_IMU/EvaluationClass.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-500">
-          <caret line="114" column="41" lean-forward="false" selection-start-line="114" selection-start-column="41" selection-end-line="114" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.PyCharmCE2017.2/system/python_stubs/1732864590/numpy/core/multiarray.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-165">
           <caret line="2349" column="15" lean-forward="false" selection-start-line="2349" selection-start-column="10" selection-end-line="2349" selection-end-column="15" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -670,24 +646,18 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="156">
           <caret line="1804" column="0" lean-forward="false" selection-start-line="1804" selection-start-column="0" selection-end-line="1804" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/2_simulate_IMU/simulate_IMU.py">
+    <entry file="file://$PROJECT_DIR$/abandoned/2_simulate_IMU/simulate_IMU.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="409">
           <caret line="58" column="100" lean-forward="true" selection-start-line="58" selection-start-column="68" selection-end-line="58" selection-end-column="100" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/5_simulate_IMU_universal/XYGeneratorUni.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="90" column="28" lean-forward="false" selection-start-line="90" selection-start-column="27" selection-end-line="90" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/2_simulate_IMU/XYGenerator.py">
+    <entry file="file://$PROJECT_DIR$/abandoned/2_simulate_IMU/XYGenerator.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="242">
           <caret line="195" column="40" lean-forward="true" selection-start-line="195" selection-start-column="40" selection-end-line="195" selection-end-column="40" />
@@ -709,13 +679,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/3_multi_axis/simulate_IMU_multi_axis_quick.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22">
-          <caret line="1" column="52" lean-forward="false" selection-start-line="1" selection-start-column="52" selection-end-line="1" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://E:/ProgramFiles/Python36/Lib/site-packages/colorama/ansitowin32.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="164">
@@ -730,21 +693,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/5_simulate_IMU_universal/EvaluationUniClass.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="67" column="34" lean-forward="false" selection-start-line="67" selection-start-column="26" selection-end-line="67" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/const.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="4" column="20" lean-forward="false" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/0_initialize_data/initialize_data.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="440">
@@ -752,81 +700,209 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/3_analyse_result/analyse_error_combo.py">
+    <entry file="file://$PROJECT_DIR$/abandoned/2_simulate_IMU/SegmentData.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="18" column="14" lean-forward="false" selection-start-line="18" selection-start-column="14" selection-end-line="18" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/3_uni/analyse_uni.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="15" column="21" lean-forward="false" selection-start-line="15" selection-start-column="21" selection-end-line="15" selection-end-column="21" />
+        <state relative-caret-position="-638">
+          <caret line="6" column="8" lean-forward="false" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/3_analyse_result/ResultPresenter.py">
+    <entry file="file://$PROJECT_DIR$/0_initialize_data/initialize_data_all_sub.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="962">
-          <caret line="131" column="62" lean-forward="false" selection-start-line="131" selection-start-column="62" selection-end-line="131" selection-end-column="62" />
+        <state relative-caret-position="1144">
+          <caret line="59" column="42" lean-forward="false" selection-start-line="59" selection-start-column="42" selection-end-line="59" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://E:/ProgramFiles/Python36/Lib/site-packages/sklearn/preprocessing/data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1510">
+          <caret line="556" column="8" lean-forward="false" selection-start-line="556" selection-start-column="8" selection-end-line="556" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/abandoned/3_multi_axis/analyse_multi_axis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="25" column="27" lean-forward="false" selection-start-line="25" selection-start-column="27" selection-end-line="25" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/abandoned/ResultPresenterUni.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1056">
+          <caret line="48" column="0" lean-forward="false" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="7" column="41" lean-forward="false" selection-start-line="7" selection-start-column="41" selection-end-line="7" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/abandoned/2_simulate_IMU/EvaluationClass.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="22">
+          <caret line="114" column="41" lean-forward="false" selection-start-line="114" selection-start-column="41" selection-end-line="114" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/4_model_param_selection/param_selection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="10" column="35" lean-forward="false" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/abandoned/ResultPresenter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="56" column="34" lean-forward="false" selection-start-line="56" selection-start-column="34" selection-end-line="56" selection-end-column="34" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/5_simulate_IMU_universal/CrossEvaluation.py">
+    <entry file="file://$PROJECT_DIR$/3_analyse_result/analyse_all.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1034">
-          <caret line="61" column="0" lean-forward="false" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
-          <folding>
-            <element signature="e#1#32#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/3_multi_axis/analyse_multi_axis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="25" column="33" lean-forward="false" selection-start-line="25" selection-start-column="33" selection-end-line="25" selection-end-column="33" />
+        <state relative-caret-position="88">
+          <caret line="4" column="17" lean-forward="false" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/3_uni/simulate_IMU_uni.py">
+    <entry file="file://$PROJECT_DIR$/3_analyse_result/analyse_selected.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="770">
-          <caret line="98" column="40" lean-forward="true" selection-start-line="98" selection-start-column="40" selection-end-line="98" selection-end-column="40" />
+        <state relative-caret-position="88">
+          <caret line="4" column="17" lean-forward="false" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/PresenterUni.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#90#127#0" expanded="true" />
+            <element signature="e#0#31#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test.py">
+    <entry file="file://$PROJECT_DIR$/2.1_simulate_IMU_segment/analyse_segment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="484">
-          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+        <state relative-caret-position="88">
+          <caret line="4" column="17" lean-forward="false" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/3_analyse_result/analyse_error_combo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="5" column="18" lean-forward="false" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/abandoned/3_multi_axis/simulate_IMU_multi_axis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="22">
+          <caret line="8" column="27" lean-forward="true" selection-start-line="8" selection-start-column="27" selection-end-line="8" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/abandoned/3_multi_axis/simulate_IMU_multi_axis_quick.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1694">
+          <caret line="1" column="51" lean-forward="true" selection-start-line="1" selection-start-column="51" selection-end-line="1" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/2.2_simulate_IMU_all_combined/analyse_all_combined.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="371">
+          <caret line="25" column="82" lean-forward="false" selection-start-line="25" selection-start-column="82" selection-end-line="25" selection-end-column="82" />
+          <folding>
+            <element signature="e#58#77#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/5_simulate_IMU_universal/OffsetClass.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1221">
-          <caret line="184" column="0" lean-forward="true" selection-start-line="184" selection-start-column="0" selection-end-line="184" selection-end-column="0" />
+        <state relative-caret-position="1958">
+          <caret line="140" column="57" lean-forward="true" selection-start-line="140" selection-start-column="57" selection-end-line="140" selection-end-column="57" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/3_multi_axis/simulate_IMU_multi_axis.py">
+    <entry file="file://$PROJECT_DIR$/2.2_simulate_IMU_all_combined/simulate_IMU_all_combined.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1232">
-          <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
+        <state relative-caret-position="2508">
+          <caret line="122" column="0" lean-forward="false" selection-start-line="122" selection-start-column="0" selection-end-line="122" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/VirtualProcessor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/5_simulate_IMU_universal/CrossEvaluation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="38" column="11" lean-forward="false" selection-start-line="38" selection-start-column="11" selection-end-line="38" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/5_simulate_IMU_universal/EvaluationUniClass.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="25" column="8" lean-forward="false" selection-start-line="25" selection-start-column="8" selection-end-line="25" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/const.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-836">
+          <caret line="4" column="8" lean-forward="false" selection-start-line="4" selection-start-column="8" selection-end-line="4" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/5_simulate_IMU_universal/XYGeneratorUni.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="358">
+          <caret line="85" column="0" lean-forward="false" selection-start-line="85" selection-start-column="0" selection-end-line="85" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/2.1_simulate_IMU_segment/simulate_IMU_segment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="78" column="0" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
           <folding>
-            <element signature="e#109#146#0" expanded="true" />
+            <element signature="e#89#118#0" expanded="true" />
           </folding>
         </state>
       </provider>

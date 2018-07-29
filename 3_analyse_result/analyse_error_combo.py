@@ -1,10 +1,10 @@
 # this file try to analyze the relationship between error directions
 # we want to know whether different error source are independent
-import xlwt
-from const import *
-import numpy as np
 import pandas as pd
-from ResultPresenter import Presenter
+import xlwt
+
+from PresenterUni import Presenter
+from const import *
 
 file_date = '20180627'
 result_file = RESULT_PATH + 'result_' + file_date + '.csv'

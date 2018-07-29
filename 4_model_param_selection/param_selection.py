@@ -1,19 +1,16 @@
 # this file is used to evaluate all the thigh marker position and find the best location
 # 用processor之前一定要set_segment
 
-from DatabaseInfo import DatabaseInfo
-from SubjectData import SubjectData
-from EvaluationClass import Evaluation
-from const import *
-import sklearn
-from sklearn import ensemble, neighbors, tree
-from sklearn.svm import SVR
-from sklearn.utils import shuffle
-from sklearn.model_selection import GridSearchCV
-from XYGenerator import XYGenerator
-import numpy as np
+from sklearn import ensemble
 from sklearn import preprocessing
-import matplotlib.pyplot as plt
+from sklearn.model_selection import GridSearchCV
+from sklearn.utils import shuffle
+
+from DatabaseInfo import DatabaseInfo
+from EvaluationClass import Evaluation
+from SubjectData import SubjectData
+from XYGenerator import XYGenerator
+from const import *
 
 output_names = [
     'FP1.ForX',
