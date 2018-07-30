@@ -13,7 +13,8 @@ import time
 import os
 from sklearn.decomposition import PCA
 import json
-
+from sklearn.metrics import mean_squared_error
+from math import sqrt
 
 class EvaluationUni:
     def __init__(self, y_column_names, base_model):
@@ -85,6 +86,23 @@ class EvaluationUni:
             score = r2_score(self.__y_test[:, i_output], self.__y_pred[:, i_output])
             scores.append(score)
         return scores
+
+    def get_RMSE(self):
+        output_num = self.__y_test.shape[1]
+        RMSEs = []
+        for i_output in range(output_num):
+            RMSE = sqrt(mean_squared_error(self.__y_test[:, i_output], self.__y_pred[:, i_output]))
+            RMSEs.append(RMSE)
+        return RMSEs
+
+    def get_NRMSE(self):
+        output_num = self.__y_test.shape[1]
+        NRMSEs = []
+        for i_output in range(output_num):
+            RMSE = sqrt(mean_squared_error(self.__y_test[:, i_output], self.__y_pred[:, i_output]))
+            NRMSE = RMSE / (max(self.__y_test[:, i_output]) - min(self.__y_test[:, i_output])) * 100
+            NRMSEs.append(NRMSE)
+        return NRMSEs
 
     @staticmethod
     # save the current result to the total result

@@ -7,7 +7,7 @@ from const import *
 
 # very basic offset class
 class Offset:
-    def __init__(self, segment, x_offset=0, z_offset=0, y_offset=0, theta_offset=0, R=None):
+    def __init__(self, segment, x_offset=0, y_offset=0, z_offset=0, theta_offset=0, R=None):
         self.__segment = segment
         self.__x_offset = x_offset
         self.__z_offset = z_offset
@@ -40,18 +40,39 @@ class Offset:
             print('segment: ' + str(self.__segment) + ';\tx offset: ' + str(self.__x_offset) + ';\ty offset: ' +
                   str(self.__y_offset) + ';\tz offset: ' + str(self.__z_offset) + ';\tR: ' + str_R)
 
+    @staticmethod
+    def combine_segment_offset(offset_0, offset_1):
+        segment_0 = offset_0.get_segment()
+        segment_1 = offset_0.get_segment()
+        if segment_0 != segment_1:
+            raise RuntimeError('two offset segment must be the same')
+        transform_0 = offset_0.get_all_offsets()
+        transform_1 = offset_1.get_all_offsets()
+        transform = transform_0 + transform_1
+
+        if offset_0.get_rotation() is not None:
+            R = offset_0.get_rotation()
+        else:
+            R = offset_1.get_rotation()
+        offset = Offset(segment_0, transform[0], transform[1], transform[2], transform[3], R)
+        return offset
+
 
 class OneAxisOffset:
     def __init__(self, segment, axis_name, iterable_object, diameter=None):
         self.__segment = segment
         self.__i_offset = 0
 
-        if axis_name not in ['x', 'z', 'theta']:
+        if axis_name not in ['x', 'y', 'z', 'theta']:
             raise RuntimeError('Wrong axis name.')
         offsets = []
         if axis_name is 'x':
             for item in iterable_object:
                 offset = Offset(self.__segment, x_offset=item / 1000)       # change millimeter to meter
+                offsets.append(offset)
+        if axis_name is 'y':
+            for item in iterable_object:
+                offset = Offset(self.__segment, y_offset=item / 1000)       # change millimeter to meter
                 offsets.append(offset)
         if axis_name is 'z':
             for item in iterable_object:
@@ -155,11 +176,11 @@ class MultiAxisOffset:
             z_axis = OneAxisOffset(segment, 'z', z_range)
             multi_offset.add_offset_axis(z_axis)
         else:
-            x_range = range(-100, 101, 20)
+            x_range = range(-50, 51, 10)
             x_axis = OneAxisOffset(segment, 'x', x_range)
             multi_offset.add_offset_axis(x_axis)
-            y_range = range(-100, 101, 20)
-            y_axis = OneAxisOffset(segment, 'z', y_range)
+            y_range = range(-50, 51, 10)
+            y_axis = OneAxisOffset(segment, 'y', y_range)
             multi_offset.add_offset_axis(y_axis)
         return multi_offset
 
@@ -207,7 +228,20 @@ class SegmentCombos:
         r_shank_list.append(SegmentCombos.__initialize_offset('r_shank', 'z', offset_value_list[11]))
         self.__r_shank_list = r_shank_list
 
-        self.__list_all = [trunk_list, pelvis_list, l_thigh_list, r_thigh_list, l_shank_list, r_shank_list]
+        # add l_foot offset
+        l_foot_list = []
+        l_foot_list.append(SegmentCombos.__initialize_offset('l_foot', 'x', offset_value_list[12]))
+        l_foot_list.append(SegmentCombos.__initialize_offset('l_foot', 'y', offset_value_list[13]))
+        self.__l_foot_list = l_foot_list
+
+        # add r_foot offset
+        r_foot_list = []
+        r_foot_list.append(SegmentCombos.__initialize_offset('r_foot', 'x', offset_value_list[14]))
+        r_foot_list.append(SegmentCombos.__initialize_offset('r_foot', 'y', offset_value_list[15]))
+        self.__r_foot_list = r_foot_list
+
+        self.__list_all = [trunk_list, pelvis_list, l_thigh_list, r_thigh_list, l_shank_list, r_shank_list,
+                           l_foot_list, r_foot_list]
 
     def get_offset_df(self):
         offset_combos = self.get_segment_combos()
@@ -247,7 +281,6 @@ class SegmentCombos:
                 new_combo = [first_segment[1]]
                 new_combo.extend(last_combo)
                 return_list.append(new_combo)
-
         return return_list
 
     @staticmethod

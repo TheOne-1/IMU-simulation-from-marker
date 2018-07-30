@@ -46,7 +46,7 @@ input_names = [
     'r_foot_gyr_x', 'r_foot_gyr_y', 'r_foot_gyr_z',
 ]
 
-offset_value_list = [20, 20, 20, 20, 5, 20, 5, 20, 5, 20, 5, 20]
+offset_value_list = [50, 50, 20, 20, 5, 20, 5, 20, 5, 20, 5, 20]
 
 my_database_info = DatabaseInfo()
 total_score_df = EvaluationUni.initialize_result_df(total_result_columns)
@@ -59,9 +59,6 @@ model = ensemble.RandomForestRegressor(n_jobs=6)
 x_scalar, y_scalar = preprocessing.MinMaxScaler(), preprocessing.MinMaxScaler()
 
 all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
-
-
-
 
 total_result_df = pd.DataFrame()
 
@@ -100,7 +97,7 @@ for i_sub_test in range(SUB_NUM):
         scores[0, :] = my_evaluator.get_scores()
         my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
         for i_combo in range(len(combos_list)):
-            x_test_modified = my_xy_generator.modify_x(x_test, combos_list[i_combo], height)
+            x_test_modified = my_xy_generator.modify_x_all_combined(x_test, combos_list[i_combo], height)
             my_evaluator.set_x_test(x_test_modified)
             my_evaluator.evaluate_sklearn()
             scores[i_combo+1, :] = my_evaluator.get_scores()

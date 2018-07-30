@@ -72,7 +72,17 @@ class XYGeneratorUni:
 
         return x, y
 
-    def modify_x(self, x, offset_combo, height=None):
+    def modify_x_segment(self, x, offset_combo, height=None):
+        # x needs to be deep copied so that it won't be affected by the modification
+        x_changed = x.copy()
+        offset = Offset.combine_segment_offset(offset_combo[0], offset_combo[1])
+        if self.__acc_data:
+            x_changed = self.__modify_acc(x_changed, offset, height)
+        if self.__gyr_data:
+            x_changed = self.__modify_gyr(x_changed, offset)
+        return x_changed
+
+    def modify_x_all_combined(self, x, offset_combo, height=None):
         # x needs to be deep copied so that it won't be affected by the modification
         x_changed = x.copy()
         for offset in offset_combo:      # each offset represents one sensor movement

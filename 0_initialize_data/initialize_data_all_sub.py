@@ -58,7 +58,8 @@ for i_sub in range(SUB_NUM):
         if NORMALIZE_ACC:
             x_trial.loc[:, ALL_ACC_NAMES] /= height      # normalize acceleration by height
         if NORMALIZE_GRF:
-            y_trial.loc[:, ALL_FORCE_NAMES] /= mass      # normalize GRF by mass
+            factor = mass * 9.8
+            y_trial.loc[:, ALL_FORCE_NAMES] /= factor      # normalize GRF by mass
         speed_data = pd.DataFrame(np.column_stack([x_trial, y_trial]))
         speed_data['speed'] = speed
         subject_data_df = subject_data_df.append(speed_data)

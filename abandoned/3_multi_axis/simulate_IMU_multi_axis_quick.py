@@ -111,7 +111,7 @@ for i_sub in range(SUB_NUM):
             speed_df = sub_data_df[sub_data_df['speed'] == float(speed)]
             x_speed = speed_df[input_names]
             my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
-            x_modified_speed = my_xy_generator.modify_x(x_speed, offset_list[i_combo])
+            x_modified_speed = my_xy_generator.modify_x_all_combined(x_speed, offset_list[i_combo])
             x_modified = np.row_stack([x_modified, x_modified_speed])
         x_test_modified = pd.DataFrame(x_modified).loc[test_index]
         my_evaluator.set_x_test(x_test_modified)

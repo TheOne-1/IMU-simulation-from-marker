@@ -12,20 +12,17 @@ from XYGeneratorUni import XYGeneratorUni
 
 output_names = [
     'FP1.ForX',
-    # 'FP2.ForX',
-    # 'FP1.ForY', 'FP2.ForY',
-    # 'FP1.ForZ', 'FP2.ForZ',
+    'FP2.ForX',
+    'FP1.ForY', 'FP2.ForY',
+    'FP1.ForZ', 'FP2.ForZ',
     # 'FP1.CopX', 'FP1.CopY',
     # 'FP2.CopX', 'FP2.CopY'
 ]
 
-force_names = []
-for output in output_names:
-    if 'For' in output:
-        force_names.append(output)
-
-total_result_columns = ['subject_id', 'X_NORM_ALL', 'Y_NORM']
-total_result_columns.extend(output_names)  # change TOTAL_RESULT_COLUMNS
+R2_column = [output + '_R2' for output in output_names]
+RMSE_column = [output + '_RMSE' for output in output_names]
+NRMSE_column = [output + '_NRMSE' for output in output_names]
+result_column = R2_column + RMSE_column + NRMSE_column
 
 input_names = [
     'trunk_acc_x', 'trunk_acc_y', 'trunk_acc_z',
@@ -36,14 +33,14 @@ input_names = [
     'r_shank_acc_x', 'r_shank_acc_y', 'r_shank_acc_z',
     'l_foot_acc_x', 'l_foot_acc_y', 'l_foot_acc_z',
     'r_foot_acc_x', 'r_foot_acc_y', 'r_foot_acc_z',
-    # 'trunk_gyr_x', 'trunk_gyr_y', 'trunk_gyr_z',
-    # 'pelvis_gyr_x', 'pelvis_gyr_y', 'pelvis_gyr_z',
-    # 'l_thigh_gyr_x', 'l_thigh_gyr_y', 'l_thigh_gyr_z',
-    # 'r_thigh_gyr_x', 'r_thigh_gyr_y', 'r_thigh_gyr_z',
-    # 'l_shank_gyr_x', 'l_shank_gyr_y', 'l_shank_gyr_z',
-    # 'r_shank_gyr_x', 'r_shank_gyr_y', 'r_shank_gyr_z',
-    # 'l_foot_gyr_x', 'l_foot_gyr_y', 'l_foot_gyr_z',
-    # 'r_foot_gyr_x', 'r_foot_gyr_y', 'r_foot_gyr_z',
+    'trunk_gyr_x', 'trunk_gyr_y', 'trunk_gyr_z',
+    'pelvis_gyr_x', 'pelvis_gyr_y', 'pelvis_gyr_z',
+    'l_thigh_gyr_x', 'l_thigh_gyr_y', 'l_thigh_gyr_z',
+    'r_thigh_gyr_x', 'r_thigh_gyr_y', 'r_thigh_gyr_z',
+    'l_shank_gyr_x', 'l_shank_gyr_y', 'l_shank_gyr_z',
+    'r_shank_gyr_x', 'r_shank_gyr_y', 'r_shank_gyr_z',
+    'l_foot_gyr_x', 'l_foot_gyr_y', 'l_foot_gyr_z',
+    'r_foot_gyr_x', 'r_foot_gyr_y', 'r_foot_gyr_z',
 ]
 
 model = ensemble.RandomForestRegressor(n_jobs=6)
@@ -56,6 +53,7 @@ x_scalar, y_scalar = preprocessing.MinMaxScaler(), preprocessing.MinMaxScaler()
 all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
 
 total_result_df = pd.DataFrame()
+
 for i_sub_test in range(SUB_NUM):
     print('subject: ' + str(i_sub_test))
     other_sub_data = all_sub_data[all_sub_data['subject_id'] != i_sub_test]
@@ -66,7 +64,7 @@ for i_sub_test in range(SUB_NUM):
 
     my_evaluator.train_sklearn()        # very time consuming
 
-    for segment_moved in SEGMENT_NAMES[0:6]:
+    for segment_moved in SEGMENT_NAMES:
         subject_data = SubjectData(PROCESSED_DATA_PATH, i_sub_test)
         # the range have to be defined after subject data to get the diameter
         shank_diameter = subject_data.get_cylinder_diameter('l_shank')
@@ -84,23 +82,26 @@ for i_sub_test in range(SUB_NUM):
             y_test = test_speed_data[output_names]
             my_evaluator.set_y_test(y_test)
             scores = np.zeros([offset_combo_len, len(output_names)])
+            RMSEs = np.zeros([offset_combo_len, len(output_names)])
+            NRMSEs = np.zeros([offset_combo_len, len(output_names)])
             my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
             for i_combo in range(len(offset_combo_list)):
-                x_test_modified = my_xy_generator.modify_x(x_test, offset_combo_list[i_combo], height)
+                x_test_modified = my_xy_generator.modify_x_segment(x_test, offset_combo_list[i_combo], height)
                 my_evaluator.set_x_test(x_test_modified)
                 my_evaluator.evaluate_sklearn()
                 scores[i_combo, :] = my_evaluator.get_scores()
-            scores_df = pd.DataFrame(scores, columns=output_names)
+                RMSEs[i_combo, :] = my_evaluator.get_RMSE()
+                NRMSEs[i_combo, :] = my_evaluator.get_NRMSE()
+            evaluation_result = np.column_stack([scores, RMSEs, NRMSEs])
+            scores_df = pd.DataFrame(evaluation_result, columns=result_column)
             scores_df = scores_df.reset_index(drop=True)
             speed_df = pd.concat([all_offsets_df, scores_df], axis=1)
+            speed_df.insert(loc=0, column='segment', value=segment_moved)
             speed_df.insert(loc=0, column='speed', value=str(speed))
             speed_df.insert(loc=0, column='subject_id', value=i_sub_test)
             total_result_df = pd.concat([total_result_df, speed_df], axis=0)
 
-        # test_end_time = datetime.now()
-        # print('testing time: ' + str((test_end_time - train_end_time).seconds / 60) + 'min')
-
-EvaluationUni.save_result(total_result_df, model, input_names, output_names, 'result_segment')
+    EvaluationUni.save_result(total_result_df, model, input_names, output_names, 'result_segment')
 
 
 

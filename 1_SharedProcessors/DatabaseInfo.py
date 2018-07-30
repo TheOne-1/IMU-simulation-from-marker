@@ -130,13 +130,13 @@ class DatabaseInfo:
                 'RATI.PosX', 'RATI.PosY', 'RATI.PosZ',  # right anterior of the tibia
                 'RLM.PosX', 'RLM.PosY', 'RLM.PosZ',  # right lateral malleoulus of the ankle
             ],
-            'l_feet': [
+            'l_foot': [
                 'LLM.PosX', 'LLM.PosY', 'LLM.PosZ',  # left lateral malleoulus of the ankle
                 'LHEE.PosX', 'LHEE.PosY', 'LHEE.PosZ',  # left heel
                 'LTOE.PosX', 'LTOE.PosY', 'LTOE.PosZ',  # left toe
                 'LMT5.PosX', 'LMT5.PosY', 'LMT5.PosZ',  # left 5th metatarsal
             ],
-            'r_feet': [
+            'r_foot': [
                 'RLM.PosX', 'RLM.PosY', 'RLM.PosZ',  # right lateral malleoulus of the ankle
                 'RHEE.PosX', 'RHEE.PosY', 'RHEE.PosZ',  # right heel
                 'RTOE.PosX', 'RTOE.PosY', 'RTOE.PosZ',  # right toe
@@ -166,11 +166,11 @@ class DatabaseInfo:
                         'RLM.PosX', 'RLM.PosY', 'RLM.PosZ'],  # right knee
 
 
-            'l_feet': ['LTOE.PosX', 'LTOE.PosY', 'LTOE.PosZ',  # left toe
+            'l_foot': ['LTOE.PosX', 'LTOE.PosY', 'LTOE.PosZ',  # left toe
                        'LMT5.PosX', 'LMT5.PosY', 'LMT5.PosZ'],  # left 5th metatarsal
 
-            'r_feet': ['RTOE.PosX', 'RTOE.PosY', 'RTOE.PosZ',  # right toe
-                       'RMT5.PosX', 'RMT5.PosY', 'RMT5.PosZ']  # right 5th metatarsal
+            'r_foot': ['RTOE.PosX', 'RTOE.PosY', 'RTOE.PosZ',  # right toe
+                       'RHEE.PosX', 'RHEE.PosY', 'RHEE.PosZ']  # right 5th metatarsal
         }
         return segment_marker[segment]
 

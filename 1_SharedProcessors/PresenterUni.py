@@ -8,53 +8,55 @@ from const import *
 
 class Presenter:
     @staticmethod
-    def show_segment_result(segment_df, date):
-        segment = segment_df.iloc[0, 0]
-        if segment in ['trunk', 'pelvis']:
-            axis_1_range = Presenter.__array_to_range(segment_df['x_offset'].as_matrix())
-            axis_2_range = Presenter.__array_to_range(segment_df['z_offset'].as_matrix())
-            axis_1_label, axis_2_label = 'x offset to center', 'z offset to center'
+    def show_segment_result(segment_df, date, sub_num=SUB_NUM):
+        segment_name = segment_df['segment'].iloc[0]
+        axes_names = Presenter.__get_axis_name(segment_name)
+        axis_0_name = axes_names[0]
+        axis_0_value = segment_df[axis_0_name]
+        axis_0_range = list(set(axis_0_value))
+        axis_0_range.sort()
+        axis_0_len = axis_0_range.__len__()
 
-        else:
-            axis_1_range = Presenter.__array_to_range(segment_df['theta_offset'].as_matrix())
-            axis_2_range = Presenter.__array_to_range(segment_df['z_offset'].as_matrix())
-            axis_1_label, axis_2_label = 'theta offset to center', 'z offset to center'
-
+        axis_1_name = axes_names[1]
+        axis_1_value = segment_df[axis_1_name]
+        axis_1_range = list(set(axis_1_value))
+        axis_1_range.sort()
         axis_1_len = axis_1_range.__len__()
-        axis_2_len = axis_2_range.__len__()
-        average_force_im = np.zeros([axis_2_len, axis_1_len])
-        average_cop_im = np.zeros([axis_2_len, axis_1_len])
-        for i_sub in range(SUB_NUM):
-            for speed in SPEEDS:
-                trial_df = segment_df[(segment_df['subject_id'] == i_sub) & (segment_df['speed'] == float(speed))]
 
-                force_scores = np.mean(trial_df[DatabaseInfo.get_force_column_names()].as_matrix(), axis=1)
-                sub_force_im = Presenter.__get_score_im(force_scores, axis_1_range, axis_2_range)
-                average_force_im += sub_force_im
+        force_names = DatabaseInfo.get_force_column_names()
+        for force in force_names:
+            average_force_im = np.zeros([axis_1_len, axis_0_len])
+            for i_sub in range(sub_num):
+                for speed in SPEEDS:
+                    trial_df = segment_df[(segment_df['subject_id'] == i_sub) & (segment_df['speed'] == float(speed))]
+                    sub_force_im = Presenter.__get_score_im_uni(trial_df[[axis_0_name, axis_1_name, force]],
+                                                            axis_0_range, axis_1_range, axis_0_name, axis_1_name)
+                    average_force_im += sub_force_im
 
-                cop_scores = np.mean(trial_df[DatabaseInfo.get_cop_column_names()].as_matrix(), axis=1)
-                sub_cop_im = Presenter.__get_score_im(cop_scores, axis_1_range, axis_2_range)
-                average_cop_im += sub_cop_im
-        total_number = SUB_NUM * SPEEDS.__len__()
-        average_force_im = average_force_im / total_number
-        average_force_title = segment + ', average force'
-        Presenter.__show_score_im(average_force_im, axis_1_range, axis_2_range, average_force_title, axis_1_label,
-                                  axis_2_label, date)
-
-        average_cop_im = average_cop_im / total_number
-        average_cop_title = segment + ', average COP'
-        Presenter.__show_score_im(average_cop_im, axis_1_range, axis_2_range, average_cop_title, axis_1_label,
-                                  axis_2_label, date)
+            total_number = sub_num * SPEEDS.__len__()
+            average_force_im = average_force_im / total_number
+            average_force_title = segment_name + ', ' + force
+            Presenter.__show_score_im(average_force_im, axis_0_range, axis_1_range, average_force_title, axis_0_name,
+                                      axis_1_name, date)
 
     @staticmethod
-    def show_result_uni(result_df):
-        for speed in SPEEDS:
-            speed_df = result_df[result_df['speed'] == float(speed)].copy()
-            speed_df = speed_df.reset_index(drop=True)
-            combo_num = 64
-            scores = np.zeros([combo_num, 10])
-            for i_sub in range(SUB_NUM):
-                sub_df = speed_df[]
+    def __get_axis_name(segment_name):
+        if segment_name in ['trunk', 'pelvis']:
+            return [segment_name + '_x_offset', segment_name + '_z_offset']
+        elif segment_name in ['l_foot', 'r_foot']:
+            return [segment_name + '_x_offset', segment_name + '_y_offset']
+        else:
+            return [segment_name + '_theta_offset', segment_name + '_z_offset']
+
+    # @staticmethod
+    # def show_result_uni(result_df):
+    #     for speed in SPEEDS:
+    #         speed_df = result_df[result_df['speed'] == float(speed)].copy()
+    #         speed_df = speed_df.reset_index(drop=True)
+    #         combo_num = 64
+    #         scores = np.zeros([combo_num, 10])
+    #         for i_sub in range(SUB_NUM):
+    #             sub_df = speed_df[]
 
 
     @staticmethod
@@ -90,16 +92,16 @@ class Presenter:
             axis_1_range.sort()
             score_im = np.zeros([len(axis_1_range), len(axis_0_range)])
             for i_sub in range(SUB_NUM):
-                    irrelevant_offset = Presenter.__get_all_offset_names()
-                    irrelevant_offset.remove(axis_0_name)
-                    irrelevant_offset.remove(axis_1_name)
-                    trial_df = result_df[result_df['subject_id'] == i_sub]
-                    for offset in irrelevant_offset:
-                        trial_df = trial_df[trial_df[offset] == 0]
+                irrelevant_offset = Presenter.__get_all_offset_names()
+                irrelevant_offset.remove(axis_0_name)
+                irrelevant_offset.remove(axis_1_name)
+                trial_df = result_df[result_df['subject_id'] == i_sub]
+                for offset in irrelevant_offset:
+                    trial_df = trial_df[trial_df[offset] == 0]
 
-                    sub_score_im = Presenter.__get_score_im_uni(trial_df[[axis_0_name, axis_1_name, output]],
-                                                                axis_0_range, axis_1_range, axis_0_name, axis_1_name)
-                    score_im += sub_score_im
+                sub_score_im = Presenter.__get_score_im_uni(trial_df[[axis_0_name, axis_1_name, output]],
+                                                            axis_0_range, axis_1_range, axis_0_name, axis_1_name)
+                score_im += sub_score_im
             im_len = SUB_NUM
             score_im /= im_len
             Presenter.__show_score_im(score_im, axis_0_range, axis_1_range, 'title', axis_0_name, axis_1_name, '77')
@@ -128,7 +130,7 @@ class Presenter:
                 'l_shank_z_offset', 'l_shank_theta_offset',
                 'r_shank_z_offset', 'r_shank_theta_offset']
 
-# ********************************* matrix ************************************** #
+    # ********************************* matrix ************************************** #
     # show the decrease amount and std among subjects for all the speeds
     @staticmethod
     def get_segment_force_matrix(segment_df, sheet=None):
@@ -381,4 +383,3 @@ class Presenter:
         std_matrix = np.std(matrix, axis=2)
         title = segment + ', output = '.join(output_names) + ', speed = ' + ', '.join(speed_names)
         Presenter.__store_matrix(mean_matrix, std_matrix, title, axis_1_range, axis_2_range, sheet, segment)
-

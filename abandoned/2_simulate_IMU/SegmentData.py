@@ -44,8 +44,8 @@ class SegmentData:
             'r_thigh': np.array([[0, 0, 1], [0, -1, 0], [1, 0, 0]]),  # R for r_thigh
             'l_shank': np.array([[0, 0, -1], [0, -1, 0], [-1, 0, 0]]),  # R for l_shank
             'r_shank': np.array([[0, 0, -1], [0, 1, 0], [1, 0, 0]]),  # R for r_shank
-            'l_feet': np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]]),  # R for l_feet
-            'r_feet': np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]]),  # R for r_feet
+            'l_foot': np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]]),  # R for l_foot
+            'r_foot': np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]]),  # R for r_foot
         }
         return R[self.__segment_name]
 

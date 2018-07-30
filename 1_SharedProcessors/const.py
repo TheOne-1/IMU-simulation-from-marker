@@ -16,7 +16,7 @@ N_COMPONENT = 12
 SUB_NUM = 10
 SPEEDS = ['0.8', '1.2', '1.6']
 SPEED_NUM = SPEEDS.__len__()
-SEGMENT_NAMES = ['trunk', 'pelvis', 'l_thigh', 'r_thigh', 'l_shank', 'r_shank', 'l_feet', 'r_feet']
+SEGMENT_NAMES = ['trunk', 'pelvis', 'l_thigh', 'r_thigh', 'l_shank', 'r_shank', 'l_foot', 'r_foot']
 MOVED_SEGMENT_NAMES = ['trunk', 'pelvis', 'l_thigh', 'r_thigh', 'l_shank', 'r_shank']
 SENSOR_NUM = SEGMENT_NAMES.__len__()
 MOCAP_SAMPLE_RATE = 100
@@ -62,7 +62,9 @@ OFFSET_COLUMN_NAMES = ['trunk_x_offset', 'trunk_y_offset', 'trunk_z_offset', 'tr
                        'l_thigh_x_offset', 'l_thigh_y_offset', 'l_thigh_z_offset', 'l_thigh_theta_offset',
                        'r_thigh_x_offset', 'r_thigh_y_offset', 'r_thigh_z_offset', 'r_thigh_theta_offset',
                        'l_shank_x_offset', 'l_shank_y_offset', 'l_shank_z_offset', 'l_shank_theta_offset',
-                       'r_shank_x_offset', 'r_shank_y_offset', 'r_shank_z_offset', 'r_shank_theta_offset']
+                       'r_shank_x_offset', 'r_shank_y_offset', 'r_shank_z_offset', 'r_shank_theta_offset',
+                       'l_foot_x_offset', 'l_foot_y_offset', 'l_foot_z_offset', 'l_foot_theta_offset',
+                       'r_foot_x_offset', 'r_foot_y_offset', 'r_foot_z_offset', 'r_foot_theta_offset']
 
 
 
