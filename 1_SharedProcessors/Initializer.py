@@ -83,7 +83,7 @@ class Initializer:
         force_filt[:, 0:3] = Initializer.filtering(force_filt[:, 0:3], WN_FORCE, filter_order)
         force_filt[:, 6:9] = Initializer.filtering(force_filt[:, 6:9], WN_FORCE, filter_order)
         force_filt[plate_1_zero_index, 0:3] = 0       # zero cop data again after filtering
-        force_filt[plate_2_zero_index, 9:12] = 0
+        force_filt[plate_2_zero_index, 6:9] = 0
         data[:, force_column_num] = force_filt
 
         data_df = pd.DataFrame(data)

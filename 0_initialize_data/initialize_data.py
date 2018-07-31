@@ -17,6 +17,7 @@ force_column_num = my_database_info.get_force_column_num()
 all_column_names = my_database_info.get_all_column_names()
 
 for i_sub in range(SUB_NUM):
+    print('sub: ' + str(i_sub))
     for i_speed in range(speed_num):
         file_names = my_database_info.get_file_names(sub=i_sub, speed=i_speed, path=data_path)
         trial_data = DFlowData(file_names[0], file_names[1], file_names[2])

@@ -15,7 +15,7 @@ wb = xlwt.Workbook()
 sheet = wb.add_sheet('Sheet1')
 
 
-for segment_moved in MOVED_SEGMENT_NAMES:
+for segment_moved in SEGMENT_NAMES:
     Presenter.independence_analysis(result_df[result_df['segment'] == segment_moved])
 wb.save(file_path)
 

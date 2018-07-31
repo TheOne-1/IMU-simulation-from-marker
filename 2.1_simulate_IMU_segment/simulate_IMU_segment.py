@@ -1,10 +1,7 @@
 # this file is used to evaluate all the thigh marker position and find the best location
-from datetime import datetime
-import pandas as pd
 from sklearn import ensemble
 from sklearn import preprocessing
 
-from DatabaseInfo import DatabaseInfo
 from EvaluationUniClass import EvaluationUni
 from OffsetClass import *
 from SubjectData import SubjectData
@@ -54,7 +51,7 @@ all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
 
 total_result_df = pd.DataFrame()
 
-for i_sub_test in range(SUB_NUM):
+for i_sub_test in range(7, SUB_NUM):
     print('subject: ' + str(i_sub_test))
     other_sub_data = all_sub_data[all_sub_data['subject_id'] != i_sub_test]
     x_train = other_sub_data[input_names]

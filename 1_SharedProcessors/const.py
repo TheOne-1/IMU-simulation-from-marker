@@ -17,7 +17,6 @@ SUB_NUM = 10
 SPEEDS = ['0.8', '1.2', '1.6']
 SPEED_NUM = SPEEDS.__len__()
 SEGMENT_NAMES = ['trunk', 'pelvis', 'l_thigh', 'r_thigh', 'l_shank', 'r_shank', 'l_foot', 'r_foot']
-MOVED_SEGMENT_NAMES = ['trunk', 'pelvis', 'l_thigh', 'r_thigh', 'l_shank', 'r_shank']
 SENSOR_NUM = SEGMENT_NAMES.__len__()
 MOCAP_SAMPLE_RATE = 100
 THIGH_COEFF = 1.1  # D_thigh = THIGH_COEFF * knee_width
@@ -28,6 +27,7 @@ WN_FORCE = 25 / (MOCAP_SAMPLE_RATE / 2)
 
 # IM_VMIN = 0.5
 # IM_VMAX = 1
+FONT_SIZE = 12
 
 ALL_ACC_NAMES = ['trunk_acc_x', 'trunk_acc_y', 'trunk_acc_z',
                  'pelvis_acc_x', 'pelvis_acc_y', 'pelvis_acc_z',

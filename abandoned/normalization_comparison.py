@@ -1,17 +1,14 @@
 # this file is used to evaluate all the thigh marker position and find the best location
 
-from DatabaseInfo import DatabaseInfo
-from SubjectData import SubjectData
-from EvaluationUniClass import EvaluationUni
-from const import *
-import sklearn
-from sklearn import ensemble, neighbors, tree
-from sklearn.svm import SVR
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn import preprocessing
-from XYGeneratorUni import XYGeneratorUni
 import numpy as np
+from sklearn import ensemble
+from sklearn import preprocessing
 
+from DatabaseInfo import DatabaseInfo
+from EvaluationUniClass import EvaluationUni
+from SubjectData import SubjectData
+from XYGeneratorUni import XYGeneratorUni
+from const import *
 
 output_names = [
     'FP1.ForX', 'FP2.ForX',

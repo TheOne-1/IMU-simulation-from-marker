@@ -14,7 +14,7 @@ wb = xlwt.Workbook()
 sheet = wb.add_sheet('Sheet1')
 
 
-for segment_moved in MOVED_SEGMENT_NAMES:
+for segment_moved in SEGMENT_NAMES:
     Presenter.show_segment_result(result_df[result_df['segment'] == segment_moved], file_date)
     Presenter.get_segment_force_matrix(result_df[result_df['segment'] == segment_moved], sheet)
     # Presenter.get_segment_cop_matrix(result_df[result_df['segment'] == segment_moved], sheet)

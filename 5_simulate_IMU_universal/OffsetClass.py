@@ -189,7 +189,7 @@ class MultiAxisOffset:
 class SegmentCombos:
 
     def __init__(self, offset_value_list, thigh_diameter, shank_diameter):
-        if len(offset_value_list) != 12:
+        if len(offset_value_list) != 16:
             raise RuntimeError('Incorrect offset length')
 
         # add trunk offset
@@ -285,11 +285,13 @@ class SegmentCombos:
 
     @staticmethod
     def __initialize_offset(segment, axis_name, item, diameter=None):
-        if axis_name not in ['x', 'z', 'theta']:
+        if axis_name not in ['x', 'y', 'z', 'theta']:
             raise RuntimeError('Wrong axis name.')
 
         if axis_name is 'x':
             offset = Offset(segment, x_offset=item / 1000)  # change millimeter to meter
+        elif axis_name is 'y':
+            offset = Offset(segment, y_offset=item / 1000)  # change millimeter to meter
         elif axis_name is 'z':
             offset = Offset(segment, z_offset=item / 1000)
         else:

@@ -1,10 +1,8 @@
 # this file is used to evaluate all the thigh marker position and find the best location
 
-import pandas as pd
 from sklearn import ensemble
 from sklearn import preprocessing
 
-from DatabaseInfo import DatabaseInfo
 from EvaluationUniClass import EvaluationUni
 from OffsetClass import *
 from SubjectData import SubjectData
@@ -19,14 +17,6 @@ output_names = [
     # 'FP2.CopX', 'FP2.CopY'
 ]
 
-force_names = []
-for output in output_names:
-    if 'For' in output:
-        force_names.append(output)
-
-total_result_columns = ['subject_id', 'X_NORM_ALL', 'Y_NORM']
-total_result_columns.extend(output_names)  # change TOTAL_RESULT_COLUMNS
-
 input_names = [
     'trunk_acc_x', 'trunk_acc_y', 'trunk_acc_z',
     'pelvis_acc_x', 'pelvis_acc_y', 'pelvis_acc_z',
@@ -36,20 +26,21 @@ input_names = [
     'r_shank_acc_x', 'r_shank_acc_y', 'r_shank_acc_z',
     'l_foot_acc_x', 'l_foot_acc_y', 'l_foot_acc_z',
     'r_foot_acc_x', 'r_foot_acc_y', 'r_foot_acc_z',
-    'trunk_gyr_x', 'trunk_gyr_y', 'trunk_gyr_z',
-    'pelvis_gyr_x', 'pelvis_gyr_y', 'pelvis_gyr_z',
-    'l_thigh_gyr_x', 'l_thigh_gyr_y', 'l_thigh_gyr_z',
-    'r_thigh_gyr_x', 'r_thigh_gyr_y', 'r_thigh_gyr_z',
-    'l_shank_gyr_x', 'l_shank_gyr_y', 'l_shank_gyr_z',
-    'r_shank_gyr_x', 'r_shank_gyr_y', 'r_shank_gyr_z',
-    'l_foot_gyr_x', 'l_foot_gyr_y', 'l_foot_gyr_z',
-    'r_foot_gyr_x', 'r_foot_gyr_y', 'r_foot_gyr_z',
+    # 'trunk_gyr_x', 'trunk_gyr_y', 'trunk_gyr_z',
+    # 'pelvis_gyr_x', 'pelvis_gyr_y', 'pelvis_gyr_z',
+    # 'l_thigh_gyr_x', 'l_thigh_gyr_y', 'l_thigh_gyr_z',
+    # 'r_thigh_gyr_x', 'r_thigh_gyr_y', 'r_thigh_gyr_z',
+    # 'l_shank_gyr_x', 'l_shank_gyr_y', 'l_shank_gyr_z',
+    # 'r_shank_gyr_x', 'r_shank_gyr_y', 'r_shank_gyr_z',
+    # 'l_foot_gyr_x', 'l_foot_gyr_y', 'l_foot_gyr_z',
+    # 'r_foot_gyr_x', 'r_foot_gyr_y', 'r_foot_gyr_z',
 ]
 
-offset_value_list = [50, 50, 20, 20, 5, 20, 5, 20, 5, 20, 5, 20]
-
-my_database_info = DatabaseInfo()
-total_score_df = EvaluationUni.initialize_result_df(total_result_columns)
+R2_column = [output + '_R2' for output in output_names]
+RMSE_column = [output + '_RMSE' for output in output_names]
+NRMSE_column = [output + '_NRMSE' for output in output_names]
+result_column = R2_column + RMSE_column + NRMSE_column
+offset_value_list = [50, 50, 20, 20, 5, 20, 5, 20, 5, 20, 5, 20, 20, 20, 20, 20]
 
 model = ensemble.RandomForestRegressor(n_jobs=6)
 # model = ensemble.RandomForestRegressor(n_estimators=200, random_state=0, n_jobs=6)
@@ -93,22 +84,26 @@ for i_sub_test in range(SUB_NUM):
         my_evaluator.set_x_test(x_test)
         my_evaluator.set_y_test(y_test)
         my_evaluator.evaluate_sklearn()
-        scores = np.zeros([combo_len+1, len(output_names)])
-        scores[0, :] = my_evaluator.get_scores()
+        scores = np.zeros([combo_len, len(output_names)])
+        RMSEs = np.zeros([combo_len, len(output_names)])
+        NRMSEs = np.zeros([combo_len, len(output_names)])
         my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
         for i_combo in range(len(combos_list)):
             x_test_modified = my_xy_generator.modify_x_all_combined(x_test, combos_list[i_combo], height)
             my_evaluator.set_x_test(x_test_modified)
             my_evaluator.evaluate_sklearn()
-            scores[i_combo+1, :] = my_evaluator.get_scores()
-        scores_df = pd.DataFrame(scores, columns=output_names)
+            scores[i_combo, :] = my_evaluator.get_scores()
+            RMSEs[i_combo, :] = my_evaluator.get_RMSE()
+            NRMSEs[i_combo, :] = my_evaluator.get_NRMSE()
+        evaluation_result = np.column_stack([scores, RMSEs, NRMSEs])
+        scores_df = pd.DataFrame(evaluation_result, columns=result_column)
         scores_df = scores_df.reset_index(drop=True)
         speed_df = pd.concat([all_offsets_df, scores_df], axis=1)
         speed_df.insert(loc=0, column='speed', value=str(speed))
         speed_df.insert(loc=0, column='subject_id', value=i_sub_test)
         total_result_df = pd.concat([total_result_df, speed_df], axis=0)
 
-EvaluationUni.save_result(total_result_df, model, input_names, output_names, 'result_all_combined')
+    EvaluationUni.save_result(total_result_df, model, input_names, output_names, 'result_all_combined')
 
 
 

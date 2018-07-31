@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import xlwt
-
+from math import sqrt
 from DatabaseInfo import DatabaseInfo
 from OffsetClass import *
 from const import *
@@ -8,7 +8,7 @@ from const import *
 
 class Presenter:
     @staticmethod
-    def show_segment_result(segment_df, date, sub_num=SUB_NUM):
+    def show_segment_result(segment_df, result_names, date, sub_num=SUB_NUM):
         segment_name = segment_df['segment'].iloc[0]
         axes_names = Presenter.__get_axis_name(segment_name)
         axis_0_name = axes_names[0]
@@ -21,23 +21,29 @@ class Presenter:
         axis_1_value = segment_df[axis_1_name]
         axis_1_range = list(set(axis_1_value))
         axis_1_range.sort()
+        axis_1_range.reverse()
         axis_1_len = axis_1_range.__len__()
 
-        force_names = DatabaseInfo.get_force_column_names()
-        for force in force_names:
+        result_names_combined = [['FP1.' + name, 'FP2.' + name] for name in result_names]
+        i_result = 0
+        for force in result_names_combined:
             average_force_im = np.zeros([axis_1_len, axis_0_len])
             for i_sub in range(sub_num):
                 for speed in SPEEDS:
                     trial_df = segment_df[(segment_df['subject_id'] == i_sub) & (segment_df['speed'] == float(speed))]
-                    sub_force_im = Presenter.__get_score_im_uni(trial_df[[axis_0_name, axis_1_name, force]],
-                                                            axis_0_range, axis_1_range, axis_0_name, axis_1_name)
+                    sub_force_im = Presenter.__get_score_im_uni(trial_df[[axis_0_name, axis_1_name, force[0],
+                                                                          force[1]]], axis_0_range, axis_1_range,
+                                                                axis_0_name, axis_1_name)
                     average_force_im += sub_force_im
 
             total_number = sub_num * SPEEDS.__len__()
             average_force_im = average_force_im / total_number
-            average_force_title = segment_name + ', ' + force
+            average_force_title = segment_name + ' ' + result_names[i_result]
+            i_result += 1
+            folder = 'result_segment\\' + date
             Presenter.__show_score_im(average_force_im, axis_0_range, axis_1_range, average_force_title, axis_0_name,
-                                      axis_1_name, date)
+                                      axis_1_name, folder)
+        # plt.show()  # show plot at last
 
     @staticmethod
     def __get_axis_name(segment_name):
@@ -48,16 +54,27 @@ class Presenter:
         else:
             return [segment_name + '_theta_offset', segment_name + '_z_offset']
 
-    # @staticmethod
-    # def show_result_uni(result_df):
-    #     for speed in SPEEDS:
-    #         speed_df = result_df[result_df['speed'] == float(speed)].copy()
-    #         speed_df = speed_df.reset_index(drop=True)
-    #         combo_num = 64
-    #         scores = np.zeros([combo_num, 10])
-    #         for i_sub in range(SUB_NUM):
-    #             sub_df = speed_df[]
+    @staticmethod
+    def show_all_combined_result(result_df, exp1_result, result_names, date, sub_num=SUB_NUM):
+        for result_name in result_names:
+            average_result_im = np.zeros([16, 16])
+            for i_sub in range(sub_num):
+                for speed in SPEEDS:
+                    exp1_speed_df = exp1_result[
+                        (exp1_result['subject_id'] == i_sub) & (exp1_result['speed'] == float(speed))
+                        & (exp1_result['segment'] == 'trunk')]
+                    original_df_item = exp1_speed_df[(exp1_speed_df['trunk_x_offset'] == 0) &
+                                                     (exp1_speed_df['trunk_z_offset'] == 0)]
+                    # original_value = original_df_item[result_name].as_matrix()
+                    original_value = 5
+                    speed_df = result_df[(result_df['subject_id'] == i_sub) & (result_df['speed'] == float(speed))]
+                    sub_result_im = Presenter.__get_all_combined_im(speed_df[result_name], original_value)
+                    average_result_im += sub_result_im
 
+            total_number = sub_num * len(SPEEDS)
+            average_result_im = average_result_im / total_number
+            average_force_title = result_name
+            Presenter.__show_all_segment_im(average_result_im, average_force_title, date)
 
     @staticmethod
     def show_result_multi_axis(result_df, axes_names, output):
@@ -117,9 +134,22 @@ class Presenter:
                 # for image, row and column are exchanged compared to ndarray
                 score = scores_df[(scores_df[axis_0_name] == axis_0_range[i_x]) &
                                   (scores_df[axis_1_name] == axis_1_range[i_y])].as_matrix()
-                score_im[i_y, i_x] = score[0][-1]
+                score_im[i_y, i_x] = (score[0][-1] + score[0][-2]) / 2
                 i_score += 1
         return score_im
+
+    @staticmethod
+    def __get_all_combined_im(score_df, original_value):
+        scores = score_df.as_matrix()
+        im_len = 16
+        im = np.zeros([im_len, im_len])
+        i_score = 0
+        for i_x in range(im_len):
+            for i_y in range(im_len):
+                im[i_y, i_x] = scores[i_score] - original_value
+                i_score += 1
+        return im
+
 
     @staticmethod
     def __get_all_offset_names():
@@ -129,6 +159,122 @@ class Presenter:
                 'r_thigh_z_offset', 'r_thigh_theta_offset',
                 'l_shank_z_offset', 'l_shank_theta_offset',
                 'r_shank_z_offset', 'r_shank_theta_offset']
+
+    @staticmethod
+    def independence_analysis(segment_df):
+        force_matrix, axis_1_range, axis_2_range = Presenter.get_segment_force_matrix(segment_df)
+        cop_matrix, axis_1_range, axis_2_range = Presenter.get_segment_cop_matrix(segment_df)
+        axis_1_len = axis_1_range.__len__()
+        axis_2_len = axis_2_range.__len__()
+        force_matrix_combined = Presenter.combine_two_axis(force_matrix)
+        cop_matrix_combined = Presenter.combine_two_axis(cop_matrix)
+
+    @staticmethod
+    def combine_two_axis(original_matrix):
+        combined_matrix = original_matrix.copy()
+        center_row = int(original_matrix.shape[0] / 2)
+        center_col = int(original_matrix.shape[1] / 2)
+        for i_row in range(original_matrix.shape[0]):
+            for i_col in range(original_matrix.shape[1]):
+                combined_matrix[i_row, i_col, :] = original_matrix[i_row, center_col, :] + original_matrix[center_row,
+                                                                                           i_col, :]
+        return combined_matrix
+
+    @staticmethod
+    def __get_score_im(scores, axis_0_range, axis_1_range):
+        axis_0_len = axis_0_range.__len__()
+        axis_1_len = axis_1_range.__len__()
+        score_im = np.zeros([axis_1_len, axis_0_len])
+        i_score = 0
+        for i_x in range(axis_0_len):
+            for i_y in range(axis_1_len):
+                # for image, row and column are exchanged compared to ndarray
+                score_im[i_y, i_x] = scores[i_score]
+                i_score += 1
+        return score_im
+
+    @staticmethod
+    def __array_to_range(array):
+        start_value = int(array[0])
+        end_value = int(np.max(array))
+        step_value = 1
+        for value in array:
+            if value != start_value:
+                step_value = int(value - start_value)
+                break
+        return range(start_value, end_value + 1, step_value)
+
+    # this show result is different from the one in EvaluationClass because it serves analyse result
+    @staticmethod
+    def __show_score_im(score_im, axis_0_range, axis_1_range, title, axis_0_label, axis_1_label, folder):
+
+        fig, ax = plt.subplots(figsize=(8, 6))
+        im = plt.imshow(score_im, cmap=plt.cm.gray)
+        plt.colorbar(im)
+        if axis_0_label.__contains__('theta'):
+            x_label = [str(int(tick)) + ' °' for tick in axis_0_range]
+        else:
+            x_label = [str(int(1000 * tick)) + ' mm' for tick in axis_0_range]
+        ax.set_xticks(range(score_im.shape[1]))
+        ax.set_xticklabels(x_label, fontdict={'fontsize': FONT_SIZE}, rotation=45)
+        ax.set_xlabel(axis_0_label, fontdict={'fontsize': FONT_SIZE})
+        if axis_1_label.__contains__('theta'):
+            y_label = [str(int(tick)) + ' °' for tick in axis_1_range]
+        else:
+            y_label = [str(int(1000 * tick)) + ' mm' for tick in axis_1_range]
+        ax.set_yticks(range(score_im.shape[0]))
+        ax.set_yticklabels(y_label, fontdict={'fontsize': FONT_SIZE})
+        ax.set_ylabel(axis_1_label, fontdict={'fontsize': FONT_SIZE})
+        # plt.title(title, fontdict={'fontsize': FONT_SIZE})
+        plt.tight_layout()
+        file_path = RESULT_PATH + folder + '\\' + title + '.png'
+        plt.savefig(file_path)
+
+    @staticmethod
+    def __show_all_segment_im(im, title, date):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        im = plt.imshow(im, cmap=plt.cm.gray)
+        plt.colorbar(im)
+        # ax.set_xticks(range(im.shape[1]))
+        # ax.set_xticklabels(range(im.shape[1]), fontdict={'fontsize': 8})
+        # ax.set_xticks(range(im.shape[0]))
+        # ax.set_xticklabels(range(im.shape[0]), fontdict={'fontsize': 8})
+        plt.title(title)
+        # file_path = RESULT_PATH + 'result_' + date + '\\' + title + '.png'
+        # plt.savefig(file_path)
+        plt.show()  # show plot at last
+
+    @staticmethod
+    def show_selected_result(segment_df, date, output_names, speed_names):
+        segment = segment_df.iloc[0, 0]
+        if segment in ['trunk', 'pelvis']:
+            axis_1_range = Presenter.__array_to_range(segment_df['x_offset'].as_matrix())
+            axis_2_range = Presenter.__array_to_range(segment_df['z_offset'].as_matrix())
+            axis_1_label, axis_2_label = 'x offset to center', 'z offset to center'
+
+        else:
+            axis_1_range = Presenter.__array_to_range(segment_df['theta_offset'].as_matrix())
+            axis_2_range = Presenter.__array_to_range(segment_df['z_offset'].as_matrix())
+            axis_1_label, axis_2_label = 'theta offset to center', 'z offset to center'
+
+        axis_1_len = axis_1_range.__len__()
+        axis_2_len = axis_2_range.__len__()
+        average_output_im = np.zeros([axis_2_len, axis_1_len])
+        for i_sub in range(SUB_NUM):
+            for output in output_names:
+                for speed in speed_names:
+                    trial_df = segment_df[(segment_df['subject_id'] == i_sub) & (segment_df['speed'] == float(speed))]
+                    output_scores = trial_df[output].as_matrix()
+
+                    sub_output_im = Presenter.__get_score_im(output_scores, axis_1_range, axis_2_range)
+                    average_output_im += sub_output_im
+
+        total_number = SUB_NUM * speed_names.__len__() * output_names.__len__()
+        average_output_im = average_output_im / total_number
+        output_names_str = ', '.join(output_names)
+        average_output_title = segment + ', average ' + output_names_str
+        Presenter.__show_score_im(average_output_im, axis_1_range, axis_2_range, average_output_title, axis_1_label,
+                                  axis_2_label, date)
 
     # ********************************* matrix ************************************** #
     # show the decrease amount and std among subjects for all the speeds
@@ -199,25 +345,48 @@ class Presenter:
         return cop_matrix, axis_1_range, axis_2_range
 
     @staticmethod
-    def independence_analysis(segment_df):
-        force_matrix, axis_1_range, axis_2_range = Presenter.get_segment_force_matrix(segment_df)
-        cop_matrix, axis_1_range, axis_2_range = Presenter.get_segment_cop_matrix(segment_df)
+    def __get_decrease_matrix(scores, center_score, axis_1_range, axis_2_range):
         axis_1_len = axis_1_range.__len__()
         axis_2_len = axis_2_range.__len__()
+        decrease_matrix = np.zeros([axis_2_len, axis_1_len])
+        i_score = 0
+        for i_x in range(axis_1_len):
+            for i_y in range(axis_2_len):
+                # for image, row and column are exchanged compared to ndarray
+                decrease_matrix[i_y, i_x] = (scores[i_score] - center_score) * 100
+                i_score += 1
+        return decrease_matrix
 
-        force_matrix_combined = Presenter.combine_two_axis(force_matrix)
-        cop_matrix_combined = Presenter.combine_two_axis(cop_matrix)
-
+    # show the decrease amount and std among subjects for all the speeds
     @staticmethod
-    def combine_two_axis(original_matrix):
-        combined_matrix = original_matrix.copy()
-        center_row = int(original_matrix.shape[0] / 2)
-        center_col = int(original_matrix.shape[1] / 2)
-        for i_row in range(original_matrix.shape[0]):
-            for i_col in range(original_matrix.shape[1]):
-                combined_matrix[i_row, i_col, :] = original_matrix[i_row, center_col, :] + original_matrix[center_row,
-                                                                                           i_col, :]
-        return combined_matrix
+    def get_selected_matrix(segment_df, sheet, output_names, speed_names):
+        segment = segment_df.iloc[0, 0]
+        if segment in ['trunk', 'pelvis']:
+            axis_1_range = Presenter.__array_to_range(segment_df['x_offset'].as_matrix())
+            axis_2_range = Presenter.__array_to_range(segment_df['z_offset'].as_matrix())
+        else:
+            axis_1_range = Presenter.__array_to_range(segment_df['theta_offset'].as_matrix())
+            axis_2_range = Presenter.__array_to_range(segment_df['z_offset'].as_matrix())
+        axis_1_len = axis_1_range.__len__()
+        axis_2_len = axis_2_range.__len__()
+        total_matrix_number = SUB_NUM * speed_names.__len__() * output_names.__len__()
+        matrix = np.zeros([axis_2_len, axis_1_len, total_matrix_number])
+        i_matrix = 0
+        for i_sub in range(SUB_NUM):
+            for output in output_names:
+                for speed in speed_names:
+                    trial_df = segment_df[(segment_df['subject_id'] == i_sub) & (segment_df['speed'] == float(speed))]
+                    center_df = trial_df[(trial_df['x_offset'] == 0) & (trial_df['y_offset'] == 0) &
+                                         (trial_df['z_offset'] == 0) & (trial_df['theta_offset'] == 0)]
+                    center_score = np.mean(center_df[output].as_matrix())
+                    scores = trial_df[output].as_matrix()
+                    matrix[:, :, i_matrix] = Presenter.__get_decrease_matrix(scores, center_score,
+                                                                             axis_1_range, axis_2_range)
+                    i_matrix += 1
+        mean_matrix = np.mean(matrix, axis=2)
+        std_matrix = np.std(matrix, axis=2)
+        title = segment + ', output = '.join(output_names) + ', speed = ' + ', '.join(speed_names)
+        Presenter.__store_matrix(mean_matrix, std_matrix, title, axis_1_range, axis_2_range, sheet, segment)
 
     @staticmethod
     def __store_matrix(mean_matrix, std_matrix, title, axis_1_range, axis_2_range, sheet, segment):
@@ -258,128 +427,3 @@ class Presenter:
             for i_y in range(axis_2_len):
                 text = str(round(mean_matrix[i_y, i_x], 1)) + ' ± ' + str(round(std_matrix[i_y, i_x], 1))
                 sheet.write(i_y + 3 + row_offset, i_x + 2, text, num_style)
-
-    @staticmethod
-    def __get_score_im(scores, axis_0_range, axis_1_range):
-        axis_0_len = axis_0_range.__len__()
-        axis_1_len = axis_1_range.__len__()
-        score_im = np.zeros([axis_1_len, axis_0_len])
-        i_score = 0
-        for i_x in range(axis_0_len):
-            for i_y in range(axis_1_len):
-                # for image, row and column are exchanged compared to ndarray
-                score_im[i_y, i_x] = scores[i_score]
-                i_score += 1
-        return score_im
-
-    @staticmethod
-    def __array_to_range(array):
-        start_value = int(array[0])
-        end_value = int(np.max(array))
-        step_value = 1
-        for value in array:
-            if value != start_value:
-                step_value = int(value - start_value)
-                break
-        return range(start_value, end_value + 1, step_value)
-
-    # this show result is different from the one in EvaluationClass because it serves analyse result
-    @staticmethod
-    def __show_score_im(score_im, axis_0_range, axis_1_range, title, axis_0_label, axis_1_label, date):
-        fig, ax = plt.subplots(figsize=(8, 6))
-        im = plt.imshow(score_im, cmap=plt.cm.gray)
-        plt.colorbar(im)
-        if axis_0_label.__contains__('theta'):
-            x_label = [str(tick) + '°' for tick in axis_0_range]
-        else:
-            x_label = [str(1000 * tick) + 'mm' for tick in axis_0_range]
-        ax.set_xticks(range(score_im.shape[1]))
-        ax.set_xticklabels(x_label, fontdict={'fontsize': 8})
-        ax.set_xlabel(axis_0_label, fontdict={'fontsize': 12})
-        if axis_1_label.__contains__('theta'):
-            y_label = [str(tick) + '°' for tick in axis_1_range]
-        else:
-            y_label = [str(1000 * tick) + 'mm' for tick in axis_1_range]
-        ax.set_yticks(range(score_im.shape[0]))
-        ax.set_yticklabels(y_label, fontdict={'fontsize': 8})
-        ax.set_ylabel(axis_1_label, fontdict={'fontsize': 12})
-        plt.title(title)
-        # file_path = RESULT_PATH + 'result_' + date + '\\' + title + '.png'
-        # plt.savefig(file_path)
-        plt.show()  # show plot at last
-
-    @staticmethod
-    def __get_decrease_matrix(scores, center_score, axis_1_range, axis_2_range):
-        axis_1_len = axis_1_range.__len__()
-        axis_2_len = axis_2_range.__len__()
-        decrease_matrix = np.zeros([axis_2_len, axis_1_len])
-        i_score = 0
-        for i_x in range(axis_1_len):
-            for i_y in range(axis_2_len):
-                # for image, row and column are exchanged compared to ndarray
-                decrease_matrix[i_y, i_x] = (scores[i_score] - center_score) * 100
-                i_score += 1
-        return decrease_matrix
-
-    @staticmethod
-    def show_selected_result(segment_df, date, output_names, speed_names):
-        segment = segment_df.iloc[0, 0]
-        if segment in ['trunk', 'pelvis']:
-            axis_1_range = Presenter.__array_to_range(segment_df['x_offset'].as_matrix())
-            axis_2_range = Presenter.__array_to_range(segment_df['z_offset'].as_matrix())
-            axis_1_label, axis_2_label = 'x offset to center', 'z offset to center'
-
-        else:
-            axis_1_range = Presenter.__array_to_range(segment_df['theta_offset'].as_matrix())
-            axis_2_range = Presenter.__array_to_range(segment_df['z_offset'].as_matrix())
-            axis_1_label, axis_2_label = 'theta offset to center', 'z offset to center'
-
-        axis_1_len = axis_1_range.__len__()
-        axis_2_len = axis_2_range.__len__()
-        average_output_im = np.zeros([axis_2_len, axis_1_len])
-        for i_sub in range(SUB_NUM):
-            for output in output_names:
-                for speed in speed_names:
-                    trial_df = segment_df[(segment_df['subject_id'] == i_sub) & (segment_df['speed'] == float(speed))]
-                    output_scores = trial_df[output].as_matrix()
-
-                    sub_output_im = Presenter.__get_score_im(output_scores, axis_1_range, axis_2_range)
-                    average_output_im += sub_output_im
-
-        total_number = SUB_NUM * speed_names.__len__() * output_names.__len__()
-        average_output_im = average_output_im / total_number
-        output_names_str = ', '.join(output_names)
-        average_output_title = segment + ', average ' + output_names_str
-        Presenter.__show_score_im(average_output_im, axis_1_range, axis_2_range, average_output_title, axis_1_label,
-                                  axis_2_label, date)
-
-    # show the decrease amount and std among subjects for all the speeds
-    @staticmethod
-    def get_selected_matrix(segment_df, sheet, output_names, speed_names):
-        segment = segment_df.iloc[0, 0]
-        if segment in ['trunk', 'pelvis']:
-            axis_1_range = Presenter.__array_to_range(segment_df['x_offset'].as_matrix())
-            axis_2_range = Presenter.__array_to_range(segment_df['z_offset'].as_matrix())
-        else:
-            axis_1_range = Presenter.__array_to_range(segment_df['theta_offset'].as_matrix())
-            axis_2_range = Presenter.__array_to_range(segment_df['z_offset'].as_matrix())
-        axis_1_len = axis_1_range.__len__()
-        axis_2_len = axis_2_range.__len__()
-        total_matrix_number = SUB_NUM * speed_names.__len__() * output_names.__len__()
-        matrix = np.zeros([axis_2_len, axis_1_len, total_matrix_number])
-        i_matrix = 0
-        for i_sub in range(SUB_NUM):
-            for output in output_names:
-                for speed in speed_names:
-                    trial_df = segment_df[(segment_df['subject_id'] == i_sub) & (segment_df['speed'] == float(speed))]
-                    center_df = trial_df[(trial_df['x_offset'] == 0) & (trial_df['y_offset'] == 0) &
-                                         (trial_df['z_offset'] == 0) & (trial_df['theta_offset'] == 0)]
-                    center_score = np.mean(center_df[output].as_matrix())
-                    scores = trial_df[output].as_matrix()
-                    matrix[:, :, i_matrix] = Presenter.__get_decrease_matrix(scores, center_score,
-                                                                             axis_1_range, axis_2_range)
-                    i_matrix += 1
-        mean_matrix = np.mean(matrix, axis=2)
-        std_matrix = np.std(matrix, axis=2)
-        title = segment + ', output = '.join(output_names) + ', speed = ' + ', '.join(speed_names)
-        Presenter.__store_matrix(mean_matrix, std_matrix, title, axis_1_range, axis_2_range, sheet, segment)
