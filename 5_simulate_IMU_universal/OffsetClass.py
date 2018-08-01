@@ -162,14 +162,14 @@ class MultiAxisOffset:
             z_axis = OneAxisOffset(segment, 'z', z_range)
             multi_offset.add_offset_axis(z_axis)
         elif segment in ['l_thigh', 'r_thigh']:
-            theta_range = range(-30, 31, 5)
+            theta_range = range(-25, 26, 5)
             theta_axis = OneAxisOffset(segment, 'theta', theta_range, diameter=thigh_diameter)
             multi_offset.add_offset_axis(theta_axis)
             z_range = range(-100, 101, 20)
             z_axis = OneAxisOffset(segment, 'z', z_range)
             multi_offset.add_offset_axis(z_axis)
         elif segment in ['l_shank', 'r_shank']:
-            theta_range = range(-30, 31, 5)
+            theta_range = range(-25, 26, 5)
             theta_axis = OneAxisOffset(segment, 'theta', theta_range, diameter=shank_diameter)
             multi_offset.add_offset_axis(theta_axis)
             z_range = range(-100, 101, 20)

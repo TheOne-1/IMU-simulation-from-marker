@@ -11,8 +11,8 @@ from XYGeneratorUni import XYGeneratorUni
 output_names = [
     'FP1.ForX',
     'FP2.ForX',
-    # 'FP1.ForY', 'FP2.ForY',
-    # 'FP1.ForZ', 'FP2.ForZ',
+    'FP1.ForY', 'FP2.ForY',
+    'FP1.ForZ', 'FP2.ForZ',
     # 'FP1.CopX', 'FP1.CopY',
     # 'FP2.CopX', 'FP2.CopY'
 ]
@@ -26,14 +26,14 @@ input_names = [
     'r_shank_acc_x', 'r_shank_acc_y', 'r_shank_acc_z',
     'l_foot_acc_x', 'l_foot_acc_y', 'l_foot_acc_z',
     'r_foot_acc_x', 'r_foot_acc_y', 'r_foot_acc_z',
-    # 'trunk_gyr_x', 'trunk_gyr_y', 'trunk_gyr_z',
-    # 'pelvis_gyr_x', 'pelvis_gyr_y', 'pelvis_gyr_z',
-    # 'l_thigh_gyr_x', 'l_thigh_gyr_y', 'l_thigh_gyr_z',
-    # 'r_thigh_gyr_x', 'r_thigh_gyr_y', 'r_thigh_gyr_z',
-    # 'l_shank_gyr_x', 'l_shank_gyr_y', 'l_shank_gyr_z',
-    # 'r_shank_gyr_x', 'r_shank_gyr_y', 'r_shank_gyr_z',
-    # 'l_foot_gyr_x', 'l_foot_gyr_y', 'l_foot_gyr_z',
-    # 'r_foot_gyr_x', 'r_foot_gyr_y', 'r_foot_gyr_z',
+    'trunk_gyr_x', 'trunk_gyr_y', 'trunk_gyr_z',
+    'pelvis_gyr_x', 'pelvis_gyr_y', 'pelvis_gyr_z',
+    'l_thigh_gyr_x', 'l_thigh_gyr_y', 'l_thigh_gyr_z',
+    'r_thigh_gyr_x', 'r_thigh_gyr_y', 'r_thigh_gyr_z',
+    'l_shank_gyr_x', 'l_shank_gyr_y', 'l_shank_gyr_z',
+    'r_shank_gyr_x', 'r_shank_gyr_y', 'r_shank_gyr_z',
+    'l_foot_gyr_x', 'l_foot_gyr_y', 'l_foot_gyr_z',
+    'r_foot_gyr_x', 'r_foot_gyr_y', 'r_foot_gyr_z',
 ]
 
 R2_column = [output + '_R2' for output in output_names]

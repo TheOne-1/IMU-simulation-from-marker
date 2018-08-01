@@ -1,14 +1,139 @@
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import xlwt
 from math import sqrt
 from DatabaseInfo import DatabaseInfo
 from OffsetClass import *
 from const import *
-
+import pickle
 
 class Presenter:
     @staticmethod
-    def show_segment_result(segment_df, result_names, date, sub_num=SUB_NUM):
+    def show_segment_result_all(result_name, date):
+        with open('segment_result_all.txt', 'rb') as fp:  # Pickling
+            result_all = pickle.load(fp)
+        if result_name == 'R2':
+            im_all = result_all[0]
+            bar_title = 'R2 decrease'
+            colorbar_tick = np.arange(-0.04, 0.01, 0.01)
+        elif result_name == 'RMSE':
+            im_all = result_all[1]
+            bar_title = 'RMSE increase'
+            colorbar_tick = np.arange(0, 0.05, 0.01)
+        elif result_name == 'NRMSE':
+            im_all = result_all[2]
+            bar_title = 'NRMSE increase'
+            colorbar_tick = np.arange(0, 1.6, 0.5)
+        else:
+            raise RuntimeError('Wrong result name')
+
+        # get the max and min of all the imagines
+        max_value, min_value = im_all[0][0][0, 0], im_all[0][0][0, 0]
+        for segment_im in im_all:
+            for im in segment_im:
+                max_current = np.max(im)
+                min_current = np.min(im)
+                if max_current > max_value:
+                    max_value = max_current
+                if min_current < min_value:
+                    min_value = min_current
+        x_label_mm = ['-100', '', '', '', '', '0', '', '', '', '', '100']
+        label_foot = ['-50', '', '', '', '', '0', '', '', '', '', '50']
+        x_label_theta = ['-25', '', '', '', '', '0', '', '', '', '', '25']
+        y_label = ['100', '', '', '', '', '0', '', '', '', '', '-100']
+        cmap_item = plt.cm.get_cmap('RdYlBu_r')
+        # get the first four segments
+        fig, ax = plt.subplots(figsize=(7, 8))
+        # fig, ax = plt.subplots()
+        for i_segment in range(4):
+            for i_im in range(len(im_all[i_segment])):
+                # plot the foot before shank and thigh
+                if i_segment < 2:
+                    score_im = im_all[i_segment][i_im]
+                else:
+                    score_im = im_all[i_segment+4][i_im]
+                plt.subplot(4, 3, 3*i_segment+i_im+1)
+                ax = plt.gca()
+                plt.imshow(score_im, vmin=min_value, vmax=max_value, cmap=cmap_item)     # , cmap=plt.cm.gray
+                if i_segment == 1:
+                    ax.set_xticks(range(score_im.shape[1]))
+                    ax.set_xticklabels(x_label_mm, fontdict={'fontsize': FONT_SIZE})
+                elif i_segment == 3:
+                    ax.set_xticks(range(score_im.shape[1]))
+                    ax.set_xticklabels(label_foot, fontdict={'fontsize': FONT_SIZE})
+                else:
+                    ax.get_xaxis().set_visible(False)
+                if i_im == 0 and i_segment < 2:
+                    ax.set_yticks(range(score_im.shape[0]))
+                    ax.set_yticklabels(y_label, fontdict={'fontsize': FONT_SIZE})
+                elif i_im == 0 and i_segment >= 2:
+                    ax.set_yticks(range(score_im.shape[0]))
+                    ax.set_yticklabels(label_foot, fontdict={'fontsize': FONT_SIZE})
+                else:
+                    ax.get_yaxis().set_visible(False)
+        plt.text(12, -40, 'trunk', fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        plt.text(12, -26, 'pelvis', fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        plt.text(12, -12, 'left foot', fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        plt.text(12, 1.5, 'right foot', fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        plt.text(-41, -40, 'error in Z (mm)', fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        plt.text(-41, -8, 'error in Y (mm)', fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        plt.text(-18, 15.5, 'error in X (mm)', fontdict={'fontsize': FONT_SIZE})
+        plt.text(-31, -46, 'MLGRF', fontdict={'fontsize': FONT_SIZE})
+        plt.text(-14, -46, 'APGRF', fontdict={'fontsize': FONT_SIZE})
+        plt.text(3, -46, 'VGRF', fontdict={'fontsize': FONT_SIZE})
+        plt.tight_layout(w_pad=1.05, h_pad=1.05)
+        fig.subplots_adjust(left=0.15, right=0.92, bottom=0.1, top=0.92)
+        file_path = RESULT_PATH + 'result_segment\\' + date + '\\four_segments_1.png'
+        plt.savefig(file_path)
+
+        # get the first four segments
+        fig, ax = plt.subplots(figsize=(7, 8))
+        # fig, ax = plt.subplots()
+        for i_segment in range(2, 6):
+            for i_im in range(len(im_all[i_segment])):
+                # plot the foot before shank and thigh
+                score_im = im_all[i_segment][i_im]
+                if score_im.shape[1] == 13:     # to make the size the same
+                    score_im = score_im[:, 1:-1]
+                plt.subplot(4, 3, 3*(i_segment-2)+i_im+1)
+                ax = plt.gca()
+                plt.imshow(score_im, vmin=min_value, vmax=max_value, cmap=cmap_item)     # , cmap=plt.cm.gray
+                if i_segment == 5:
+                    ax.set_xticks(range(score_im.shape[1]))
+                    ax.set_xticklabels(x_label_theta, fontdict={'fontsize': FONT_SIZE})
+                else:
+                    ax.get_xaxis().set_visible(False)
+                if i_im == 0:
+                    ax.set_yticks(range(score_im.shape[0]))
+                    ax.set_yticklabels(y_label, fontdict={'fontsize': FONT_SIZE})
+                else:
+                    ax.get_yaxis().set_visible(False)
+        plt.text(12, -36, 'left thigh', fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        plt.text(12, -24, 'right thigh', fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        plt.text(12, -11, 'left shank', fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        plt.text(12, 1, 'right shank', fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        plt.text(-36, -20, 'error in Z (mm)', fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        plt.text(-24, 15, 'error in circumference (degree)', fontdict={'fontsize': FONT_SIZE})
+        plt.text(-27, -40, 'MLGRF', fontdict={'fontsize': FONT_SIZE})
+        plt.text(-11.5, -40, 'APGRF', fontdict={'fontsize': FONT_SIZE})
+        plt.text(3, -40, 'VGRF', fontdict={'fontsize': FONT_SIZE})
+        plt.tight_layout(w_pad=1.05, h_pad=1.05)
+        fig.subplots_adjust(left=0.14, right=0.92, bottom=0.1, top=0.92)
+        file_path = RESULT_PATH + 'result_segment\\' + date + '\\four_segments_2.png'
+        plt.savefig(file_path)
+
+        fig = plt.figure(figsize=(1.7, 8))
+        ax1 = fig.add_axes([0.1, 0.1, 0.2, 0.83])
+        norm = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
+        cb = mpl.colorbar.ColorbarBase(ax1, norm=norm, orientation='vertical', ticks=colorbar_tick, cmap=cmap_item)
+        cb.ax.tick_params(labelsize=FONT_SIZE)
+        plt.text(3.3, 0.6, bar_title, fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        file_path = RESULT_PATH + 'result_segment\\' + date + '\\colorbar.png'
+        plt.savefig(file_path)
+        plt.show()
+
+    @staticmethod
+    def show_segment_result(segment_df, result_names, sub_num=SUB_NUM):
         segment_name = segment_df['segment'].iloc[0]
         axes_names = Presenter.__get_axis_name(segment_name)
         axis_0_name = axes_names[0]
@@ -24,26 +149,22 @@ class Presenter:
         axis_1_range.reverse()
         axis_1_len = axis_1_range.__len__()
 
+        total_number = sub_num * len(SPEEDS)
         result_names_combined = [['FP1.' + name, 'FP2.' + name] for name in result_names]
-        i_result = 0
+        segment_im_all = []
         for force in result_names_combined:
-            average_force_im = np.zeros([axis_1_len, axis_0_len])
+            added_im = np.zeros([axis_1_len, axis_0_len])
             for i_sub in range(sub_num):
                 for speed in SPEEDS:
                     trial_df = segment_df[(segment_df['subject_id'] == i_sub) & (segment_df['speed'] == float(speed))]
-                    sub_force_im = Presenter.__get_score_im_uni(trial_df[[axis_0_name, axis_1_name, force[0],
-                                                                          force[1]]], axis_0_range, axis_1_range,
-                                                                axis_0_name, axis_1_name)
-                    average_force_im += sub_force_im
+                    sub_im = Presenter.__get_decrease_im_uni(trial_df[[axis_0_name, axis_1_name, force[0],
+                                                                       force[1]]], axis_0_range, axis_1_range,
+                                                             axis_0_name, axis_1_name)
+                    added_im += sub_im
 
-            total_number = sub_num * SPEEDS.__len__()
-            average_force_im = average_force_im / total_number
-            average_force_title = segment_name + ' ' + result_names[i_result]
-            i_result += 1
-            folder = 'result_segment\\' + date
-            Presenter.__show_score_im(average_force_im, axis_0_range, axis_1_range, average_force_title, axis_0_name,
-                                      axis_1_name, folder)
-        # plt.show()  # show plot at last
+            average_im = added_im / total_number
+            segment_im_all.append(average_im)
+        return segment_im_all
 
     @staticmethod
     def __get_axis_name(segment_name):
@@ -124,6 +245,19 @@ class Presenter:
             Presenter.__show_score_im(score_im, axis_0_range, axis_1_range, 'title', axis_0_name, axis_1_name, '77')
 
     @staticmethod
+    def save_segment_result_all(result_df):
+        result_all = []
+        for target_name in ['R2', 'RMSE', 'NRMSE']:
+            result_names = [force_name + '_' + target_name for force_name in ['ForX', 'ForY', 'ForZ']]
+            im_all = []
+            for segment in SEGMENT_NAMES:
+                segment_df = result_df[result_df['segment'] == segment]
+                im_all.append(Presenter.show_segment_result(segment_df, result_names))
+            result_all.append(im_all)
+        with open('segment_result_all.txt', 'wb') as fp:
+            pickle.dump(result_all, fp)
+
+    @staticmethod
     def __get_score_im_uni(scores_df, axis_0_range, axis_1_range, axis_0_name, axis_1_name):
         axis_0_len = axis_0_range.__len__()
         axis_1_len = axis_1_range.__len__()
@@ -135,6 +269,23 @@ class Presenter:
                 score = scores_df[(scores_df[axis_0_name] == axis_0_range[i_x]) &
                                   (scores_df[axis_1_name] == axis_1_range[i_y])].as_matrix()
                 score_im[i_y, i_x] = (score[0][-1] + score[0][-2]) / 2
+                i_score += 1
+        return score_im
+
+    @staticmethod
+    def __get_decrease_im_uni(scores_df, axis_0_range, axis_1_range, axis_0_name, axis_1_name):
+        axis_0_len = axis_0_range.__len__()
+        axis_1_len = axis_1_range.__len__()
+        score_im = np.zeros([axis_1_len, axis_0_len])
+        center_df = scores_df[(scores_df[axis_0_name] == 0) & (scores_df[axis_1_name] == 0)]
+        center_score = np.mean(center_df.as_matrix()[0][2:])
+        i_score = 0
+        for i_x in range(axis_0_len):
+            for i_y in range(axis_1_len):
+                # for image, row and column are exchanged compared to ndarray
+                score = scores_df[(scores_df[axis_0_name] == axis_0_range[i_x]) &
+                                  (scores_df[axis_1_name] == axis_1_range[i_y])].as_matrix()
+                score_im[i_y, i_x] = (score[0][-1] + score[0][-2]) / 2 - center_score
                 i_score += 1
         return score_im
 

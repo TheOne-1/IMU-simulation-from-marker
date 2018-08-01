@@ -25,9 +25,9 @@ SHANK_COEFF = 1  # D_shank = SHANK_COEFF * D_great_trochanter
 WN_MARKER = 10 / (MOCAP_SAMPLE_RATE / 2)
 WN_FORCE = 25 / (MOCAP_SAMPLE_RATE / 2)
 
-# IM_VMIN = 0.5
+# IM_VMIN = 0.9
 # IM_VMAX = 1
-FONT_SIZE = 12
+FONT_SIZE = 18
 
 ALL_ACC_NAMES = ['trunk_acc_x', 'trunk_acc_y', 'trunk_acc_z',
                  'pelvis_acc_x', 'pelvis_acc_y', 'pelvis_acc_z',
