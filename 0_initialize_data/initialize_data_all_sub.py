@@ -4,7 +4,7 @@ import pandas as pd
 from gaitanalysis.motek import DFlowData
 
 from DatabaseInfo import DatabaseInfo
-from SubjectData import SubjectData
+from SubjectDataUni import SubjectData
 from XYGeneratorUni import XYGeneratorUni
 from const import *
 

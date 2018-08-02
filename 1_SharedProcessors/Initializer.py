@@ -56,8 +56,8 @@ class Initializer:
         marker_unfilt = data[:, marker_column_num]
         marker_num = int(marker_unfilt.shape[1] / 3)
         for i_marker in range(marker_num):
-            marker_unfilt[:, 3*i_marker:3*(i_marker+1)] = \
-                Initializer.__coordinate_transfer(marker_unfilt[:, 3*i_marker:3*(i_marker+1)])
+            marker_unfilt[:, 3 * i_marker:3 * (i_marker + 1)] = \
+                Initializer.__coordinate_transfer(marker_unfilt[:, 3 * i_marker:3 * (i_marker + 1)])
         marker_filt = Initializer.filtering(marker_unfilt, WN_MARKER, filter_order)
         data[:, marker_column_num] = marker_filt
 
@@ -65,9 +65,9 @@ class Initializer:
         # in swing phase will affect the COP in stance phase
         # coordinate transfer
         force_unfilt = data[:, force_column_num]
-        for i_force_plate in range(4):      # there are two forces, two cops
-            force_unfilt[:, 3*i_force_plate:3*(i_force_plate+1)] = \
-                Initializer.__coordinate_transfer(force_unfilt[:, 3*i_force_plate:3*(i_force_plate+1)])
+        for i_force_plate in range(4):  # there are two forces, two cops
+            force_unfilt[:, 3 * i_force_plate:3 * (i_force_plate + 1)] = \
+                Initializer.__coordinate_transfer(force_unfilt[:, 3 * i_force_plate:3 * (i_force_plate + 1)])
         force_filt = force_unfilt.copy()
         # force filtering
         force_filt[:, 3:6] = Initializer.filtering(force_unfilt[:, 3:6], WN_FORCE, filter_order)
@@ -77,15 +77,16 @@ class Initializer:
         plate_1_zero_index = np.where(force_1_norm < FORCE_PLATE_THRESHOLD)
         force_2_norm = np.linalg.norm(force_filt[:, 9:12], axis=1)
         plate_2_zero_index = np.where(force_2_norm < FORCE_PLATE_THRESHOLD)
-        force_filt[plate_1_zero_index, 0:6] = 0       # zero data after filtering
+        force_filt[plate_1_zero_index, 0:6] = 0  # zero data after filtering
         force_filt[plate_2_zero_index, 6:12] = 0
         # cop filtering
         force_filt[:, 0:3] = Initializer.filtering(force_filt[:, 0:3], WN_FORCE, filter_order)
         force_filt[:, 6:9] = Initializer.filtering(force_filt[:, 6:9], WN_FORCE, filter_order)
-        force_filt[plate_1_zero_index, 0:3] = 0       # zero cop data again after filtering
+        force_filt[plate_1_zero_index, 0:3] = 0  # zero cop data again after filtering
         force_filt[plate_2_zero_index, 6:9] = 0
         data[:, force_column_num] = force_filt
 
         data_df = pd.DataFrame(data)
         data_df.columns = column_names
         return data_df
+

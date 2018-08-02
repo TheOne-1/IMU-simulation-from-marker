@@ -1,10 +1,10 @@
 # this file is used to evaluate all the thigh marker position and find the best location
+from SubjectDataUni import SubjectData
 from sklearn import ensemble
 from sklearn import preprocessing
 
 from EvaluationUniClass import EvaluationUni
 from OffsetClass import *
-from SubjectData import SubjectData
 from XYGeneratorUni import XYGeneratorUni
 
 output_names = [
@@ -40,8 +40,8 @@ input_names = [
     'r_foot_gyr_x', 'r_foot_gyr_y', 'r_foot_gyr_z',
 ]
 
-model = ensemble.RandomForestRegressor(n_jobs=6)
-# model = ensemble.RandomForestRegressor(n_estimators=100, random_state=0, n_jobs=6)
+# model = ensemble.RandomForestRegressor(n_jobs=6)
+model = ensemble.RandomForestRegressor(n_estimators=100, random_state=0, n_jobs=6)
 # model = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=400)
 # model = ensemble.GradientBoostingRegressor(
 #     learning_rate=0.1, min_impurity_decrease=0.001, min_samples_split=6, n_estimators=500)

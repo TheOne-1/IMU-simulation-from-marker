@@ -1,12 +1,12 @@
 # this file is used to evaluate all the thigh marker position and find the best location
 
 import numpy as np
+from SubjectData import SubjectData
 from sklearn import ensemble
 from sklearn import preprocessing
 
 from DatabaseInfo import DatabaseInfo
 from EvaluationUniClass import EvaluationUni
-from SubjectData import SubjectData
 from XYGeneratorUni import XYGeneratorUni
 from const import *
 

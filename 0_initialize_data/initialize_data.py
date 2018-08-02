@@ -16,7 +16,7 @@ marker_column_num = my_database_info.get_marker_column_num()        # get column
 force_column_num = my_database_info.get_force_column_num()
 all_column_names = my_database_info.get_all_column_names()
 
-for i_sub in range(SUB_NUM):
+for i_sub in range(12):
     print('sub: ' + str(i_sub))
     for i_speed in range(speed_num):
         file_names = my_database_info.get_file_names(sub=i_sub, speed=i_speed, path=data_path)
@@ -27,12 +27,15 @@ for i_sub in range(SUB_NUM):
         # events: A: Force Plate Zeroing    B: Calibration Pose     C: First Normal Walking
         # D: Longitudinal Perturbation      E: Second Normal Walking    F: Unloaded End
 
-        cali_data_df = trial_data.extract_processed_data(event='Calibration Pose')[necessary_columns]
-        walking_data_df_1 = trial_data.extract_processed_data(event='First Normal Walking')[necessary_columns]
-        walking_data_df_2 = trial_data.extract_processed_data(event='Second Normal Walking')[necessary_columns]
-
-        # cali_data_df.columns = all_column_names
-        # walking_data_df_1.columns = all_column_names
+        cali_data_df = trial_data.extract_processed_data(event='Calibration Pose')
+        cali_data_df.columns = all_column_names
+        cali_data_df = cali_data_df[necessary_columns]
+        walking_data_df_1 = trial_data.extract_processed_data(event='First Normal Walking')
+        walking_data_df_1.columns = all_column_names
+        walking_data_df_1 = walking_data_df_1[necessary_columns]
+        walking_data_df_2 = trial_data.extract_processed_data(event='Second Normal Walking')
+        walking_data_df_2.columns = all_column_names
+        walking_data_df_2 = walking_data_df_2[necessary_columns]
 
         cali_processed = my_initializer.process_data(cali_data_df, marker_column_num, force_column_num)
         walking_1_processed = my_initializer.process_data(walking_data_df_1, marker_column_num, force_column_num)

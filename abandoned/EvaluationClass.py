@@ -26,13 +26,11 @@ class Evaluation:
 
         if self.__do_scaling:
             x_scalar = sklearn.clone(self.__base_scaler)
-            y_scalar = sklearn.clone(self.__base_scaler)
             x_scalar.fit(x_train)
-            y_scalar.fit(y_train)
             self.__x_train = x_scalar.transform(x_train)
-            self.__y_train = y_scalar.transform(y_train)
             self.__x_test = x_scalar.transform(x_test)
-            self.__y_test = y_scalar.transform(y_test)
+            self.__y_train = y_train.as_matrix()
+            self.__y_test = y_test.as_matrix()
         else:  # transfer dataframe to ndarray
             self.__x_train = x_train.as_matrix()
             self.__y_train = y_train.as_matrix()

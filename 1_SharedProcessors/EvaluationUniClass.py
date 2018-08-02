@@ -27,9 +27,11 @@ class EvaluationUni:
     def set_train(self, x_train, y_train):
         if DO_SCALING:
             self.__x_scalar = sklearn.clone(self.__base_scaler)
-            self.__y_scalar = sklearn.clone(self.__base_scaler)
             x_train = self.__x_scalar.fit_transform(x_train)
-            y_train = self.__y_scalar.fit_transform(y_train)
+            y_train = y_train.as_matrix()
+        else:
+            x_train = x_train.as_matrix()
+            y_train = y_train.as_matrix()
         if DO_PCA:
             self.__pca.fit(x_train)
             x_train = self.__pca.transform(x_train)
@@ -44,16 +46,13 @@ class EvaluationUni:
     def set_test(self, x_test, y_test):
         if DO_SCALING:
             x_test = self.__x_scalar.transform(x_test)
-            y_test = self.__y_scalar.transform(y_test)
         if DO_PCA:
             x_test = self.__pca.transform(x_test)
         self.__x_test = x_test
         self.__y_test = y_test
 
     def set_y_test(self, y_test):
-        if DO_SCALING:
-            y_test = self.__y_scalar.transform(y_test)
-        self.__y_test = y_test
+        self.__y_test = y_test.as_matrix()
 
     def set_x_test(self, x_test):
         if DO_SCALING:
@@ -100,7 +99,7 @@ class EvaluationUni:
         NRMSEs = []
         for i_output in range(output_num):
             RMSE = sqrt(mean_squared_error(self.__y_test[:, i_output], self.__y_pred[:, i_output]))
-            NRMSE = RMSE / (max(self.__y_test[:, i_output]) - min(self.__y_test[:, i_output])) * 100
+            NRMSE = 100 * RMSE / (max(self.__y_test[:, i_output]) - min(self.__y_test[:, i_output]))
             NRMSEs.append(NRMSE)
         return NRMSEs
 

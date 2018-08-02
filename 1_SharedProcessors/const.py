@@ -7,13 +7,13 @@ DO_SHUFFLING = True
 NORMALIZE_ACC = True
 NORMALIZE_GRF = True
 
+SUB_NUM = 12
 RAW_DATA_PATH = 'D:\Tian\Research\Projects\ML Project\gait_database\GaitDatabase\data\\'
 PROCESSED_DATA_PATH = 'D:\Tian\Research\Projects\ML Project\gait_database_processed\GaitDatabase\data\\'
 RESULT_PATH = 'D:\Tian\Research\Projects\ML Project\gait_database_processed\\result\\'
 ALL_SUB_FILE = 'D:\Tian\Research\Projects\ML Project\gait_database_processed\GaitDatabase\data_all_sub\\all_sub.csv'
 
 N_COMPONENT = 12
-SUB_NUM = 10
 SPEEDS = ['0.8', '1.2', '1.6']
 SPEED_NUM = SPEEDS.__len__()
 SEGMENT_NAMES = ['trunk', 'pelvis', 'l_thigh', 'r_thigh', 'l_shank', 'r_shank', 'l_foot', 'r_foot']
