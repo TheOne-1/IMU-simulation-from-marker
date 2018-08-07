@@ -6,11 +6,14 @@ from DatabaseInfo import DatabaseInfo
 from OffsetClass import *
 from const import *
 import pickle
+import random
+import matplotlib.patches as mpatches
+
 
 class Presenter:
     @staticmethod
     def show_segment_result_all(result_name, date):
-        with open('segment_result_all.txt', 'rb') as fp:  # Pickling
+        with open(RESULT_PATH + 'result_segment\\' + date + '\\segment_result_all.txt', 'rb') as fp:  # Pickling
             result_all = pickle.load(fp)
         if result_name == 'R2':
             im_all = result_all[0]
@@ -18,12 +21,12 @@ class Presenter:
             colorbar_tick = np.arange(-0.04, 0.01, 0.01)
         elif result_name == 'RMSE':
             im_all = result_all[1]
-            bar_title = 'RMSE increase'
+            bar_title = 'RMSE increase (BW)'
             colorbar_tick = np.arange(0, 0.05, 0.01)
         elif result_name == 'NRMSE':
             im_all = result_all[2]
-            bar_title = 'NRMSE increase'
-            colorbar_tick = np.arange(0, 1.6, 0.5)
+            bar_title = 'NRMSE increase (%)'
+            colorbar_tick = np.arange(0, 1.1, 0.2)
         else:
             raise RuntimeError('Wrong result name')
 
@@ -51,10 +54,10 @@ class Presenter:
                 if i_segment < 2:
                     score_im = im_all[i_segment][i_im]
                 else:
-                    score_im = im_all[i_segment+4][i_im]
-                plt.subplot(4, 3, 3*i_segment+i_im+1)
+                    score_im = im_all[i_segment + 4][i_im]
+                plt.subplot(4, 3, 3 * i_segment + i_im + 1)
                 ax = plt.gca()
-                plt.imshow(score_im, vmin=min_value, vmax=max_value, cmap=cmap_item)     # , cmap=plt.cm.gray
+                plt.imshow(score_im, vmin=min_value, vmax=max_value, cmap=cmap_item)  # , cmap=plt.cm.gray
                 if i_segment == 1:
                     ax.set_xticks(range(score_im.shape[1]))
                     ax.set_xticklabels(x_label_mm, fontdict={'fontsize': FONT_SIZE})
@@ -93,11 +96,11 @@ class Presenter:
             for i_im in range(len(im_all[i_segment])):
                 # plot the foot before shank and thigh
                 score_im = im_all[i_segment][i_im]
-                if score_im.shape[1] == 13:     # to make the size the same
+                if score_im.shape[1] == 13:  # to be compatible to old protocol by making the size the same
                     score_im = score_im[:, 1:-1]
-                plt.subplot(4, 3, 3*(i_segment-2)+i_im+1)
+                plt.subplot(4, 3, 3 * (i_segment - 2) + i_im + 1)
                 ax = plt.gca()
-                plt.imshow(score_im, vmin=min_value, vmax=max_value, cmap=cmap_item)     # , cmap=plt.cm.gray
+                plt.imshow(score_im, vmin=min_value, vmax=max_value, cmap=cmap_item)  # , cmap=plt.cm.gray
                 if i_segment == 5:
                     ax.set_xticks(range(score_im.shape[1]))
                     ax.set_xticklabels(x_label_theta, fontdict={'fontsize': FONT_SIZE})
@@ -133,7 +136,97 @@ class Presenter:
         plt.show()
 
     @staticmethod
-    def show_segment_result(segment_df, result_names, sub_num=SUB_NUM):
+    def get_acceptable_area(result_name, date, threshold=0.5):
+        with open(RESULT_PATH + 'result_segment\\' + date + '\\segment_result_all.txt', 'rb') as fp:  # Pickling
+            result_all = pickle.load(fp)
+        if result_name == 'R2':
+            im_all = result_all[0]
+        elif result_name == 'RMSE':
+            im_all = result_all[1]
+        elif result_name == 'NRMSE':
+            im_all = result_all[2]
+        else:
+            raise RuntimeError('Wrong result name')
+
+        area_all = []
+        for i_segment in range(len(SEGMENT_NAMES)):
+            segment_im = im_all[i_segment]
+            axis_0_len = segment_im[0].shape[1]
+            axis_1_len = segment_im[0].shape[0]
+            segment_acceptable_area = np.zeros(segment_im[0].shape)
+            for i_x in range(axis_0_len):
+                for i_y in range(axis_1_len):
+                    acceptable_flag = True
+                    for score_im in segment_im:
+                        if score_im[i_y, i_x] > threshold:
+                            acceptable_flag = False
+                    if acceptable_flag:
+                        segment_acceptable_area[i_y, i_x] = 1
+            area_all.append(segment_acceptable_area)
+
+        x_label_mm = ['-100', '', '', '', '', '0', '', '', '', '', '100']
+        label_foot = ['-50', '', '', '', '', '0', '', '', '', '', '50']
+        x_label_theta = ['-25', '', '', '', '', '0', '', '', '', '', '25']
+        y_label = ['100', '', '', '', '', '0', '', '', '', '', '-100']
+        cmap_item = plt.cm.get_cmap('RdYlGn')
+        # get the first four segments
+        fig, ax = plt.subplots(figsize=(6.2, 9))
+        for i_segment in range(len(SEGMENT_NAMES)):
+            segment_acceptable_area = area_all[i_segment]
+            # plot the foot before shank and thigh
+            if i_segment < 2:
+                plt.subplot(4, 2, i_segment * 2 + 1)
+            elif 2 <= i_segment < 6:
+                plt.subplot(4, 2, i_segment * 2 - 2)
+            else:
+                plt.subplot(4, 2, i_segment * 2 - 7)
+            plt.imshow(segment_acceptable_area, vmax=1, vmin=0, cmap=cmap_item)  # , cmap=plt.cm.gray
+            plt.title(SEGMENT_OFFICIAL_NAMES[i_segment], fontdict={'fontsize': FONT_SIZE})
+            ax = plt.gca()
+            if i_segment < 2:
+                ax.set_yticks(range(segment_acceptable_area.shape[0]))
+                ax.set_yticklabels(y_label, fontdict={'fontsize': FONT_SIZE})
+                if i_segment == 1:
+                    ax.set_xticks(range(segment_acceptable_area.shape[1]))
+                    ax.set_xticklabels(x_label_mm, fontdict=FONT_DICT)
+                else:
+                    ax.get_xaxis().set_visible(False)
+            elif 2 <= i_segment < 6:
+                ax.set_yticks(range(segment_acceptable_area.shape[0]))
+                ax.set_yticklabels(y_label, fontdict=FONT_DICT)
+                if i_segment == 5:
+                    ax.set_xticks(range(segment_acceptable_area.shape[1]))
+                    ax.set_xticklabels(x_label_theta, fontdict=FONT_DICT)
+                else:
+                    ax.get_xaxis().set_visible(False)
+            else:
+                ax.set_yticks(range(segment_acceptable_area.shape[0]))
+                ax.set_yticklabels(label_foot, fontdict=FONT_DICT)
+                if i_segment == 7:
+                    ax.set_xticks(range(segment_acceptable_area.shape[1]))
+                    ax.set_xticklabels(label_foot, fontdict=FONT_DICT)
+                else:
+                    ax.get_xaxis().set_visible(False)
+        plt.text(-9, -42, 'Z error (mm)', fontdict=FONT_DICT, rotation=90)
+        plt.text(-9, -8, 'Y error (mm)', fontdict=FONT_DICT, rotation=90)
+        plt.text(-2.5, 16, 'X error (mm)', fontdict=FONT_DICT)
+        plt.text(17, -26, 'Z error (mm)', fontdict=FONT_DICT, rotation=90)
+        plt.text(18, 16, 'rotation error (degree)', fontdict=FONT_DICT)
+        legend_name = ['unacceptable', 'acceptable']
+        plt.legend([mpatches.Patch(color=cmap_item(b)) for b in [0, 255]],
+                   ['{}'.format(legend_name[i]) for i in range(2)], loc=(-0.2, 5.9), mode={'expand'},
+                   fontsize=FONT_SIZE, ncol=2, framealpha=False)
+        plt.tight_layout(w_pad=1.05, h_pad=1.05)
+        fig.subplots_adjust(left=0.1, right=0.96, bottom=0.1, top=0.88, wspace=0.3)
+        file_path = RESULT_PATH + 'result_segment\\' + date + '\\acceptable_area.png'
+        plt.savefig(file_path)
+        with open(RESULT_PATH + 'result_segment\\' + date + '\\segment_area_all.txt', 'wb') as fp:
+            pickle.dump(area_all, fp)
+
+        plt.show()
+
+    @staticmethod
+    def get_segment_result(segment_df, result_names, sub_num=SUB_NUM):
         segment_name = segment_df['segment'].iloc[0]
         axes_names = Presenter.__get_axis_name(segment_name)
         axis_0_name = axes_names[0]
@@ -161,7 +254,6 @@ class Presenter:
                                                                        force[1]]], axis_0_range, axis_1_range,
                                                              axis_0_name, axis_1_name)
                     added_im += sub_im
-
             average_im = added_im / total_number
             segment_im_all.append(average_im)
         return segment_im_all
@@ -176,26 +268,28 @@ class Presenter:
             return [segment_name + '_theta_offset', segment_name + '_z_offset']
 
     @staticmethod
-    def show_all_combined_result(result_df, exp1_result, result_names, date, sub_num=SUB_NUM):
-        for result_name in result_names:
-            average_result_im = np.zeros([16, 16])
-            for i_sub in range(sub_num):
-                for speed in SPEEDS:
-                    exp1_speed_df = exp1_result[
-                        (exp1_result['subject_id'] == i_sub) & (exp1_result['speed'] == float(speed))
-                        & (exp1_result['segment'] == 'trunk')]
-                    original_df_item = exp1_speed_df[(exp1_speed_df['trunk_x_offset'] == 0) &
-                                                     (exp1_speed_df['trunk_z_offset'] == 0)]
-                    # original_value = original_df_item[result_name].as_matrix()
-                    original_value = 5
-                    speed_df = result_df[(result_df['subject_id'] == i_sub) & (result_df['speed'] == float(speed))]
-                    sub_result_im = Presenter.__get_all_combined_im(speed_df[result_name], original_value)
-                    average_result_im += sub_result_im
+    def show_all_combined_result(date, combo_num=100):
+        with open(RESULT_PATH + 'result_segment\\' + date + '\\segment_area_all.txt', 'wb') as fp:
+            area_all = pickle.load(fp)
+        index_all = []
+        for i_combo in range(combo_num):
+            index = np.zeros([len(SEGMENT_NAMES), 2])
+            for i_segment in range(len(SEGMENT_NAMES)):
+                index[i_segment, :] = Presenter.select_point_randomly(area_all[i_segment])
+            index_all.append(index)
 
-            total_number = sub_num * len(SPEEDS)
-            average_result_im = average_result_im / total_number
-            average_force_title = result_name
-            Presenter.__show_all_segment_im(average_result_im, average_force_title, date)
+    @staticmethod
+    def select_point_randomly(segment_acceptable_area):
+        point_found_flag = False
+        axis_0_range = segment_acceptable_area.shape[1]
+        axis_1_range = segment_acceptable_area.shape[0]
+        x_index, y_index = 0, 0
+        while not point_found_flag:
+            x_index = random.randint(0, axis_0_range - 1)
+            y_index = random.randint(0, axis_1_range - 1)
+            if segment_acceptable_area[y_index, x_index] == 1:
+                point_found_flag = True
+        return [x_index, y_index]
 
     @staticmethod
     def show_result_multi_axis(result_df, axes_names, output):
@@ -245,16 +339,16 @@ class Presenter:
             Presenter.__show_score_im(score_im, axis_0_range, axis_1_range, 'title', axis_0_name, axis_1_name, '77')
 
     @staticmethod
-    def save_segment_result_all(result_df):
+    def save_segment_result_all(result_df, date):
         result_all = []
         for target_name in ['R2', 'RMSE', 'NRMSE']:
             result_names = [force_name + '_' + target_name for force_name in ['ForX', 'ForY', 'ForZ']]
             im_all = []
             for segment in SEGMENT_NAMES:
                 segment_df = result_df[result_df['segment'] == segment]
-                im_all.append(Presenter.show_segment_result(segment_df, result_names))
+                im_all.append(Presenter.get_segment_result(segment_df, result_names))
             result_all.append(im_all)
-        with open('segment_result_all.txt', 'wb') as fp:
+        with open(RESULT_PATH + 'result_segment\\' + date + '\\segment_result_all.txt', 'wb') as fp:
             pickle.dump(result_all, fp)
 
     @staticmethod
@@ -300,7 +394,6 @@ class Presenter:
                 im[i_y, i_x] = scores[i_score] - original_value
                 i_score += 1
         return im
-
 
     @staticmethod
     def __get_all_offset_names():
@@ -367,16 +460,16 @@ class Presenter:
         else:
             x_label = [str(int(1000 * tick)) + ' mm' for tick in axis_0_range]
         ax.set_xticks(range(score_im.shape[1]))
-        ax.set_xticklabels(x_label, fontdict={'fontsize': FONT_SIZE}, rotation=45)
-        ax.set_xlabel(axis_0_label, fontdict={'fontsize': FONT_SIZE})
+        ax.set_xticklabels(x_label, fontdict=FONT_DICT, rotation=45)
+        ax.set_xlabel(axis_0_label, fontdict=FONT_DICT)
         if axis_1_label.__contains__('theta'):
             y_label = [str(int(tick)) + ' °' for tick in axis_1_range]
         else:
             y_label = [str(int(1000 * tick)) + ' mm' for tick in axis_1_range]
         ax.set_yticks(range(score_im.shape[0]))
-        ax.set_yticklabels(y_label, fontdict={'fontsize': FONT_SIZE})
-        ax.set_ylabel(axis_1_label, fontdict={'fontsize': FONT_SIZE})
-        # plt.title(title, fontdict={'fontsize': FONT_SIZE})
+        ax.set_yticklabels(y_label, fontdict=FONT_DICT)
+        ax.set_ylabel(axis_1_label, fontdict=FONT_DICT)
+        # plt.title(title, fontdict=FONT_DICT)
         plt.tight_layout()
         file_path = RESULT_PATH + folder + '\\' + title + '.png'
         plt.savefig(file_path)

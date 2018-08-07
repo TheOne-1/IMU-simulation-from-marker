@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-
 from VirtualProcessor import Processor
 from const import *
 

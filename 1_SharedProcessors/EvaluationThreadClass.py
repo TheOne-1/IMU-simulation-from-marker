@@ -1,7 +1,5 @@
-
+# train, test data is not stored in this Class. Only models and scalars are stored
 import matplotlib.pyplot as plt
-# from keras.callbacks import EarlyStopping
-# from keras.models import *
 import sklearn
 from sklearn.metrics import r2_score
 from sklearn.utils import shuffle
@@ -17,7 +15,7 @@ from sklearn.metrics import mean_squared_error
 from math import sqrt
 
 
-class EvaluationUni:
+class EvaluationThread:
     def __init__(self, y_column_names, base_model):
         self.__params_column_names = y_column_names
         self.__base_model = base_model
@@ -25,82 +23,77 @@ class EvaluationUni:
         self.__base_scaler = preprocessing.StandardScaler()
         self.__pca = PCA(n_components=N_COMPONENT)
 
-    def set_train(self, x_train, y_train):
+    def train_sklearn(self, x_train, y_train):
         if DO_SCALING:
             self.__x_scalar = sklearn.clone(self.__base_scaler)
             x_train = self.__x_scalar.fit_transform(x_train)
-            y_train = y_train.as_matrix()
-        else:
-            x_train = x_train.as_matrix()
-            y_train = y_train.as_matrix()
         if DO_PCA:
             self.__pca.fit(x_train)
             x_train = self.__pca.transform(x_train)
         if DO_SHUFFLING:
             x_train, y_train = shuffle(x_train, y_train)
-        self.__x_train = x_train
-        self.__y_train = y_train
+
+        if isinstance(x_train, pd.DataFrame):
+            x_train = x_train.as_matrix()
+        if isinstance(y_train, pd.DataFrame):
+            y_train = y_train.as_matrix()
+
         self.__models = []
-        for i_model in range(self.__y_train.shape[1]):
-            self.__models.append(sklearn.clone(self.__base_model))
+        for i_model in range(y_train.shape[1]):
+            model = sklearn.clone(self.__base_model)
+            model.fit(x_train, y_train[:, i_model])
+            self.__models.append(model)
 
-    def set_test(self, x_test, y_test):
-        if DO_SCALING:
-            x_test = self.__x_scalar.transform(x_test)
-        if DO_PCA:
-            x_test = self.__pca.transform(x_test)
-        self.__x_test = x_test
-        self.__y_test = y_test
-
-    def set_y_test(self, y_test):
-        self.__y_test = y_test.as_matrix()
-
-    def set_x_test(self, x_test):
+    def evaluate_sklearn(self, x_test, y_test):
         if DO_SCALING:
             x_test = self.__x_scalar.transform(x_test)
         else:
             x_test = x_test.as_matrix()
         if DO_PCA:
             x_test = self.__pca.transform(x_test)
-        self.__x_test = x_test
-
-    def train_sklearn(self):
+            
+        if isinstance(x_test, pd.DataFrame):
+            x_test = x_test.as_matrix()
+        
+        y_pred = y_test.copy()
         i_output = 0
         for model in self.__models:
-            model.fit(self.__x_train, self.__y_train[:, i_output])
+            y_pred[:, i_output] = model.predict(x_test)
             i_output += 1
-
-    def evaluate_sklearn(self):
-        y_pred = self.__y_test.copy()
-        i_output = 0
-        for model in self.__models:
-            y_pred[:, i_output] = model.predict(self.__x_test)
-            i_output += 1
-        self.__y_pred = y_pred
         return y_pred
 
-    def get_scores(self):
-        output_num = self.__y_test.shape[1]
-        scores = []
-        for i_output in range(output_num):
-            score = r2_score(self.__y_test[:, i_output], self.__y_pred[:, i_output])
-            scores.append(score)
-        return scores
+    @staticmethod
+    def get_all_scores(y_test, y_pred):
+        R2 = EvaluationThread.get_R2(y_test, y_pred)
+        RMSE = EvaluationThread.get_RMSE(y_test, y_pred)
+        NRMSE = EvaluationThread.get_NRMSE(y_test, y_pred)
+        return R2, RMSE, NRMSE
 
-    def get_RMSE(self):
-        output_num = self.__y_test.shape[1]
+    @staticmethod
+    def get_R2(y_test, y_pred):
+        output_num = y_test.shape[1]
+        R2 = []
+        for i_output in range(output_num):
+            score = r2_score(y_test[:, i_output], y_pred[:, i_output])
+            R2.append(score)
+        return R2
+
+    @staticmethod
+    def get_RMSE(y_test, y_pred):
+        output_num = y_test.shape[1]
         RMSEs = []
         for i_output in range(output_num):
-            RMSE = sqrt(mean_squared_error(self.__y_test[:, i_output], self.__y_pred[:, i_output]))
+            RMSE = sqrt(mean_squared_error(y_test[:, i_output], y_pred[:, i_output]))
             RMSEs.append(RMSE)
         return RMSEs
 
-    def get_NRMSE(self):
-        output_num = self.__y_test.shape[1]
+    @staticmethod
+    def get_NRMSE(y_test, y_pred):
+        output_num = y_test.shape[1]
         NRMSEs = []
         for i_output in range(output_num):
-            RMSE = sqrt(mean_squared_error(self.__y_test[:, i_output], self.__y_pred[:, i_output]))
-            NRMSE = 100 * RMSE / (max(self.__y_test[:, i_output]) - min(self.__y_test[:, i_output]))
+            RMSE = sqrt(mean_squared_error(y_test[:, i_output], y_pred[:, i_output]))
+            NRMSE = 100 * RMSE / (max(y_test[:, i_output]) - min(y_test[:, i_output]))
             NRMSEs.append(NRMSE)
         return NRMSEs
 
