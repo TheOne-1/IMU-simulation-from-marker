@@ -226,39 +226,6 @@ class Presenter:
         plt.show()
 
     @staticmethod
-    def get_segment_result(segment_df, result_names, sub_num=SUB_NUM):
-        segment_name = segment_df['segment'].iloc[0]
-        axes_names = Presenter.__get_axis_name(segment_name)
-        axis_0_name = axes_names[0]
-        axis_0_value = segment_df[axis_0_name]
-        axis_0_range = list(set(axis_0_value))
-        axis_0_range.sort()
-        axis_0_len = axis_0_range.__len__()
-
-        axis_1_name = axes_names[1]
-        axis_1_value = segment_df[axis_1_name]
-        axis_1_range = list(set(axis_1_value))
-        axis_1_range.sort()
-        axis_1_range.reverse()
-        axis_1_len = axis_1_range.__len__()
-
-        total_number = sub_num * len(SPEEDS)
-        result_names_combined = [['FP1.' + name, 'FP2.' + name] for name in result_names]
-        segment_im_all = []
-        for force in result_names_combined:
-            added_im = np.zeros([axis_1_len, axis_0_len])
-            for i_sub in range(sub_num):
-                for speed in SPEEDS:
-                    trial_df = segment_df[(segment_df['subject_id'] == i_sub) & (segment_df['speed'] == float(speed))]
-                    sub_im = Presenter.__get_decrease_im_uni(trial_df[[axis_0_name, axis_1_name, force[0],
-                                                                       force[1]]], axis_0_range, axis_1_range,
-                                                             axis_0_name, axis_1_name)
-                    added_im += sub_im
-            average_im = added_im / total_number
-            segment_im_all.append(average_im)
-        return segment_im_all
-
-    @staticmethod
     def __get_axis_name(segment_name):
         if segment_name in ['trunk', 'pelvis']:
             return [segment_name + '_x_offset', segment_name + '_z_offset']
@@ -266,30 +233,6 @@ class Presenter:
             return [segment_name + '_x_offset', segment_name + '_y_offset']
         else:
             return [segment_name + '_theta_offset', segment_name + '_z_offset']
-
-    @staticmethod
-    def show_all_combined_result(date, combo_num=100):
-        with open(RESULT_PATH + 'result_segment\\' + date + '\\segment_area_all.txt', 'wb') as fp:
-            area_all = pickle.load(fp)
-        index_all = []
-        for i_combo in range(combo_num):
-            index = np.zeros([len(SEGMENT_NAMES), 2])
-            for i_segment in range(len(SEGMENT_NAMES)):
-                index[i_segment, :] = Presenter.select_point_randomly(area_all[i_segment])
-            index_all.append(index)
-
-    @staticmethod
-    def select_point_randomly(segment_acceptable_area):
-        point_found_flag = False
-        axis_0_range = segment_acceptable_area.shape[1]
-        axis_1_range = segment_acceptable_area.shape[0]
-        x_index, y_index = 0, 0
-        while not point_found_flag:
-            x_index = random.randint(0, axis_0_range - 1)
-            y_index = random.randint(0, axis_1_range - 1)
-            if segment_acceptable_area[y_index, x_index] == 1:
-                point_found_flag = True
-        return [x_index, y_index]
 
     @staticmethod
     def show_result_multi_axis(result_df, axes_names, output):
@@ -346,10 +289,68 @@ class Presenter:
             im_all = []
             for segment in SEGMENT_NAMES:
                 segment_df = result_df[result_df['segment'] == segment]
-                im_all.append(Presenter.get_segment_result(segment_df, result_names))
+                im_all.append(Presenter.__get_segment_result(segment_df, result_names))
             result_all.append(im_all)
         with open(RESULT_PATH + 'result_segment\\' + date + '\\segment_result_all.txt', 'wb') as fp:
             pickle.dump(result_all, fp)
+
+    @staticmethod
+    def show_all_combined_result(result_df, sub_num=SUB_NUM):
+        i_plot = 1
+        for target_name in ['R2', 'RMSE', 'NRMSE']:
+            result_names = [force_name + '_' + target_name for force_name in ['ForX', 'ForY', 'ForZ']]
+            for result_name in result_names:
+                result_im = np.zeros([16, 16])
+                im_num = len(SPEEDS) * sub_num
+                for i_sub in range(sub_num):
+                    for speed in SPEEDS:
+                        speed_df = result_df[(result_df['subject_id'] == i_sub) & (result_df['speed'] == float(speed))]
+                        original_value = np.mean(speed_df[['FP1.' + result_name, 'FP2.' + result_name]].as_matrix()[0, :])
+                        result_value = speed_df[['FP1.' + result_name, 'FP2.' + result_name]].as_matrix()
+                        result_value = np.mean(result_value[1:, :], axis=1)
+                        speed_im = Presenter.__get_all_combined_im(result_value, original_value)
+                        result_im = result_im + speed_im
+                result_im /= im_num
+                plt.subplot(3, 3, i_plot)
+                plt.imshow(result_im)
+                plt.title(result_name)
+                plt.colorbar()
+                i_plot += 1
+        plt.show()
+
+
+    @staticmethod
+    def __get_segment_result(segment_df, result_names, sub_num=SUB_NUM):
+        segment_name = segment_df['segment'].iloc[0]
+        axes_names = Presenter.__get_axis_name(segment_name)
+        axis_0_name = axes_names[0]
+        axis_0_value = segment_df[axis_0_name]
+        axis_0_range = list(set(axis_0_value))
+        axis_0_range.sort()
+        axis_0_len = axis_0_range.__len__()
+
+        axis_1_name = axes_names[1]
+        axis_1_value = segment_df[axis_1_name]
+        axis_1_range = list(set(axis_1_value))
+        axis_1_range.sort()
+        axis_1_range.reverse()
+        axis_1_len = axis_1_range.__len__()
+
+        total_number = sub_num * len(SPEEDS)
+        result_names_combined = [['FP1.' + name, 'FP2.' + name] for name in result_names]
+        segment_im_all = []
+        for force in result_names_combined:
+            added_im = np.zeros([axis_1_len, axis_0_len])
+            for i_sub in range(sub_num):
+                for speed in SPEEDS:
+                    trial_df = segment_df[(segment_df['subject_id'] == i_sub) & (segment_df['speed'] == float(speed))]
+                    sub_im = Presenter.__get_decrease_im_uni(trial_df[[axis_0_name, axis_1_name, force[0],
+                                                                       force[1]]], axis_0_range, axis_1_range,
+                                                             axis_0_name, axis_1_name)
+                    added_im += sub_im
+            average_im = added_im / total_number
+            segment_im_all.append(average_im)
+        return segment_im_all
 
     @staticmethod
     def __get_score_im_uni(scores_df, axis_0_range, axis_1_range, axis_0_name, axis_1_name):
@@ -384,9 +385,7 @@ class Presenter:
         return score_im
 
     @staticmethod
-    def __get_all_combined_im(score_df, original_value):
-        scores = score_df.as_matrix()
-        im_len = 16
+    def __get_all_combined_im(scores, original_value, im_len=16):
         im = np.zeros([im_len, im_len])
         i_score = 0
         for i_x in range(im_len):
@@ -473,20 +472,6 @@ class Presenter:
         plt.tight_layout()
         file_path = RESULT_PATH + folder + '\\' + title + '.png'
         plt.savefig(file_path)
-
-    @staticmethod
-    def __show_all_segment_im(im, title, date):
-        fig, ax = plt.subplots(figsize=(8, 6))
-        im = plt.imshow(im, cmap=plt.cm.gray)
-        plt.colorbar(im)
-        # ax.set_xticks(range(im.shape[1]))
-        # ax.set_xticklabels(range(im.shape[1]), fontdict={'fontsize': 8})
-        # ax.set_xticks(range(im.shape[0]))
-        # ax.set_xticklabels(range(im.shape[0]), fontdict={'fontsize': 8})
-        plt.title(title)
-        # file_path = RESULT_PATH + 'result_' + date + '\\' + title + '.png'
-        # plt.savefig(file_path)
-        plt.show()  # show plot at last
 
     @staticmethod
     def show_selected_result(segment_df, date, output_names, speed_names):

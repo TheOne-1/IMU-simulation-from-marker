@@ -3,10 +3,10 @@
 from sklearn import ensemble
 from sklearn import preprocessing
 
-from EvaluationUniClass import EvaluationUni
 from OffsetClass import *
 from SubjectDataUni import SubjectData
 from XYGeneratorUni import XYGeneratorUni
+from abandoned.EvaluationUniClass import EvaluationUni
 
 output_names = [
     'FP1.ForX',

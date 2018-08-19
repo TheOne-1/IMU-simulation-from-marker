@@ -186,58 +186,41 @@ class MultiAxisOffset:
 
 # this class is used to return offset combinations between all 8 segments
 class SegmentCombos:
-
-    def __init__(self, offset_value_list, thigh_diameter, shank_diameter):
-        if len(offset_value_list) != 16:
+    def __init__(self, error_combo, thigh_diameter, shank_diameter):
+        if error_combo.shape != (8, 2):
             raise RuntimeError('Incorrect offset length')
 
-        # add trunk offset
-        trunk_list = []
-        trunk_list.append(SegmentCombos.__initialize_offset('trunk', 'x', offset_value_list[0]))
-        trunk_list.append(SegmentCombos.__initialize_offset('trunk', 'z', offset_value_list[1]))
-        self.__trunk_list = trunk_list
+        offset_0 = SegmentCombos.__initialize_both_axes_offset('trunk', 'x', error_combo[0, 0], 'z', error_combo[0, 1])
+        offset_1 = SegmentCombos.__initialize_both_axes_offset('trunk', 'x', -error_combo[0, 0], 'z', -error_combo[0, 1])
+        trunk_list = [offset_0, offset_1]
 
-        # add pelvis offset
-        pelvis_list = []
-        pelvis_list.append(SegmentCombos.__initialize_offset('pelvis', 'x', offset_value_list[2]))
-        pelvis_list.append(SegmentCombos.__initialize_offset('pelvis', 'z', offset_value_list[3]))
-        self.__pelvis_list = pelvis_list
+        offset_0 = SegmentCombos.__initialize_both_axes_offset('pelvis', 'x', error_combo[1, 0], 'z', error_combo[1, 1])
+        offset_1 = SegmentCombos.__initialize_both_axes_offset('pelvis', 'x', -error_combo[1, 0], 'z', -error_combo[1, 1])
+        pelvis_list = [offset_0, offset_1]
 
-        # add l_thigh offset
-        l_thigh_list = []
-        l_thigh_list.append(SegmentCombos.__initialize_offset('l_thigh', 'theta', offset_value_list[4], thigh_diameter))
-        l_thigh_list.append(SegmentCombos.__initialize_offset('l_thigh', 'z', offset_value_list[5]))
-        self.__l_thigh_list = l_thigh_list
+        offset_0 = SegmentCombos.__initialize_both_axes_offset('l_thigh', 'theta', error_combo[2, 0], 'z', error_combo[2, 1], diameter=thigh_diameter)
+        offset_1 = SegmentCombos.__initialize_both_axes_offset('l_thigh', 'theta', -error_combo[2, 0], 'z', -error_combo[2, 1], diameter=thigh_diameter)
+        l_thigh_list = [offset_0, offset_1]
 
-        # add r_thigh offset
-        r_thigh_list = []
-        r_thigh_list.append(SegmentCombos.__initialize_offset('r_thigh', 'theta', offset_value_list[6], thigh_diameter))
-        r_thigh_list.append(SegmentCombos.__initialize_offset('r_thigh', 'z', offset_value_list[7]))
-        self.__r_thigh_list = r_thigh_list
+        offset_0 = SegmentCombos.__initialize_both_axes_offset('r_thigh', 'theta', error_combo[3, 0], 'z', error_combo[3, 1], diameter=thigh_diameter)
+        offset_1 = SegmentCombos.__initialize_both_axes_offset('r_thigh', 'theta', -error_combo[3, 0], 'z', -error_combo[3, 1], diameter=thigh_diameter)
+        r_thigh_list = [offset_0, offset_1]
 
-        # add l_shank offset
-        l_shank_list = []
-        l_shank_list.append(SegmentCombos.__initialize_offset('l_shank', 'theta', offset_value_list[8], shank_diameter))
-        l_shank_list.append(SegmentCombos.__initialize_offset('l_shank', 'z', offset_value_list[9]))
-        self.__l_shank_list = l_shank_list
+        offset_0 = SegmentCombos.__initialize_both_axes_offset('l_shank', 'theta', error_combo[4, 0], 'z', error_combo[4, 1], diameter=shank_diameter)
+        offset_1 = SegmentCombos.__initialize_both_axes_offset('l_shank', 'theta', -error_combo[4, 0], 'z', -error_combo[4, 1], diameter=shank_diameter)
+        l_shank_list = [offset_0, offset_1]
 
-        # add r_shank offset
-        r_shank_list = []
-        r_shank_list.append(SegmentCombos.__initialize_offset('r_shank', 'theta', offset_value_list[10], shank_diameter))
-        r_shank_list.append(SegmentCombos.__initialize_offset('r_shank', 'z', offset_value_list[11]))
-        self.__r_shank_list = r_shank_list
+        offset_0 = SegmentCombos.__initialize_both_axes_offset('r_shank', 'theta', error_combo[5, 0], 'z', error_combo[5, 1], diameter=shank_diameter)
+        offset_1 = SegmentCombos.__initialize_both_axes_offset('r_shank', 'theta', -error_combo[5, 0], 'z', -error_combo[5, 1], diameter=shank_diameter)
+        r_shank_list = [offset_0, offset_1]
 
-        # add l_foot offset
-        l_foot_list = []
-        l_foot_list.append(SegmentCombos.__initialize_offset('l_foot', 'x', offset_value_list[12]))
-        l_foot_list.append(SegmentCombos.__initialize_offset('l_foot', 'y', offset_value_list[13]))
-        self.__l_foot_list = l_foot_list
+        offset_0 = SegmentCombos.__initialize_both_axes_offset('l_foot', 'x', error_combo[6, 0], 'y', error_combo[6, 1])
+        offset_1 = SegmentCombos.__initialize_both_axes_offset('l_foot', 'x', -error_combo[6, 0], 'y', -error_combo[6, 1])
+        l_foot_list = [offset_0, offset_1]
 
-        # add r_foot offset
-        r_foot_list = []
-        r_foot_list.append(SegmentCombos.__initialize_offset('r_foot', 'x', offset_value_list[14]))
-        r_foot_list.append(SegmentCombos.__initialize_offset('r_foot', 'y', offset_value_list[15]))
-        self.__r_foot_list = r_foot_list
+        offset_0 = SegmentCombos.__initialize_both_axes_offset('r_foot', 'x', error_combo[7, 0], 'y', error_combo[7, 1])
+        offset_1 = SegmentCombos.__initialize_both_axes_offset('r_foot', 'x', -error_combo[7, 0], 'y', -error_combo[7, 1])
+        r_foot_list = [offset_0, offset_1]
 
         self.__list_all = [trunk_list, pelvis_list, l_thigh_list, r_thigh_list, l_shank_list, r_shank_list,
                            l_foot_list, r_foot_list]
@@ -304,6 +287,24 @@ class SegmentCombos:
         return offset
 
 
+    @staticmethod
+    def __initialize_both_axes_offset(segment, axis_0_name, item_0, axis_1_name, item_1, diameter=None):
+        offset_0 = SegmentCombos.__initialize_offset(segment, axis_0_name, item_0, diameter)
+        offset_1 = SegmentCombos.__initialize_offset(segment, axis_1_name, item_1, diameter)
+
+        offset_value_0 = offset_0.get_all_offsets()
+        offset_value_1 = offset_1.get_all_offsets()
+        offset_value = offset_value_0 + offset_value_1
+
+        if offset_0.get_rotation() is not None:
+            R = offset_0.get_rotation()
+        elif offset_1.get_rotation() is not None:
+            R = offset_1.get_rotation()
+        else:
+            R = None
+
+        offset = Offset(segment, offset_value[0], offset_value[1], offset_value[2], offset_value[3], R)
+        return offset
 
 
 

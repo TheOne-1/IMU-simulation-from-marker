@@ -15,7 +15,7 @@ from sklearn.metrics import mean_squared_error
 from math import sqrt
 
 
-class EvaluationThread:
+class Evaluation:
     def __init__(self, y_column_names, base_model):
         self.__params_column_names = y_column_names
         self.__base_model = base_model
@@ -64,9 +64,9 @@ class EvaluationThread:
 
     @staticmethod
     def get_all_scores(y_test, y_pred):
-        R2 = EvaluationThread.get_R2(y_test, y_pred)
-        RMSE = EvaluationThread.get_RMSE(y_test, y_pred)
-        NRMSE = EvaluationThread.get_NRMSE(y_test, y_pred)
+        R2 = Evaluation.get_R2(y_test, y_pred)
+        RMSE = Evaluation.get_RMSE(y_test, y_pred)
+        NRMSE = Evaluation.get_NRMSE(y_test, y_pred)
         return R2, RMSE, NRMSE
 
     @staticmethod

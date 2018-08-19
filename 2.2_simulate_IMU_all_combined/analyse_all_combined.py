@@ -6,5 +6,11 @@ from PresenterUni import Presenter
 from const import *
 
 
+file_date = '20180808'
+folder_name = 'result_all_combined'
 
-Presenter.show_all_combined_result(result_df, exp1_result, ['FP1.ForX_NRMSE'], file_date, sub_num=1)
+result_file = RESULT_PATH + folder_name + '\\' + file_date + '.csv'
+result_df = pd.read_csv(result_file)
+
+
+Presenter.show_all_combined_result(result_df, 6)
