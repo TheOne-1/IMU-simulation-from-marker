@@ -42,17 +42,16 @@ if __name__ == '__main__':
         'r_foot_gyr_x', 'r_foot_gyr_y', 'r_foot_gyr_z',
     ]
 
-    # model = ensemble.RandomForestRegressor(n_jobs=6)
+    # evaluators = ensemble.RandomForestRegressor(n_jobs=6)
     model = ensemble.RandomForestRegressor(n_estimators=100, random_state=0)
-    # model = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=4)
-    # model = ensemble.GradientBoostingRegressor(
+    # evaluators = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=4)
+    # evaluators = ensemble.GradientBoostingRegressor(
     #     learning_rate=0.1, min_impurity_decrease=0.001, min_samples_split=6, n_estimators=500)
 
     thread_number = multiprocessing.cpu_count() - 1  # allowed thread number
     pool = multiprocessing.Pool(processes=thread_number)
 
     print('multiple IMU placement error started')
-    error_combos = get_error_combos('20180806')
     sub_df_list = []
     for i_sub in range(1):
         pool.apply_async(get_combined_result_df, args=(input_names, output_names, result_column, model, i_sub),
@@ -62,6 +61,6 @@ if __name__ == '__main__':
     total_result_df = pd.DataFrame()
     for sub_df in sub_df_list:
         total_result_df = pd.concat([total_result_df, sub_df], axis=0)
-    Evaluation.save_result(total_result_df, model, input_names, output_names, 'result_all_combined')
+    Evaluation.save_result(total_result_df, model, input_names, output_names, 'result_all_translation')
     end_time = datetime.now()
     print('Duration: ' + str(end_time - start_time))

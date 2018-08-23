@@ -43,10 +43,10 @@ input_names = [
 my_database_info = DatabaseInfo()
 total_score_df = CrossValidation.initialize_result_df(total_result_columns)
 
-# model = ensemble.RandomForestRegressor(n_jobs=4)
+# evaluators = ensemble.RandomForestRegressor(n_jobs=4)
 model = ensemble.RandomForestRegressor(n_estimators=200, random_state=0, n_jobs=4)
-# model = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=4000000)
-# model = ensemble.GradientBoostingRegressor(
+# evaluators = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=4000000)
+# evaluators = ensemble.GradientBoostingRegressor(
 #     learning_rate=0.1, min_impurity_decrease=0.001, min_samples_split=6, n_estimators=500)
 x_scalar, y_scalar = preprocessing.StandardScaler(), preprocessing.StandardScaler()
 
@@ -75,9 +75,9 @@ for i_sub in range(SUB_NUM):
     # multi_offset_axis.add_offset_axis(offset_axis_6)
     # offset_axis_7 = OneAxisOffset('r_thigh', 'z', range(-100, 101, 100))
     # multi_offset_axis.add_offset_axis(offset_axis_7)
-    offset_axis_8 = OneAxisOffset('r_thigh', 'theta', range(-30, 31, 30), shank_diameter)
+    offset_axis_8 = OneAxisTranslation('r_thigh', 'theta', range(-30, 31, 30), shank_diameter)
     multi_offset_axis.add_offset_axis(offset_axis_8)
-    offset_axis_9 = OneAxisOffset('l_shank', 'z', range(-100, 101, 100))
+    offset_axis_9 = OneAxisTranslation('l_shank', 'z', range(-100, 101, 100))
     multi_offset_axis.add_offset_axis(offset_axis_9)
     # offset_axis_10 = OneAxisOffset('l_shank', 'theta', range(-30, 31, 30), shank_diameter)
     # multi_offset_axis.add_offset_axis(offset_axis_10)

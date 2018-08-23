@@ -72,10 +72,13 @@ class XYGeneratorUni:
 
         return x, y
 
-    def modify_x_segment(self, x, offset_combo, height=None):
+    def modify_x_segment(self, x, the_offset, height=None):
         # x needs to be deep copied so that it won't be affected by the modification
         x_changed = x.copy()
-        offset = Offset.combine_segment_offset(offset_combo[0], offset_combo[1])
+        if isinstance(the_offset, list):
+            offset = Offset.combine_segment_offset(the_offset[0], the_offset[1])
+        else:
+            offset = the_offset
         if self.__acc_data:
             x_changed = self.__modify_acc(x_changed, offset, height)
         if self.__gyr_data:
@@ -104,7 +107,7 @@ class XYGeneratorUni:
         # Processor.check_virtual_marker(virtual_marker, walking_data_1_df, self.__moved_segment)  # for check
         acc_IMU = Processor.get_acc(virtual_marker, R_IMU_transform)
 
-        R_cylinder = offset.get_rotation()
+        R_cylinder = offset.get_cylinder_rotation()
         # if it was simulated on cylinder, a rotation around the cylinder surface is necessary
         if R_cylinder is not None:
             acc_IMU = np.matmul(R_cylinder, acc_IMU.T).T
@@ -131,7 +134,7 @@ class XYGeneratorUni:
         # Processor.check_virtual_marker(virtual_marker, walking_data_1_df, self.__moved_segment)  # for check
         gyr_IMU = Processor.get_gyr(walking_data_1_df, R_IMU_transform)
 
-        R_cylinder = offset.get_rotation()
+        R_cylinder = offset.get_cylinder_rotation()
         # if it was simulated on cylinder, a rotation around the cylinder surface is necessary
         if R_cylinder is not None:
             gyr_IMU = np.matmul(R_cylinder, gyr_IMU.T).T

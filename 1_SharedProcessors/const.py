@@ -60,32 +60,12 @@ ALL_ACC_GYR_NAMES = ['trunk_acc_x', 'trunk_acc_y', 'trunk_acc_z',
 
 ALL_FORCE_NAMES = ['FP1.ForX', 'FP2.ForX', 'FP1.ForY', 'FP2.ForY', 'FP1.ForZ', 'FP2.ForZ']
 
-OFFSET_COLUMN_NAMES = ['trunk_x_offset', 'trunk_y_offset', 'trunk_z_offset', 'trunk_theta_offset',
-                       'pelvis_x_offset', 'pelvis_y_offset', 'pelvis_z_offset', 'pelvis_theta_offset',
-                       'l_thigh_x_offset', 'l_thigh_y_offset', 'l_thigh_z_offset', 'l_thigh_theta_offset',
-                       'r_thigh_x_offset', 'r_thigh_y_offset', 'r_thigh_z_offset', 'r_thigh_theta_offset',
-                       'l_shank_x_offset', 'l_shank_y_offset', 'l_shank_z_offset', 'l_shank_theta_offset',
-                       'r_shank_x_offset', 'r_shank_y_offset', 'r_shank_z_offset', 'r_shank_theta_offset',
-                       'l_foot_x_offset', 'l_foot_y_offset', 'l_foot_z_offset', 'l_foot_theta_offset',
-                       'r_foot_x_offset', 'r_foot_y_offset', 'r_foot_z_offset', 'r_foot_theta_offset']
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+OFFSET_COLUMN_NAMES = [
+    'trunk_x_offset', 'trunk_y_offset', 'trunk_z_offset', 'trunk_theta_offset', 'trunk_rotation',
+    'pelvis_x_offset', 'pelvis_y_offset', 'pelvis_z_offset', 'pelvis_theta_offset', 'pelvis_rotation',
+    'l_thigh_x_offset', 'l_thigh_y_offset', 'l_thigh_z_offset', 'l_thigh_theta_offset', 'l_thigh_rotation',
+    'r_thigh_x_offset', 'r_thigh_y_offset', 'r_thigh_z_offset', 'r_thigh_theta_offset', 'r_thigh_rotation',
+    'l_shank_x_offset', 'l_shank_y_offset', 'l_shank_z_offset', 'l_shank_theta_offset', 'l_shank_rotation',
+    'r_shank_x_offset', 'r_shank_y_offset', 'r_shank_z_offset', 'r_shank_theta_offset', 'r_shank_rotation',
+    'l_foot_x_offset', 'l_foot_y_offset', 'l_foot_z_offset', 'l_foot_theta_offset', 'l_foot_rotation',
+    'r_foot_x_offset', 'r_foot_y_offset', 'r_foot_z_offset', 'r_foot_theta_offset', 'r_foot_rotation']

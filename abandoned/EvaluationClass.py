@@ -1,7 +1,7 @@
 
 import matplotlib.pyplot as plt
 # from keras.callbacks import EarlyStopping
-# from keras.models import *
+# from keras.evaluators import *
 import sklearn
 from sklearn.metrics import r2_score
 from const import *
@@ -154,7 +154,7 @@ class Evaluation:
         else:
             pca_str = 'Feature selection: None'
 
-        content = 'Machine learning model: ' + model.__class__.__name__ + '\n' + \
+        content = 'Machine learning evaluators: ' + model.__class__.__name__ + '\n' + \
                   'Model parameters: ' + json.dumps(model.get_params()) + '\n' + \
                   'Input: ' + input_str + '\n' + \
                   'Output: ' + output_str + '\n' + scaling_str + '\n' + pca_str + '\n'
@@ -163,17 +163,17 @@ class Evaluation:
             file.write(content)
 
 
-    # def train_nn(self, model):
+    # def train_nn(self, evaluators):
     #     # lr = learning rate, the other params are default values
     #     optimizer = optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
-    #     model.compile(loss='mean_squared_error', optimizer=optimizer)
+    #     evaluators.compile(loss='mean_squared_error', optimizer=optimizer)
     #     # val_loss = validation loss, patience is the tolerance
     #     early_stopping = EarlyStopping(monitor='val_loss', patience=5)
     #     # epochs is the maximum training round, validation split is the size of the validation set,
     #     # callback stops the training if the validation was not approved
-    #     model.fit(self.__x_train, self.__y_train, batch_size=self.__batch_size,
+    #     evaluators.fit(self.__x_train, self.__y_train, batch_size=self.__batch_size,
     #               epochs=100, validation_split=0.2, callbacks=[early_stopping])
-    #     self.__nn_model = model
+    #     self.__nn_model = evaluators
     #
     # def evaluate_nn(self):
     #     result = self.__nn_model.predict(self.__x_test, batch_size=self.__batch_size)

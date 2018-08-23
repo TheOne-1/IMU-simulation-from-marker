@@ -12,7 +12,7 @@ import matplotlib.patches as mpatches
 
 class Presenter:
     @staticmethod
-    def show_segment_result_all(result_name, date):
+    def show_segment_translation_result(result_name, date):
         with open(RESULT_PATH + 'result_segment\\' + date + '\\segment_result_all.txt', 'rb') as fp:  # Pickling
             result_all = pickle.load(fp)
         if result_name == 'R2':
@@ -131,7 +131,7 @@ class Presenter:
         cb = mpl.colorbar.ColorbarBase(ax1, norm=norm, orientation='vertical', ticks=colorbar_tick, cmap=cmap_item)
         cb.ax.tick_params(labelsize=FONT_SIZE)
         plt.text(3.3, 0.6, bar_title, fontdict={'fontsize': FONT_SIZE}, rotation=90)
-        file_path = RESULT_PATH + 'result_segment\\' + date + '\\colorbar.png'
+        file_path = RESULT_PATH + 'result_segment_translation\\' + date + '\\colorbar.png'
         plt.savefig(file_path)
         plt.show()
 
@@ -218,11 +218,71 @@ class Presenter:
                    fontsize=FONT_SIZE, ncol=2, framealpha=False)
         plt.tight_layout(w_pad=1.05, h_pad=1.05)
         fig.subplots_adjust(left=0.1, right=0.96, bottom=0.1, top=0.88, wspace=0.3)
-        file_path = RESULT_PATH + 'result_segment\\' + date + '\\acceptable_area.png'
+        file_path = RESULT_PATH + 'result_segment_translation\\' + date + '\\acceptable_area.png'
         plt.savefig(file_path)
         with open(RESULT_PATH + 'result_segment\\' + date + '\\segment_area_all.txt', 'wb') as fp:
             pickle.dump(area_all, fp)
 
+        plt.show()
+
+    @staticmethod
+    def show_segment_rotation_result(result_name, date):
+        with open(RESULT_PATH + 'result_segment_rotation\\' + date + '\\segment_result_all.txt', 'rb') as fp:  # Pickling
+            result_all = pickle.load(fp)
+        fig, ax = plt.subplots(figsize=(14, 9))
+        for i_target in range(3):
+            target_result = result_all[i_target]
+            for i_result in range(3):
+                result_im = target_result[i_result]
+                ax = plt.subplot(3, 3, 3*i_target+i_result+1)
+                if i_target == 0:
+                    plt.imshow(result_im, cmap=plt.cm.get_cmap('RdYlBu'))
+                else:
+                    plt.imshow(result_im, cmap=plt.cm.get_cmap('RdYlBu_r'))
+
+                ax.get_xaxis().set_visible(False)
+                ax.get_yaxis().set_visible(False)
+                if i_target == 2:
+                    ax.set_xticks(range(result_im.shape[1]))
+                    x_tick_label = ['-25°', '', '', '', '', '0°', '', '', '', '', '25°']
+                    ax.set_xticklabels(x_tick_label, fontdict=FONT_DICT)
+                    ax.get_xaxis().set_visible(True)
+                if i_result == 0:
+                    ax.set_yticks(range(result_im.shape[0]))
+                    ax.set_yticklabels(SEGMENT_NAMES, fontdict=FONT_DICT)
+                    ax.get_yaxis().set_visible(True)
+
+        fig.subplots_adjust(bottom=0.1, top=0.9, left=0.1, right=0.75, wspace=0.2, hspace=0.1)
+        colorbar_pos = np.array([[0.78, 0.67, 0.02, 0.2],
+                                 [0.78, 0.4, 0.02, 0.2],
+                                 [0.78, 0.13, 0.02, 0.2]])
+        for i_target in range(3):
+            # get the max and min of all each target
+            target_result = result_all[i_target]
+            max_value, min_value = target_result[0][0, 0], target_result[0][0, 0]
+            for im in target_result:
+                max_current = np.max(im)
+                min_current = np.min(im)
+                if max_current > max_value:
+                    max_value = max_current
+                if min_current < min_value:
+                    min_value = min_current
+            ax1 = fig.add_axes(colorbar_pos[i_target, :])
+            norm = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
+            if i_target == 0:
+                cb = mpl.colorbar.ColorbarBase(ax1, norm=norm, orientation='vertical', cmap=plt.cm.get_cmap('RdYlBu'))
+            else:
+                cb = mpl.colorbar.ColorbarBase(ax1, norm=norm, orientation='vertical', cmap=plt.cm.get_cmap('RdYlBu_r'))
+            cb.ax.tick_params(labelsize=FONT_SIZE)
+
+        plt.text(-30, 3.8, 'xGRF', fontdict={'fontsize': FONT_SIZE})
+        plt.text(-19, 3.8, 'yGRF', fontdict={'fontsize': FONT_SIZE})
+        plt.text(-9, 3.8, 'zGRF', fontdict={'fontsize': FONT_SIZE})
+        plt.text(6, 3.6, 'R2 decrease', fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        plt.text(6, 2.3, 'RMSE increase', fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        plt.text(6, 0.9, 'NRMSE increase', fontdict={'fontsize': FONT_SIZE}, rotation=90)
+        file_path = RESULT_PATH + 'result_segment_rotation\\' + date + '\\segment_rotation.png'
+        plt.savefig(file_path)
         plt.show()
 
     @staticmethod
@@ -282,21 +342,33 @@ class Presenter:
             Presenter.__show_score_im(score_im, axis_0_range, axis_1_range, 'title', axis_0_name, axis_1_name, '77')
 
     @staticmethod
-    def save_segment_result_all(result_df, date):
+    def save_segment_translation_result(result_df, date):
         result_all = []
         for target_name in ['R2', 'RMSE', 'NRMSE']:
             result_names = [force_name + '_' + target_name for force_name in ['ForX', 'ForY', 'ForZ']]
             im_all = []
             for segment in SEGMENT_NAMES:
                 segment_df = result_df[result_df['segment'] == segment]
-                im_all.append(Presenter.__get_segment_result(segment_df, result_names))
+                im_all.append(Presenter.__get_segment_result_translation(segment_df, result_names))
             result_all.append(im_all)
         with open(RESULT_PATH + 'result_segment\\' + date + '\\segment_result_all.txt', 'wb') as fp:
             pickle.dump(result_all, fp)
 
     @staticmethod
-    def show_all_combined_result(result_df, sub_num=SUB_NUM):
+    def save_segment_rotation_result(result_df, date):
+        result_all = []
+        for target_name in ['R2', 'RMSE', 'NRMSE']:
+            result_names = [force_name + '_' + target_name for force_name in ['ForX', 'ForY', 'ForZ']]
+
+            result_im = Presenter.__get_segment_result_rotation(result_df, result_names)
+            result_all.append(result_im)
+        with open(RESULT_PATH + 'result_segment_rotation\\' + date + '\\segment_result_all.txt', 'wb') as fp:
+            pickle.dump(result_all, fp)
+
+    @staticmethod
+    def show_all_combined_result(result_df, date, sub_num=SUB_NUM):
         i_plot = 1
+        plt.figure(figsize=(13, 10))
         for target_name in ['R2', 'RMSE', 'NRMSE']:
             result_names = [force_name + '_' + target_name for force_name in ['ForX', 'ForY', 'ForZ']]
             for result_name in result_names:
@@ -316,11 +388,12 @@ class Presenter:
                 plt.title(result_name)
                 plt.colorbar()
                 i_plot += 1
+        file_path = RESULT_PATH + 'result_all_rotation\\' + date + '\\all_rotation.png'
+        plt.savefig(file_path)
         plt.show()
 
-
     @staticmethod
-    def __get_segment_result(segment_df, result_names, sub_num=SUB_NUM):
+    def __get_segment_result_translation(segment_df, result_names, sub_num=SUB_NUM):
         segment_name = segment_df['segment'].iloc[0]
         axes_names = Presenter.__get_axis_name(segment_name)
         axis_0_name = axes_names[0]
@@ -353,6 +426,34 @@ class Presenter:
         return segment_im_all
 
     @staticmethod
+    def __get_segment_result_rotation(result_df, result_names, sub_num=SUB_NUM):
+        axis_value = result_df['trunk_rotation']
+        axis_range = list(set(axis_value))
+        axis_range.sort()
+        axis_len = axis_range.__len__()
+
+        result_im_all = []
+        total_number = sub_num * len(SPEEDS)
+
+        result_names_combined = [['FP1.' + name, 'FP2.' + name] for name in result_names]
+        for force in result_names_combined:
+            added_array = np.zeros([1, axis_len])
+            result_im = np.zeros([len(SEGMENT_NAMES), axis_len])
+            for i_segment in range(len(SEGMENT_NAMES)):
+                segment_df = result_df[result_df['segment'] == SEGMENT_NAMES[i_segment]]
+                segment_name = segment_df['segment'].iloc[0]
+                axis_name = segment_name + '_rotation'
+                for i_sub in range(sub_num):
+                    for speed in SPEEDS:
+                        trial_df = segment_df[(segment_df['subject_id'] == i_sub) & (segment_df['speed'] == float(speed))]
+                        sub_array = Presenter.__get_decrease_array_uni(trial_df[[axis_name, force[0], force[1]]], axis_range, axis_name)
+                        added_array += sub_array
+                average_array = added_array / total_number
+                result_im[i_segment, :] = average_array
+            result_im_all.append(result_im)
+        return result_im_all
+
+    @staticmethod
     def __get_score_im_uni(scores_df, axis_0_range, axis_1_range, axis_0_name, axis_1_name):
         axis_0_len = axis_0_range.__len__()
         axis_1_len = axis_1_range.__len__()
@@ -382,6 +483,20 @@ class Presenter:
                                   (scores_df[axis_1_name] == axis_1_range[i_y])].as_matrix()
                 score_im[i_y, i_x] = (score[0][-1] + score[0][-2]) / 2 - center_score
                 i_score += 1
+        return score_im
+
+    @staticmethod
+    def __get_decrease_array_uni(scores_df, axis_0_range, axis_0_name):
+        axis_0_len = axis_0_range.__len__()
+        score_im = np.zeros([1, axis_0_len])
+        center_df = scores_df[scores_df[axis_0_name] == 0]
+        center_score = np.mean(center_df.as_matrix()[0][1:])
+        i_score = 0
+        for i_y in range(axis_0_len):
+            # for image, row and column are exchanged compared to ndarray
+            score = scores_df[scores_df[axis_0_name] == axis_0_range[i_y]].as_matrix()
+            score_im[0, i_y] = (score[0][-1] + score[0][-2]) / 2 - center_score
+            i_score += 1
         return score_im
 
     @staticmethod

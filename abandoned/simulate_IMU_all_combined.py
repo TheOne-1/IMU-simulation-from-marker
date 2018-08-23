@@ -45,9 +45,9 @@ result_column = R2_column + RMSE_column + NRMSE_column
 offset_value_list = [50, 50, 20, 20, 5, 20, 5, 20, 5, 20, 5, 20, 20, 20, 20, 20]
 
 model = ensemble.RandomForestRegressor(n_jobs=6)
-# model = ensemble.RandomForestRegressor(n_estimators=200, random_state=0, n_jobs=6)
-# model = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=400)
-# model = ensemble.GradientBoostingRegressor(
+# evaluators = ensemble.RandomForestRegressor(n_estimators=200, random_state=0, n_jobs=6)
+# evaluators = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=400)
+# evaluators = ensemble.GradientBoostingRegressor(
 #     learning_rate=0.1, min_impurity_decrease=0.001, min_samples_split=6, n_estimators=500)
 x_scalar, y_scalar = preprocessing.MinMaxScaler(), preprocessing.MinMaxScaler()
 
@@ -70,7 +70,7 @@ for i_sub_test in range(SUB_NUM):
     shank_diameter = subject_data.get_cylinder_diameter('l_shank')
     thigh_diameter = subject_data.get_cylinder_diameter('l_thigh')
 
-    segment_combo_class = SegmentCombos(offset_value_list, thigh_diameter, shank_diameter)
+    segment_combo_class = TranslationCombos(offset_value_list, thigh_diameter, shank_diameter)
     combos_list = segment_combo_class.get_segment_combos()
     combo_len = len(combos_list)
     all_offsets_df = segment_combo_class.get_offset_df()

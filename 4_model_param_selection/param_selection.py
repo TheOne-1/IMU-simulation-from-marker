@@ -45,23 +45,23 @@ input_names = [
 my_database_info = DatabaseInfo()
 total_score_df = Evaluation.initialize_result_df(total_result_columns)
 
-# model = neighbors.KNeighborsRegressor()
-# model = ensemble.AdaBoostRegressor()
-# model = tree.DecisionTreeRegressor()
-# model = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=4000000)
-# model = ensemble.RandomForestRegressor(random_state=100)
-# model = GridSearchCV(ensemble.RandomForestRegressor(random_state=0, n_jobs=4), param_grid={'n_estimators': [40, 200, 1000], 'min_impurity_decrease': [0, 1e-3]})
-# model = GridSearchCV(ensemble.AdaBoostRegressor())
+# evaluators = neighbors.KNeighborsRegressor()
+# evaluators = ensemble.AdaBoostRegressor()
+# evaluators = tree.DecisionTreeRegressor()
+# evaluators = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=4000000)
+# evaluators = ensemble.RandomForestRegressor(random_state=100)
+# evaluators = GridSearchCV(ensemble.RandomForestRegressor(random_state=0, n_jobs=4), param_grid={'n_estimators': [40, 200, 1000], 'min_impurity_decrease': [0, 1e-3]})
+# evaluators = GridSearchCV(ensemble.AdaBoostRegressor())
 model = GridSearchCV(ensemble.GradientBoostingRegressor(), param_grid={'n_estimators': [20, 100, 500],
                                                                        'max_depth': [2, 6, 18],
                                                                        'learning_rate': [0.01, 0.1],
                                                                        'min_samples_split': [2, 6, 18],
                                                                        'min_impurity_decrease': [1e-3, 1e-2]})
 
-# model = GridSearchCV(SVR(verbose=2, max_iter=4000000), param_grid={'C': [100, 1000, 10000], 'gamma': [0.001, 0.01, 0.1], 'epsilon': [0.001, 0.01, 0.1]})
-# model = GridSearchCV(tree.DecisionTreeRegressor(), param_grid={'max_depth': [10, 100, 1000], 'min_samples_leaf': [2, 20, 200], 'max_features': [5, 10, 24]})
+# evaluators = GridSearchCV(SVR(verbose=2, max_iter=4000000), param_grid={'C': [100, 1000, 10000], 'gamma': [0.001, 0.01, 0.1], 'epsilon': [0.001, 0.01, 0.1]})
+# evaluators = GridSearchCV(tree.DecisionTreeRegressor(), param_grid={'max_depth': [10, 100, 1000], 'min_samples_leaf': [2, 20, 200], 'max_features': [5, 10, 24]})
 
-# model = GridSearchCV(SVR(tol=0.01), param_grid={'kernel': ['rbf', 'sigmoid', 'poly']})
+# evaluators = GridSearchCV(SVR(tol=0.01), param_grid={'kernel': ['rbf', 'sigmoid', 'poly']})
 
 segment_moved = SEGMENT_NAMES[0]
 i_sub = 0
@@ -93,7 +93,7 @@ print(model.best_estimator_)
 
 # print feature importances
 print('\n')
-# feature_importance = model.best_estimator_.feature_importances_
+# feature_importance = evaluators.best_estimator_.feature_importances_
 # print(feature_importance)
 # plt.bar(input_names, feature_importance)
 # plt.show()

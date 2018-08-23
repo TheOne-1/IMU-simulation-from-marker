@@ -52,9 +52,9 @@ input_names = [
 ]
 # moved_segments = MOVED_SEGMENT_NAMES
 
-# model = ensemble.RandomForestRegressor(n_jobs=4)
-# model = ensemble.RandomForestRegressor(n_estimators=200, random_state=0, n_jobs=4)
-# model = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=4000000)
+# evaluators = ensemble.RandomForestRegressor(n_jobs=4)
+# evaluators = ensemble.RandomForestRegressor(n_estimators=200, random_state=0, n_jobs=4)
+# evaluators = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=4000000)
 model = ensemble.GradientBoostingRegressor(
     learning_rate=0.1, min_impurity_decrease=0.001, min_samples_split=6, n_estimators=500)
 x_scalar, y_scalar = preprocessing.MinMaxScaler(), preprocessing.MinMaxScaler()

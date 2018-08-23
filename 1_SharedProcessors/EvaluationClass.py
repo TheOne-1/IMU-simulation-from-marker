@@ -163,7 +163,7 @@ class Evaluation:
         else:
             pca_str = 'Feature selection: None'
 
-        content = 'Machine learning model: ' + model.__class__.__name__ + '\n' + \
+        content = 'Machine learning evaluators: ' + model.__class__.__name__ + '\n' + \
                   'Model parameters: ' + json.dumps(model.get_params()) + '\n' + \
                   'Input: ' + input_str + '\n' + \
                   'Output: ' + output_str + '\n' + scaling_str + '\n' + pca_str + '\n'
