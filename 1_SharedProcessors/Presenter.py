@@ -1,19 +1,19 @@
-import matplotlib.pyplot as plt
+import pickle
+
 import matplotlib as mpl
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
 import xlwt
-from math import sqrt
+
 from DatabaseInfo import DatabaseInfo
 from OffsetClass import *
 from const import *
-import pickle
-import random
-import matplotlib.patches as mpatches
 
 
 class Presenter:
     @staticmethod
     def show_segment_translation_result(result_name, date):
-        with open(RESULT_PATH + 'result_segment\\' + date + '\\segment_result_all.txt', 'rb') as fp:  # Pickling
+        with open(RESULT_PATH + 'result_segment_translation\\' + date + '\\segment_result_all.txt', 'rb') as fp:
             result_all = pickle.load(fp)
         if result_name == 'R2':
             im_all = result_all[0]
@@ -86,7 +86,7 @@ class Presenter:
         plt.text(3, -46, 'VGRF', fontdict={'fontsize': FONT_SIZE})
         plt.tight_layout(w_pad=1.05, h_pad=1.05)
         fig.subplots_adjust(left=0.15, right=0.92, bottom=0.1, top=0.92)
-        file_path = RESULT_PATH + 'result_segment\\' + date + '\\four_segments_1.png'
+        file_path = RESULT_PATH + 'result_segment_translation\\' + date + '\\four_segments_1.png'
         plt.savefig(file_path)
 
         # get the first four segments
@@ -122,7 +122,7 @@ class Presenter:
         plt.text(3, -40, 'VGRF', fontdict={'fontsize': FONT_SIZE})
         plt.tight_layout(w_pad=1.05, h_pad=1.05)
         fig.subplots_adjust(left=0.14, right=0.92, bottom=0.1, top=0.92)
-        file_path = RESULT_PATH + 'result_segment\\' + date + '\\four_segments_2.png'
+        file_path = RESULT_PATH + 'result_segment_translation\\' + date + '\\four_segments_2.png'
         plt.savefig(file_path)
 
         fig = plt.figure(figsize=(1.7, 8))
@@ -226,9 +226,25 @@ class Presenter:
         plt.show()
 
     @staticmethod
-    def show_segment_rotation_result(result_name, date):
+    def show_segment_rotation_result(date):
         with open(RESULT_PATH + 'result_segment_rotation\\' + date + '\\segment_result_all.txt', 'rb') as fp:  # Pickling
             result_all = pickle.load(fp)
+
+        # get min and max of each three figures
+        max_value, min_value = np.zeros([3]), np.zeros([3])
+        for i_target in range(3):
+            # get the max and min of all each target
+            target_result = result_all[i_target]
+            max_value_target, min_value_target = target_result[0][0, 0], target_result[0][0, 0]
+            for im in target_result:
+                max_current = np.max(im)
+                min_current = np.min(im)
+                if max_current > max_value_target:
+                    max_value_target = max_current
+                if min_current < min_value_target:
+                    min_value_target = min_current
+            max_value[i_target], min_value[i_target] = max_value_target, min_value_target
+
         fig, ax = plt.subplots(figsize=(14, 9))
         for i_target in range(3):
             target_result = result_all[i_target]
@@ -236,9 +252,9 @@ class Presenter:
                 result_im = target_result[i_result]
                 ax = plt.subplot(3, 3, 3*i_target+i_result+1)
                 if i_target == 0:
-                    plt.imshow(result_im, cmap=plt.cm.get_cmap('RdYlBu'))
+                    plt.imshow(result_im, cmap=plt.cm.get_cmap('RdYlBu'), vmin=min_value[i_target], vmax=max_value[i_target])
                 else:
-                    plt.imshow(result_im, cmap=plt.cm.get_cmap('RdYlBu_r'))
+                    plt.imshow(result_im, cmap=plt.cm.get_cmap('RdYlBu_r'), vmin=min_value[i_target], vmax=max_value[i_target])
 
                 ax.get_xaxis().set_visible(False)
                 ax.get_yaxis().set_visible(False)
@@ -252,23 +268,14 @@ class Presenter:
                     ax.set_yticklabels(SEGMENT_NAMES, fontdict=FONT_DICT)
                     ax.get_yaxis().set_visible(True)
 
+        # draw the reference bar
         fig.subplots_adjust(bottom=0.1, top=0.9, left=0.1, right=0.75, wspace=0.2, hspace=0.1)
         colorbar_pos = np.array([[0.78, 0.67, 0.02, 0.2],
                                  [0.78, 0.4, 0.02, 0.2],
                                  [0.78, 0.13, 0.02, 0.2]])
         for i_target in range(3):
-            # get the max and min of all each target
-            target_result = result_all[i_target]
-            max_value, min_value = target_result[0][0, 0], target_result[0][0, 0]
-            for im in target_result:
-                max_current = np.max(im)
-                min_current = np.min(im)
-                if max_current > max_value:
-                    max_value = max_current
-                if min_current < min_value:
-                    min_value = min_current
             ax1 = fig.add_axes(colorbar_pos[i_target, :])
-            norm = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
+            norm = mpl.colors.Normalize(vmin=min_value[i_target], vmax=max_value[i_target])
             if i_target == 0:
                 cb = mpl.colorbar.ColorbarBase(ax1, norm=norm, orientation='vertical', cmap=plt.cm.get_cmap('RdYlBu'))
             else:
@@ -351,7 +358,7 @@ class Presenter:
                 segment_df = result_df[result_df['segment'] == segment]
                 im_all.append(Presenter.__get_segment_result_translation(segment_df, result_names))
             result_all.append(im_all)
-        with open(RESULT_PATH + 'result_segment\\' + date + '\\segment_result_all.txt', 'wb') as fp:
+        with open(RESULT_PATH + 'result_segment_translation\\' + date + '\\segment_result_all.txt', 'wb') as fp:
             pickle.dump(result_all, fp)
 
     @staticmethod
@@ -366,7 +373,7 @@ class Presenter:
             pickle.dump(result_all, fp)
 
     @staticmethod
-    def show_all_combined_result(result_df, date, sub_num=SUB_NUM):
+    def show_all_combined_result(result_df, date, folder_name, sub_num=SUB_NUM):
         i_plot = 1
         plt.figure(figsize=(13, 10))
         for target_name in ['R2', 'RMSE', 'NRMSE']:
@@ -384,11 +391,14 @@ class Presenter:
                         result_im = result_im + speed_im
                 result_im /= im_num
                 plt.subplot(3, 3, i_plot)
-                plt.imshow(result_im)
+                if target_name == 'R2':
+                    plt.imshow(result_im, cmap=plt.cm.get_cmap('RdYlBu'))
+                else:
+                    plt.imshow(result_im, cmap=plt.cm.get_cmap('RdYlBu_r'))
                 plt.title(result_name)
                 plt.colorbar()
                 i_plot += 1
-        file_path = RESULT_PATH + 'result_all_rotation\\' + date + '\\all_rotation.png'
+        file_path = RESULT_PATH + folder_name + '\\' + date + '\\result.png'
         plt.savefig(file_path)
         plt.show()
 

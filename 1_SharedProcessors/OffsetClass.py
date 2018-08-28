@@ -82,7 +82,6 @@ class OneAxisTranslation:
                 offset = Offset(self.__segment, z_offset=item / 1000)
                 offsets.append(offset)
         if axis_name is 'theta':
-
             if not diameter:
                 raise RuntimeError('Missing the cylinder diameter.')
             for item in iterable_object:

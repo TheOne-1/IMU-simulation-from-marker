@@ -2,15 +2,15 @@
 import pandas as pd
 import xlwt
 
-from PresenterUni import Presenter
+from Presenter import Presenter
 from const import *
 
 
-file_date = '20180808'
+file_date = '20180828'
 folder_name = 'result_all_translation'
 
 result_file = RESULT_PATH + folder_name + '\\' + file_date + '.csv'
 result_df = pd.read_csv(result_file)
 
 
-Presenter.show_all_combined_result(result_df, 6)
+Presenter.show_all_combined_result(result_df, file_date, folder_name, sub_num=6)

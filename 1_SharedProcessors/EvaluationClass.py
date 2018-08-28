@@ -139,39 +139,14 @@ class Evaluation:
         return result_im
 
     @staticmethod
-    def save_result(total_result_df, model, input_names, output_names, folder_name):
+    def save_result(total_result_df, folder_name):
         date = time.strftime('%Y%m%d')
         file_path = RESULT_PATH + folder_name + '\\' + date + '.csv'
-        specification_txt_file = RESULT_PATH + folder_name + '\\' + date + '_specification.txt'
         i_file = 0
         while os.path.isfile(file_path):
             i_file += 1
             file_path = RESULT_PATH + folder_name + '\\' + date + '_' + str(i_file) + '.csv'
-            specification_txt_file = RESULT_PATH + folder_name + '\\' + date + '_' + str(i_file) + '_specification.txt'
         total_result_df.to_csv(file_path, index=False)
-
-        # write a specification file about details
-        input_str = ', '.join(input_names)
-        output_str = ', '.join(output_names)
-
-        if DO_SCALING:
-            scaling_str = 'Scaling: StandardScaler'
-        else:
-            scaling_str = 'Scaling: None'
-        if DO_PCA:
-            pca_str = 'Feature selection: PCA, n component = ' + str(N_COMPONENT)
-        else:
-            pca_str = 'Feature selection: None'
-
-        content = 'Machine learning evaluators: ' + model.__class__.__name__ + '\n' + \
-                  'Model parameters: ' + json.dumps(model.get_params()) + '\n' + \
-                  'Input: ' + input_str + '\n' + \
-                  'Output: ' + output_str + '\n' + scaling_str + '\n' + pca_str + '\n'
-
-        with open(specification_txt_file, 'w') as file:
-            file.write(content)
-
-
 
 
 

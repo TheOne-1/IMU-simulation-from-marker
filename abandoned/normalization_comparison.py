@@ -6,7 +6,7 @@ from sklearn import ensemble
 from sklearn import preprocessing
 
 from DatabaseInfo import DatabaseInfo
-from XYGeneratorUni import XYGeneratorUni
+from XYGenerator import XYGeneratorUni
 from abandoned.EvaluationUniClass import EvaluationUni
 from const import *
 

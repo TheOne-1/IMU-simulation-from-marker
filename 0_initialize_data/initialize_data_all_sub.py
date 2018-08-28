@@ -4,8 +4,8 @@ import pandas as pd
 from gaitanalysis.motek import DFlowData
 
 from DatabaseInfo import DatabaseInfo
-from SubjectDataUni import SubjectData
-from XYGeneratorUni import XYGeneratorUni
+from SubjectData import SubjectData
+from XYGenerator import XYGeneratorUni
 from const import *
 
 data_path = 'D:\Tian\Research\Projects\ML Project\gait_database\GaitDatabase\data\\'

@@ -1,9 +1,8 @@
 # divide model training and IMU simulation to save computation time
-from sklearn.svm import SVR
-from sklearn import ensemble
-from SubThread import *
 import multiprocessing
 from datetime import datetime
+from sklearn import ensemble
+from SubThread import *
 
 if __name__ == '__main__':
     start_time = datetime.now()
@@ -42,25 +41,19 @@ if __name__ == '__main__':
         'r_foot_gyr_x', 'r_foot_gyr_y', 'r_foot_gyr_z',
     ]
 
-    # evaluators = ensemble.RandomForestRegressor(n_jobs=6)
-    model = ensemble.RandomForestRegressor(n_estimators=100, random_state=0)
-    # evaluators = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=4)
-    # evaluators = ensemble.GradientBoostingRegressor(
-    #     learning_rate=0.1, min_impurity_decrease=0.001, min_samples_split=6, n_estimators=500)
-
     thread_number = multiprocessing.cpu_count() - 1  # allowed thread number
     pool = multiprocessing.Pool(processes=thread_number)
-
     print('multiple IMU placement error started')
     sub_df_list = []
-    for i_sub in range(1):
-        pool.apply_async(get_combined_result_df, args=(input_names, output_names, result_column, model, i_sub),
+    for i_sub in range(SUB_NUM):
+        pool.apply_async(get_all_translation_result,
+                         args=(input_names, output_names, result_column, i_sub, 'GradientBoostingRegressor'),
                          callback=sub_df_list.append)
     pool.close()
     pool.join()
     total_result_df = pd.DataFrame()
     for sub_df in sub_df_list:
         total_result_df = pd.concat([total_result_df, sub_df], axis=0)
-    Evaluation.save_result(total_result_df, model, input_names, output_names, 'result_all_translation')
+    Evaluation.save_result(total_result_df, 'result_all_translation')
     end_time = datetime.now()
     print('Duration: ' + str(end_time - start_time))

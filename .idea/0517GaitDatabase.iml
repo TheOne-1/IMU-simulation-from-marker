@@ -4,7 +4,6 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/1_SharedProcessors" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/0_initialize_data" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3_analyse_result" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/4_model_param_selection" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/5_simulate_IMU_universal" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/2.3_simulate_IMU_segment_rotation" isTestSource="false" />

@@ -4,8 +4,8 @@ from sklearn import ensemble
 from sklearn import preprocessing
 
 from OffsetClass import *
-from SubjectDataUni import SubjectData
-from XYGeneratorUni import XYGeneratorUni
+from SubjectData import SubjectData
+from XYGenerator import XYGeneratorUni
 from abandoned.EvaluationUniClass import EvaluationUni
 
 output_names = [

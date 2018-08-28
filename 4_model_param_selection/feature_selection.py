@@ -1,22 +1,16 @@
 # this file is used to evaluate all the thigh marker position and find the best location
 # it is combines methods such as Filter, Wrapper and embedded feature importance
 
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-
-from XYGeneratorUni import XYGeneratorUni
-from const import *
-from FeatureModelSelector import FeatureModelSelector
-
-from sklearn.utils import shuffle
-from sklearn import ensemble, neighbors, tree
-from sklearn.model_selection import train_test_split, GridSearchCV
+import pandas as pd
+from sklearn import ensemble
 from sklearn import preprocessing
-from sklearn.svm import SVR
+from sklearn.feature_selection import RFE
+from sklearn.feature_selection import SelectKBest, f_regression
+from sklearn.utils import shuffle
 
-from sklearn.feature_selection import SelectKBest, f_regression, mutual_info_regression
-from sklearn.feature_selection import RFE, RFECV
+from FeatureModelSelector import FeatureModelSelector
+from const import *
 
 output_names = [
     'FP1.ForX',

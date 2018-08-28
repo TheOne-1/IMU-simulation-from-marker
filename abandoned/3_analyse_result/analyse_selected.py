@@ -2,7 +2,7 @@
 import pandas as pd
 import xlwt
 
-from PresenterUni import Presenter
+from Presenter import Presenter
 from const import *
 
 # the following output will be averaged

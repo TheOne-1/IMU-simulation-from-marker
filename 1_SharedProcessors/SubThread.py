@@ -1,15 +1,16 @@
-from const import *
-from SubjectDataUni import SubjectData
+import json
+import os
+import pickle
+import time
+from datetime import datetime
+
 from EvaluationClass import Evaluation
 from OffsetClass import *
-from XYGeneratorUni import XYGeneratorUni
-from datetime import datetime
-import pickle
-import random
+from SubjectData import SubjectData
+from XYGenerator import XYGeneratorUni
 
 
-def get_sub_result_df(base_model, input_names, output_names, result_column, i_sub):
-    total_sub_df = pd.DataFrame()
+def train_models(base_model, input_names, output_names, i_sub):
     start_time = datetime.now()
     print('Subject ' + str(i_sub) + ', start at ' + start_time.strftime('%H:%M:%S'))
     all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
@@ -17,16 +18,72 @@ def get_sub_result_df(base_model, input_names, output_names, result_column, i_su
     x_train = other_sub_data[input_names]
     y_train = other_sub_data[output_names]
     my_evaluator = Evaluation(output_names, base_model)
-
     my_evaluator.train_sklearn(x_train, y_train)  # very time consuming
+
+    root_dir = os.path.abspath(os.path.dirname(os.getcwd()))
+    os.path.join(root_dir, 'resource\models')
+    model_name = base_model.__class__.__name__
+    # save results
+    file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
+    with open(file_path, 'wb') as fp:
+        pickle.dump(my_evaluator, fp, protocol=4)
+
+    end_time = datetime.now()
+    print('Subject ' + str(i_sub) + ', finished at ' + end_time.strftime('%H:%M:%S'))
+
+
+def write_specification_file(model, input_names, output_names):
+    date = time.strftime('%Y%m%d')
+    model_name = model.__class__.__name__
+    specification_txt_file = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_' + date + '_specification.txt'
+
+    # write a specification file about details
+    input_str = ', '.join(input_names)
+    output_str = ', '.join(output_names)
+
+    if DO_SCALING:
+        scaling_str = 'Scaling: MinMaxScaler'
+    else:
+        scaling_str = 'Scaling: None'
+    if DO_PCA:
+        pca_str = 'Feature selection: PCA, n component = ' + str(N_COMPONENT)
+    else:
+        pca_str = 'Feature selection: None'
+
+    content = 'Machine learning evaluators: ' + model.__class__.__name__ + '\n' + \
+              'Model parameters: ' + json.dumps(model.get_params()) + '\n' + \
+              'Input: ' + input_str + '\n' + \
+              'Output: ' + output_str + '\n' + scaling_str + '\n' + pca_str + '\n'
+
+    with open(specification_txt_file, 'w') as file:
+        file.write(content)
+
+
+def read_evaluator(date, folder_name):
+    file_path = RESULT_PATH + folder_name + '\\model_' + date + '.txt'
+    with open(file_path, 'rb') as fp:
+        evalutors = pickle.load(fp)
+    return evalutors
+
+
+def get_segment_translation_result(input_names, output_names, result_column, i_sub, model_name):
+    start_time = datetime.now()
+    print('Subject ' + str(i_sub) + ', start at ' + start_time.strftime('%H:%M:%S'))
+
+    file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
+    with open(file_path, 'rb') as fp:
+        my_evaluator = pickle.load(fp)
+    all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
+    total_sub_df = pd.DataFrame()
     test_sub_data = all_sub_data[all_sub_data['subject_id'] == i_sub]
     del all_sub_data
+
     subject_data = SubjectData(PROCESSED_DATA_PATH, i_sub)
     # the range have to be defined after subject data to get the diameter
     shank_diameter = SubjectData.get_cylinder_diameter(test_sub_data, 'l_shank')
     thigh_diameter = SubjectData.get_cylinder_diameter(test_sub_data, 'l_thigh')
     for segment_moved in SEGMENT_NAMES:
-        if i_sub == 0:      # for test
+        if i_sub == 0:  # for test
             print('subject 0, ' + segment_moved)
         multi_offset = MultiAxisOffset.get_segment_multi_translation(segment_moved, shank_diameter, thigh_diameter)
         offset_combo_list = multi_offset.get_combos()
@@ -59,20 +116,19 @@ def get_sub_result_df(base_model, input_names, output_names, result_column, i_su
     return total_sub_df
 
 
-def get_combined_result_df(input_names, output_names, result_column, base_model, i_sub):
+def get_all_translation_result(input_names, output_names, result_column, i_sub, model_name):
     start_time = datetime.now()
     print('Subject ' + str(i_sub) + ', start at ' + start_time.strftime('%H:%M:%S'))
 
-    all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
-    other_sub_data = all_sub_data[all_sub_data['subject_id'] != i_sub]
-    x_train = other_sub_data[input_names]
-    y_train = other_sub_data[output_names]
-    my_evaluator = Evaluation(output_names, base_model)
-    my_evaluator.train_sklearn(x_train, y_train)  # very time consuming
+    file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
+    with open(file_path, 'rb') as fp:
+        my_evaluator = pickle.load(fp)
 
+    all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
     total_sub_df = pd.DataFrame()
     test_sub_data = all_sub_data[all_sub_data['subject_id'] == i_sub]
     del all_sub_data
+
     subject_data = SubjectData(PROCESSED_DATA_PATH, i_sub)
     # the range have to be defined after subject data to get the diameter
     thigh_diameter = SubjectData.get_cylinder_diameter(test_sub_data, 'l_thigh')
@@ -87,16 +143,17 @@ def get_combined_result_df(input_names, output_names, result_column, base_model,
         x_test = test_speed_data[input_names]
         y_test = test_speed_data[output_names].as_matrix()
         height = test_speed_data['height'].as_matrix()[0]
-        R2 = np.zeros([combo_len+1, len(output_names)])
-        RMSEs = np.zeros([combo_len+1, len(output_names)])
-        NRMSEs = np.zeros([combo_len+1, len(output_names)])
+        R2 = np.zeros([combo_len + 1, len(output_names)])
+        RMSEs = np.zeros([combo_len + 1, len(output_names)])
+        NRMSEs = np.zeros([combo_len + 1, len(output_names)])
         y_pred = my_evaluator.evaluate_sklearn(x_test, y_test)
         R2[0, :], RMSEs[0, :], NRMSEs[0, :] = my_evaluator.get_all_scores(y_test, y_pred)
         my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
         for i_combo in range(len(combos_list)):
             x_test_modified = my_xy_generator.modify_x_all_combined(x_test, combos_list[i_combo], height)
             y_pred = my_evaluator.evaluate_sklearn(x_test_modified, y_test)
-            R2[i_combo+1, :], RMSEs[i_combo+1, :], NRMSEs[i_combo+1, :] = my_evaluator.get_all_scores(y_test, y_pred)
+            R2[i_combo + 1, :], RMSEs[i_combo + 1, :], NRMSEs[i_combo + 1, :] = my_evaluator.get_all_scores(y_test,
+                                                                                                            y_pred)
         evaluation_result = np.column_stack([R2, RMSEs, NRMSEs])
         scores_df = pd.DataFrame(evaluation_result, columns=result_column)
         scores_df = scores_df.reset_index(drop=True)
@@ -110,33 +167,95 @@ def get_combined_result_df(input_names, output_names, result_column, base_model,
     return total_sub_df
 
 
+def get_segment_rotation_result(input_names, output_names, result_column, i_sub, model_name):
+    start_time = datetime.now()
+    print('Subject ' + str(i_sub) + ', start at ' + start_time.strftime('%H:%M:%S'))
+
+    file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
+    with open(file_path, 'rb') as fp:
+        my_evaluator = pickle.load(fp)
+    all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
+    total_sub_df = pd.DataFrame()
+    test_sub_data = all_sub_data[all_sub_data['subject_id'] == i_sub]
+    del all_sub_data
+
+    subject_data = SubjectData(PROCESSED_DATA_PATH, i_sub)
+    for segment_moved in SEGMENT_NAMES:
+        if i_sub == 0:  # for test
+            print('subject 0, ' + segment_moved)
+        rotation_offsets = OneAxisRotation.get_one_axis_rotation(segment_moved)
+        all_offsets_df = rotation_offsets.get_offset_df()
+        rotation_len = len(rotation_offsets)
+
+        for speed in SPEEDS:
+            test_speed_data = test_sub_data[test_sub_data['speed'] == float(speed)]
+            height = test_speed_data['height'].as_matrix()[0]
+            x_test = test_speed_data[input_names]
+            y_test = test_speed_data[output_names].as_matrix()
+            R2 = np.zeros([rotation_len, len(output_names)])
+            RMSEs = np.zeros([rotation_len, len(output_names)])
+            NRMSEs = np.zeros([rotation_len, len(output_names)])
+            my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
+            for i_rotation in range(rotation_len):
+                x_test_modified = my_xy_generator.modify_x_segment(x_test, rotation_offsets[i_rotation], height)
+                y_pred = my_evaluator.evaluate_sklearn(x_test_modified, y_test)
+                R2[i_rotation, :], RMSEs[i_rotation, :], NRMSEs[i_rotation, :] = my_evaluator.get_all_scores(y_test,
+                                                                                                             y_pred)
+            evaluation_result = np.column_stack([R2, RMSEs, NRMSEs])
+            scores_df = pd.DataFrame(evaluation_result, columns=result_column)
+            scores_df = scores_df.reset_index(drop=True)
+            speed_df = pd.concat([all_offsets_df, scores_df], axis=1)
+            speed_df.insert(loc=0, column='segment', value=segment_moved)
+            speed_df.insert(loc=0, column='speed', value=str(speed))
+            speed_df.insert(loc=0, column='subject_id', value=i_sub)
+            total_sub_df = pd.concat([total_sub_df, speed_df], axis=0)
+
+    end_time = datetime.now()
+    print('Subject ' + str(i_sub) + ', finished at ' + end_time.strftime('%H:%M:%S'))
+    return total_sub_df
 
 
-def get_error_combos(date, combo_num=100):
-    with open(RESULT_PATH + 'result_segment\\' + date + '\\segment_area_all.txt', 'rb') as fp:
-        area_all = pickle.load(fp)
-    index_all = []
-    for i_combo in range(combo_num):
-        index = np.zeros([len(SEGMENT_NAMES), 2], dtype=int)
-        for i_segment in range(len(SEGMENT_NAMES)):
-            index[i_segment, :] = select_point_randomly(area_all[i_segment])
-        index_all.append(index)
-    return index_all
+def get_all_rotation_result(input_names, output_names, result_column, i_sub, model_name, error_value=25):
+    start_time = datetime.now()
+    print('Subject ' + str(i_sub) + ', start at ' + start_time.strftime('%H:%M:%S'))
 
+    file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
+    with open(file_path, 'rb') as fp:
+        my_evaluator = pickle.load(fp)
 
-def select_point_randomly(segment_acceptable_area):
-    point_found_flag = False
-    axis_0_range = segment_acceptable_area.shape[1]
-    axis_1_range = segment_acceptable_area.shape[0]
-    x_index, y_index = 0, 0
-    while not point_found_flag:
-        x_index = random.randint(0, axis_0_range - 1)
-        y_index = random.randint(0, axis_1_range - 1)
-        if segment_acceptable_area[y_index, x_index] == 1:
-            point_found_flag = True
-    return [x_index, y_index]
+    all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
+    total_sub_df = pd.DataFrame()
+    test_sub_data = all_sub_data[all_sub_data['subject_id'] == i_sub]
+    del all_sub_data
+    subject_data = SubjectData(PROCESSED_DATA_PATH, i_sub)
+    segment_combo_class = RotationCombos(error_value=error_value)
+    combos_list = segment_combo_class.get_segment_combos()
+    combo_len = len(combos_list)
+    all_offsets_df = segment_combo_class.get_offset_df()
+    for speed in SPEEDS:
+        test_speed_data = test_sub_data[test_sub_data['speed'] == float(speed)]
+        x_test = test_speed_data[input_names]
+        y_test = test_speed_data[output_names].as_matrix()
+        height = test_speed_data['height'].as_matrix()[0]
+        R2 = np.zeros([combo_len + 1, len(output_names)])
+        RMSEs = np.zeros([combo_len + 1, len(output_names)])
+        NRMSEs = np.zeros([combo_len + 1, len(output_names)])
+        y_pred = my_evaluator.evaluate_sklearn(x_test, y_test)
+        R2[0, :], RMSEs[0, :], NRMSEs[0, :] = my_evaluator.get_all_scores(y_test, y_pred)
+        my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
+        for i_combo in range(len(combos_list)):
+            x_test_modified = my_xy_generator.modify_x_all_combined(x_test, combos_list[i_combo], height)
+            y_pred = my_evaluator.evaluate_sklearn(x_test_modified, y_test)
+            R2[i_combo + 1, :], RMSEs[i_combo + 1, :], NRMSEs[i_combo + 1, :] = my_evaluator.get_all_scores(y_test,
+                                                                                                            y_pred)
+        evaluation_result = np.column_stack([R2, RMSEs, NRMSEs])
+        scores_df = pd.DataFrame(evaluation_result, columns=result_column)
+        scores_df = scores_df.reset_index(drop=True)
+        speed_df = pd.concat([all_offsets_df, scores_df], axis=1)
+        speed_df.insert(loc=0, column='speed', value=str(speed))
+        speed_df.insert(loc=0, column='subject_id', value=i_sub)
+        total_sub_df = pd.concat([total_sub_df, speed_df], axis=0)
 
-
-
-
-
+    end_time = datetime.now()
+    print('Subject ' + str(i_sub) + ', finished at ' + end_time.strftime('%H:%M:%S'))
+    return total_sub_df
