@@ -43,11 +43,13 @@ if __name__ == '__main__':
     ]
 
     # evaluators = ensemble.RandomForestRegressor()
-    # model = ensemble.RandomForestRegressor(n_estimators=100, random_state=0, n_jobs=7)
-    # model = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=1000000)
-    model = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=3)
-    # model = ensemble.GradientBoostingRegressor(
-    #     learning_rate=0.1, min_impurity_decrease=0.001, min_samples_split=6, n_estimators=500)
+    # min_samples_split was set based on 1 / (sample_frequency * subject_number)
+    # model = ensemble.RandomForestRegressor(n_estimators=100, random_state=0, min_impurity_decrease=0.001,
+    #                                        min_samples_split=0.001)
+    model = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=10000)
+    # model = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=3)
+    # model = ensemble.GradientBoostingRegressor(n_estimators=500, learning_rate=0.1, min_impurity_decrease=0.001,
+    #                                            min_samples_split=0.001)
     model_name = model.__class__.__name__
 
     thread_number = multiprocessing.cpu_count() - 2  # allowed thread number

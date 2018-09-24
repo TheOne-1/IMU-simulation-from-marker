@@ -6,10 +6,11 @@ from Presenter import Presenter
 from const import *
 
 
-file_date = '20180808'
-folder_name = 'result_all_translation'
+file_date = '20180831'
+folder_name = 'result_all_trans_rota'
 
 result_file = RESULT_PATH + folder_name + '\\' + file_date + '.csv'
 result_df = pd.read_csv(result_file)
 
-Presenter.show_all_combined_result(result_df, file_date, folder_name, sub_num=6, model_name='Random Forest')
+
+Presenter.show_all_combined_result(result_df, file_date, folder_name, model_name='Gradient Boosting')

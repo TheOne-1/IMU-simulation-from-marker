@@ -293,7 +293,7 @@ class Presenter:
         plt.show()
 
     @staticmethod
-    def __get_axis_name(segment_name):
+    def _get_axis_name(segment_name):
         if segment_name in ['trunk', 'pelvis']:
             return [segment_name + '_x_offset', segment_name + '_z_offset']
         elif segment_name in ['l_foot', 'r_foot']:
@@ -356,7 +356,7 @@ class Presenter:
             im_all = []
             for segment in SEGMENT_NAMES:
                 segment_df = result_df[result_df['segment'] == segment]
-                im_all.append(Presenter.__get_segment_result_translation(segment_df, result_names))
+                im_all.append(Presenter._get_segment_result_translation(segment_df, result_names))
             result_all.append(im_all)
         with open(RESULT_PATH + 'result_segment_translation\\' + date + '\\segment_result_all.txt', 'wb') as fp:
             pickle.dump(result_all, fp)
@@ -373,13 +373,14 @@ class Presenter:
             pickle.dump(result_all, fp)
 
     @staticmethod
-    def show_all_combined_result(result_df, date, folder_name, sub_num=SUB_NUM):
+    def show_all_combined_result(result_df, date, folder_name, sub_num=SUB_NUM, model_name=''):
         i_plot = 1
         plt.figure(figsize=(13, 10))
         for target_name in ['R2', 'RMSE', 'NRMSE']:
             result_names = [force_name + '_' + target_name for force_name in ['ForX', 'ForY', 'ForZ']]
             for result_name in result_names:
                 result_im = np.zeros([16, 16])
+                # SPEEDS = ['1.2']
                 im_num = len(SPEEDS) * sub_num
                 for i_sub in range(sub_num):
                     for speed in SPEEDS:
@@ -398,14 +399,18 @@ class Presenter:
                 plt.title(result_name)
                 plt.colorbar()
                 i_plot += 1
+        plt.suptitle('Model: ' + model_name)
         file_path = RESULT_PATH + folder_name + '\\' + date + '\\result.png'
         plt.savefig(file_path)
         plt.show()
 
+
+
     @staticmethod
-    def __get_segment_result_translation(segment_df, result_names, sub_num=SUB_NUM):
+    def _get_segment_result_translation(segment_df, result_names, axes_names=None, sub_num=SUB_NUM):
         segment_name = segment_df['segment'].iloc[0]
-        axes_names = Presenter.__get_axis_name(segment_name)
+        if axes_names is None:
+            axes_names = Presenter._get_axis_name(segment_name)
         axis_0_name = axes_names[0]
         axis_0_value = segment_df[axis_0_name]
         axis_0_range = list(set(axis_0_value))
@@ -427,9 +432,9 @@ class Presenter:
             for i_sub in range(sub_num):
                 for speed in SPEEDS:
                     trial_df = segment_df[(segment_df['subject_id'] == i_sub) & (segment_df['speed'] == float(speed))]
-                    sub_im = Presenter.__get_decrease_im_uni(trial_df[[axis_0_name, axis_1_name, force[0],
-                                                                       force[1]]], axis_0_range, axis_1_range,
-                                                             axis_0_name, axis_1_name)
+                    sub_im = Presenter._get_decrease_im_uni(trial_df[[axis_0_name, axis_1_name, force[0],
+                                                                      force[1]]], axis_0_range, axis_1_range,
+                                                            axis_0_name, axis_1_name)
                     added_im += sub_im
             average_im = added_im / total_number
             segment_im_all.append(average_im)
@@ -447,9 +452,9 @@ class Presenter:
 
         result_names_combined = [['FP1.' + name, 'FP2.' + name] for name in result_names]
         for force in result_names_combined:
-            added_array = np.zeros([1, axis_len])
             result_im = np.zeros([len(SEGMENT_NAMES), axis_len])
             for i_segment in range(len(SEGMENT_NAMES)):
+                added_array = np.zeros([axis_len])
                 segment_df = result_df[result_df['segment'] == SEGMENT_NAMES[i_segment]]
                 segment_name = segment_df['segment'].iloc[0]
                 axis_name = segment_name + '_rotation'
@@ -479,7 +484,7 @@ class Presenter:
         return score_im
 
     @staticmethod
-    def __get_decrease_im_uni(scores_df, axis_0_range, axis_1_range, axis_0_name, axis_1_name):
+    def _get_decrease_im_uni(scores_df, axis_0_range, axis_1_range, axis_0_name, axis_1_name):
         axis_0_len = axis_0_range.__len__()
         axis_1_len = axis_1_range.__len__()
         score_im = np.zeros([axis_1_len, axis_0_len])
@@ -498,14 +503,14 @@ class Presenter:
     @staticmethod
     def __get_decrease_array_uni(scores_df, axis_0_range, axis_0_name):
         axis_0_len = axis_0_range.__len__()
-        score_im = np.zeros([1, axis_0_len])
+        score_im = np.zeros([axis_0_len])
         center_df = scores_df[scores_df[axis_0_name] == 0]
         center_score = np.mean(center_df.as_matrix()[0][1:])
         i_score = 0
         for i_y in range(axis_0_len):
             # for image, row and column are exchanged compared to ndarray
             score = scores_df[scores_df[axis_0_name] == axis_0_range[i_y]].as_matrix()
-            score_im[0, i_y] = (score[0][-1] + score[0][-2]) / 2 - center_score
+            score_im[i_y] = (score[0][-1] + score[0][-2]) / 2 - center_score
             i_score += 1
         return score_im
 

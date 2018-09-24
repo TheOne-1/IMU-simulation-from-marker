@@ -139,7 +139,7 @@ class Evaluation:
         return result_im
 
     @staticmethod
-    def save_result(total_result_df, folder_name):
+    def save_result(total_result_df, folder_name, model_name):
         date = time.strftime('%Y%m%d')
         file_path = RESULT_PATH + folder_name + '\\' + date + '.csv'
         i_file = 0
@@ -147,6 +147,15 @@ class Evaluation:
             i_file += 1
             file_path = RESULT_PATH + folder_name + '\\' + date + '_' + str(i_file) + '.csv'
         total_result_df.to_csv(file_path, index=False)
+
+        readme_path = RESULT_PATH + folder_name + '\\readme.txt'
+        content = date + ': ' + model_name + '\n'
+        if os.path.isfile(readme_path):
+            with open(readme_path, 'a') as file:
+                file.write(content)
+        else:
+            with open(readme_path, 'w') as file:
+                file.write(content)
 
 
 

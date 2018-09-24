@@ -46,7 +46,7 @@ if __name__ == '__main__':
     sub_df_list = []
     for i_sub in range(SUB_NUM):
         pool.apply_async(get_segment_translation_result,
-                         args=(input_names, output_names, result_column, i_sub, 'evaluator\\gradient_boosting', '20180824'),
+                         args=(input_names, output_names, result_column, i_sub, 'GradientBoostingRegressor'),
                          callback=sub_df_list.append)
     pool.close()
     pool.join()
@@ -54,6 +54,6 @@ if __name__ == '__main__':
     for sub_df in sub_df_list:
         total_result_df = pd.concat([total_result_df, sub_df], axis=0)
 
-    Evaluation.save_result(total_result_df, 'result_segment_translation')
+    Evaluation.save_result(total_result_df, 'result_segment_translation', 'GradientBoostingRegressor')
     end_time = datetime.now()
     print('Duration: ' + str(end_time - start_time))

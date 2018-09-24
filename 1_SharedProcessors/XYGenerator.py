@@ -76,7 +76,7 @@ class XYGeneratorUni:
         # x needs to be deep copied so that it won't be affected by the modification
         x_changed = x.copy()
         if isinstance(the_offset, list):
-            offset = Offset.combine_segment_offset(the_offset[0], the_offset[1])
+            offset = Offset.combine_segment_offset(the_offset)
         else:
             offset = the_offset
         if self.__acc_data:
@@ -107,10 +107,10 @@ class XYGeneratorUni:
         # Processor.check_virtual_marker(virtual_marker, walking_data_1_df, self.__moved_segment)  # for check
         acc_IMU = Processor.get_acc(virtual_marker, R_IMU_transform)
 
-        R_cylinder = offset.get_cylinder_rotation()
+        R = offset.get_R()
         # if it was simulated on cylinder, a rotation around the cylinder surface is necessary
-        if R_cylinder is not None:
-            acc_IMU = np.matmul(R_cylinder, acc_IMU.T).T
+        if R is not None:
+            acc_IMU = np.matmul(R, acc_IMU.T).T
         if NORMALIZE_ACC:
             acc_IMU = acc_IMU / height
 
@@ -134,10 +134,10 @@ class XYGeneratorUni:
         # Processor.check_virtual_marker(virtual_marker, walking_data_1_df, self.__moved_segment)  # for check
         gyr_IMU = Processor.get_gyr(walking_data_1_df, R_IMU_transform)
 
-        R_cylinder = offset.get_cylinder_rotation()
+        R = offset.get_R()
         # if it was simulated on cylinder, a rotation around the cylinder surface is necessary
-        if R_cylinder is not None:
-            gyr_IMU = np.matmul(R_cylinder, gyr_IMU.T).T
+        if R is not None:
+            gyr_IMU = np.matmul(R, gyr_IMU.T).T
 
         changed_columns = []
         for gyr_name in ['_gyr_x', '_gyr_y', '_gyr_z']:

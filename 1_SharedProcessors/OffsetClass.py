@@ -23,11 +23,27 @@ class Offset:
         names = [self.__segment + item for item in suffix]
         return names
 
-    def get_cylinder_rotation(self):
+    def get_R(self):
         return self.__R
+
+    def set_rotation(self, rotation_value):
+        if self.__rotation_angle != 0:
+            raise RuntimeError('Cannot set rotation if it already exists!')
+        self.__rotation_angle = rotation_value
+        angle_radius = rotation_value * np.pi / 180  # change degree to radians
+        R = np.array([[np.cos(angle_radius), -np.sin(angle_radius), 0],
+                        [np.sin(angle_radius), np.cos(angle_radius), 0],
+                        [0, 0, 1]])
+        if self.__R is None:
+            self.__R = R
+        else:
+            self.__R = np.matmul(R, self.__R)
 
     def get_rotation_angle(self):
         return self.__rotation_angle
+
+    def get_cylinder_rotation_angle(self):
+        return self.__theta_offset
 
     def get_translation(self):
         return np.array([self.__x_offset, self.__y_offset, self.__z_offset])
@@ -44,21 +60,33 @@ class Offset:
                   str(self.__y_offset) + ';\tz offset: ' + str(self.__z_offset) + ';\tR: ' + str_R)
 
     @staticmethod
-    def combine_segment_offset(offset_0, offset_1):
-        segment_0 = offset_0.get_segment()
-        segment_1 = offset_0.get_segment()
-        if segment_0 != segment_1:
-            raise RuntimeError('two offset segment must be the same')
-        transform_0 = offset_0.get_all_offsets()
-        transform_1 = offset_1.get_all_offsets()
-        transform = transform_0 + transform_1
+    def combine_segment_offset(offset_list):
+        segment = offset_list[0].get_segment()
+        for offset in offset_list:
+            segment_new = offset.get_segment()
+            if segment != segment_new:
+                raise RuntimeError('two offset segment must be the same')
 
-        if offset_0.get_cylinder_rotation() is not None:
-            R = offset_0.get_cylinder_rotation()
-        else:
-            R = offset_1.get_cylinder_rotation()
-        offset = Offset(segment_0, transform[0], transform[1], transform[2], transform[3], R, transform[4])
+        transform = np.zeros([5])
+        R_cylinder = np.eye(3)
+        R_rotation = np.eye(3)
+        for offset in offset_list:
+            transform += offset.get_all_offsets()
+            if offset.get_R() is not None:
+                if offset.get_all_offsets()[3] == 0:  # indicating it is a self rotation rather than cylinder rotation
+                    R_rotation = offset.get_R()
+                elif offset.get_all_offsets()[4] == 0:
+                    R_cylinder = offset.get_R()
+        R = np.matmul(R_rotation, R_cylinder)
+        offset = Offset(segment, transform[0], transform[1], transform[2], transform[3], R, transform[4])
         return offset
+
+    @staticmethod
+    def rotation_angle_to_R(rotation_angle):
+        angle_radius = rotation_angle * np.pi / 180  # change degree to radians
+        return np.array([[np.cos(angle_radius), -np.sin(angle_radius), 0],
+                         [np.sin(angle_radius), np.cos(angle_radius), 0],
+                         [0, 0, 1]])
 
 
 class OneAxisTranslation:
@@ -66,22 +94,22 @@ class OneAxisTranslation:
         self.__segment = segment
         self.__i_offset = 0
 
-        if axis_name not in ['x', 'y', 'z', 'theta']:
+        if axis_name not in ['x', 'y', 'z', 'theta', 'rotation']:
             raise RuntimeError('Wrong axis name.')
         offsets = []
         if axis_name is 'x':
             for item in iterable_object:
-                offset = Offset(self.__segment, x_offset=item / 1000)       # change millimeter to meter
+                offset = Offset(self.__segment, x_offset=item / 1000)  # change millimeter to meter
                 offsets.append(offset)
-        if axis_name is 'y':
+        elif axis_name is 'y':
             for item in iterable_object:
-                offset = Offset(self.__segment, y_offset=item / 1000)       # change millimeter to meter
+                offset = Offset(self.__segment, y_offset=item / 1000)  # change millimeter to meter
                 offsets.append(offset)
-        if axis_name is 'z':
+        elif axis_name is 'z':
             for item in iterable_object:
                 offset = Offset(self.__segment, z_offset=item / 1000)
                 offsets.append(offset)
-        if axis_name is 'theta':
+        elif axis_name is 'theta':
             if not diameter:
                 raise RuntimeError('Missing the cylinder diameter.')
             for item in iterable_object:
@@ -90,6 +118,11 @@ class OneAxisTranslation:
                 x = diameter / 2 * (1 - np.cos(theta_radians))
                 y = diameter / 2 * np.sin(theta_radians)
                 offset = Offset(segment=segment, x_offset=x, y_offset=y, theta_offset=item, R=R_cylinder)
+                offsets.append(offset)
+        elif axis_name is 'rotation':
+            for rotation_angle in iterable_object:
+                R = Offset.rotation_angle_to_R(rotation_angle)
+                offset = Offset(self.__segment, rotation_angle=rotation_angle, R=R)
                 offsets.append(offset)
         self.__offsets = offsets
 
@@ -173,7 +206,7 @@ class MultiAxisOffset:
         elif len(axes) == 1:
             return_list = []
             for offset in axes[0]:
-                return_list.append([offset])      # add a [] to make each item iterable
+                return_list.append([offset])  # add a [] to make each item iterable
             return return_list
         else:
             return_list = []
@@ -234,6 +267,42 @@ class MultiAxisOffset:
             multi_offset.add_offset_axis(y_axis)
         return multi_offset
 
+    @staticmethod
+    def get_segment_multi_trans_rota(segment, thigh_diameter, shank_diameter):
+        multi_offset = MultiAxisOffset()
+        if segment in ['trunk', 'pelvis']:
+            x_range = range(-100, 101, 50)
+            x_axis = OneAxisTranslation(segment, 'x', x_range)
+            multi_offset.add_offset_axis(x_axis)
+            z_range = range(-100, 101, 50)
+            z_axis = OneAxisTranslation(segment, 'z', z_range)
+            multi_offset.add_offset_axis(z_axis)
+        elif segment in ['l_thigh', 'r_thigh']:
+            theta_range = np.arange(-25, 26, 12.5)
+            theta_axis = OneAxisTranslation(segment, 'theta', theta_range, diameter=thigh_diameter)
+            multi_offset.add_offset_axis(theta_axis)
+            z_range = range(-100, 101, 50)
+            z_axis = OneAxisTranslation(segment, 'z', z_range)
+            multi_offset.add_offset_axis(z_axis)
+        elif segment in ['l_shank', 'r_shank']:
+            theta_range = np.arange(-25, 26, 12.5)
+            theta_axis = OneAxisTranslation(segment, 'theta', theta_range, diameter=shank_diameter)
+            multi_offset.add_offset_axis(theta_axis)
+            z_range = range(-100, 101, 50)
+            z_axis = OneAxisTranslation(segment, 'z', z_range)
+            multi_offset.add_offset_axis(z_axis)
+        else:
+            x_range = range(-50, 51, 25)
+            x_axis = OneAxisTranslation(segment, 'x', x_range)
+            multi_offset.add_offset_axis(x_axis)
+            y_range = range(-50, 51, 25)
+            y_axis = OneAxisTranslation(segment, 'y', y_range)
+            multi_offset.add_offset_axis(y_axis)
+        rotation_range = np.arange(-25, 26, 12.5)
+        rotation_axis = OneAxisTranslation(segment, 'rotation', rotation_range)
+        multi_offset.add_offset_axis(rotation_axis)
+        return multi_offset
+
 
 # this class is used to return translation offset combinations between all 8 segments
 class TranslationCombos:
@@ -241,40 +310,56 @@ class TranslationCombos:
         if error_combo.shape != (8, 2):
             raise RuntimeError('Incorrect offset length')
 
-        offset_0 = TranslationCombos.__initialize_both_axes_offset('trunk', 'x', error_combo[0, 0], 'z', error_combo[0, 1])
-        offset_1 = TranslationCombos.__initialize_both_axes_offset('trunk', 'x', -error_combo[0, 0], 'z', -error_combo[0, 1])
+        offset_0 = TranslationCombos.__initialize_both_axes_offset('trunk', 'x', error_combo[0, 0], 'z',
+                                                                   error_combo[0, 1])
+        offset_1 = TranslationCombos.__initialize_both_axes_offset('trunk', 'x', -error_combo[0, 0], 'z',
+                                                                   -error_combo[0, 1])
         trunk_list = [offset_0, offset_1]
 
-        offset_0 = TranslationCombos.__initialize_both_axes_offset('pelvis', 'x', error_combo[1, 0], 'z', error_combo[1, 1])
-        offset_1 = TranslationCombos.__initialize_both_axes_offset('pelvis', 'x', -error_combo[1, 0], 'z', -error_combo[1, 1])
+        offset_0 = TranslationCombos.__initialize_both_axes_offset('pelvis', 'x', error_combo[1, 0], 'z',
+                                                                   error_combo[1, 1])
+        offset_1 = TranslationCombos.__initialize_both_axes_offset('pelvis', 'x', -error_combo[1, 0], 'z',
+                                                                   -error_combo[1, 1])
         pelvis_list = [offset_0, offset_1]
 
-        offset_0 = TranslationCombos.__initialize_both_axes_offset('l_thigh', 'theta', error_combo[2, 0], 'z', error_combo[2, 1], diameter=thigh_diameter)
-        offset_1 = TranslationCombos.__initialize_both_axes_offset('l_thigh', 'theta', -error_combo[2, 0], 'z', -error_combo[2, 1], diameter=thigh_diameter)
+        offset_0 = TranslationCombos.__initialize_both_axes_offset('l_thigh', 'theta', error_combo[2, 0], 'z',
+                                                                   error_combo[2, 1], diameter=thigh_diameter)
+        offset_1 = TranslationCombos.__initialize_both_axes_offset('l_thigh', 'theta', -error_combo[2, 0], 'z',
+                                                                   -error_combo[2, 1], diameter=thigh_diameter)
         l_thigh_list = [offset_0, offset_1]
 
-        offset_0 = TranslationCombos.__initialize_both_axes_offset('r_thigh', 'theta', error_combo[3, 0], 'z', error_combo[3, 1], diameter=thigh_diameter)
-        offset_1 = TranslationCombos.__initialize_both_axes_offset('r_thigh', 'theta', -error_combo[3, 0], 'z', -error_combo[3, 1], diameter=thigh_diameter)
+        offset_0 = TranslationCombos.__initialize_both_axes_offset('r_thigh', 'theta', error_combo[3, 0], 'z',
+                                                                   error_combo[3, 1], diameter=thigh_diameter)
+        offset_1 = TranslationCombos.__initialize_both_axes_offset('r_thigh', 'theta', -error_combo[3, 0], 'z',
+                                                                   -error_combo[3, 1], diameter=thigh_diameter)
         r_thigh_list = [offset_0, offset_1]
 
-        offset_0 = TranslationCombos.__initialize_both_axes_offset('l_shank', 'theta', error_combo[4, 0], 'z', error_combo[4, 1], diameter=shank_diameter)
-        offset_1 = TranslationCombos.__initialize_both_axes_offset('l_shank', 'theta', -error_combo[4, 0], 'z', -error_combo[4, 1], diameter=shank_diameter)
+        offset_0 = TranslationCombos.__initialize_both_axes_offset('l_shank', 'theta', error_combo[4, 0], 'z',
+                                                                   error_combo[4, 1], diameter=shank_diameter)
+        offset_1 = TranslationCombos.__initialize_both_axes_offset('l_shank', 'theta', -error_combo[4, 0], 'z',
+                                                                   -error_combo[4, 1], diameter=shank_diameter)
         l_shank_list = [offset_0, offset_1]
 
-        offset_0 = TranslationCombos.__initialize_both_axes_offset('r_shank', 'theta', error_combo[5, 0], 'z', error_combo[5, 1], diameter=shank_diameter)
-        offset_1 = TranslationCombos.__initialize_both_axes_offset('r_shank', 'theta', -error_combo[5, 0], 'z', -error_combo[5, 1], diameter=shank_diameter)
+        offset_0 = TranslationCombos.__initialize_both_axes_offset('r_shank', 'theta', error_combo[5, 0], 'z',
+                                                                   error_combo[5, 1], diameter=shank_diameter)
+        offset_1 = TranslationCombos.__initialize_both_axes_offset('r_shank', 'theta', -error_combo[5, 0], 'z',
+                                                                   -error_combo[5, 1], diameter=shank_diameter)
         r_shank_list = [offset_0, offset_1]
 
-        offset_0 = TranslationCombos.__initialize_both_axes_offset('l_foot', 'x', error_combo[6, 0], 'y', error_combo[6, 1])
-        offset_1 = TranslationCombos.__initialize_both_axes_offset('l_foot', 'x', -error_combo[6, 0], 'y', -error_combo[6, 1])
+        offset_0 = TranslationCombos.__initialize_both_axes_offset('l_foot', 'x', error_combo[6, 0], 'y',
+                                                                   error_combo[6, 1])
+        offset_1 = TranslationCombos.__initialize_both_axes_offset('l_foot', 'x', -error_combo[6, 0], 'y',
+                                                                   -error_combo[6, 1])
         l_foot_list = [offset_0, offset_1]
 
-        offset_0 = TranslationCombos.__initialize_both_axes_offset('r_foot', 'x', error_combo[7, 0], 'y', error_combo[7, 1])
-        offset_1 = TranslationCombos.__initialize_both_axes_offset('r_foot', 'x', -error_combo[7, 0], 'y', -error_combo[7, 1])
+        offset_0 = TranslationCombos.__initialize_both_axes_offset('r_foot', 'x', error_combo[7, 0], 'y',
+                                                                   error_combo[7, 1])
+        offset_1 = TranslationCombos.__initialize_both_axes_offset('r_foot', 'x', -error_combo[7, 0], 'y',
+                                                                   -error_combo[7, 1])
         r_foot_list = [offset_0, offset_1]
 
-        self.__list_all = [trunk_list, pelvis_list, l_thigh_list, r_thigh_list, l_shank_list, r_shank_list,
-                           l_foot_list, r_foot_list]
+        self._list_all = [trunk_list, pelvis_list, l_thigh_list, r_thigh_list, l_shank_list, r_shank_list,
+                          l_foot_list, r_foot_list]
 
     def get_offset_df(self):
         offset_combos = self.get_segment_combos()
@@ -295,17 +380,17 @@ class TranslationCombos:
 
     # this function returns combos between different segments
     def get_segment_combos(self):
-        x = TranslationCombos.__get_segment_combos_recursive(self.__list_all)
+        x = TranslationCombos._get_segment_combos_recursive(self._list_all)
         return x
 
     @staticmethod
-    def __get_segment_combos_recursive(list_all):
+    def _get_segment_combos_recursive(list_all):
         if len(list_all) == 1:
             return_list = [[list_all[0][0]], [list_all[0][1]]]
         else:
             return_list = []
             first_segment = list_all[0]
-            last_return_list = TranslationCombos.__get_segment_combos_recursive(list_all[1:])
+            last_return_list = TranslationCombos._get_segment_combos_recursive(list_all[1:])
             for last_combo in last_return_list:
                 new_combo = [first_segment[0]]
                 new_combo.extend(last_combo)
@@ -345,10 +430,10 @@ class TranslationCombos:
         offset_value_1 = offset_1.get_all_offsets()
         offset_value = offset_value_0 + offset_value_1
 
-        if offset_0.get_cylinder_rotation() is not None:
-            R = offset_0.get_cylinder_rotation()
-        elif offset_1.get_cylinder_rotation() is not None:
-            R = offset_1.get_cylinder_rotation()
+        if offset_0.get_R() is not None:
+            R = offset_0.get_R()
+        elif offset_1.get_R() is not None:
+            R = offset_1.get_R()
         else:
             R = None
 
@@ -361,11 +446,11 @@ class RotationCombos:
     def __init__(self, error_value=25):
         angle_radius = error_value * np.pi / 180  # change degree to radians
         R_0 = np.array([[np.cos(angle_radius), -np.sin(angle_radius), 0],
-                      [np.sin(angle_radius), np.cos(angle_radius), 0],
-                      [0, 0, 1]])
+                        [np.sin(angle_radius), np.cos(angle_radius), 0],
+                        [0, 0, 1]])
         R_1 = np.array([[np.cos(-angle_radius), -np.sin(-angle_radius), 0],
-                      [np.sin(-angle_radius), np.cos(-angle_radius), 0],
-                      [0, 0, 1]])
+                        [np.sin(-angle_radius), np.cos(-angle_radius), 0],
+                        [0, 0, 1]])
         self.__list_all = []
         for segment in SEGMENT_NAMES:
             offset_0 = Offset(segment=segment, R=R_0, rotation_angle=error_value)
@@ -391,33 +476,18 @@ class RotationCombos:
 
     # this function returns combos between different segments
     def get_segment_combos(self):
-        x = RotationCombos.__get_segment_combos_recursive(self.__list_all)
+        x = TranslationCombos._get_segment_combos_recursive(self.__list_all)
         return x
 
-    @staticmethod
-    def __get_segment_combos_recursive(list_all):
-        if len(list_all) == 1:
-            return_list = [[list_all[0][0]], [list_all[0][1]]]
-        else:
-            return_list = []
-            first_segment = list_all[0]
-            last_return_list = RotationCombos.__get_segment_combos_recursive(list_all[1:])
-            for last_combo in last_return_list:
-                new_combo = [first_segment[0]]
-                new_combo.extend(last_combo)
-                return_list.append(new_combo)
-                new_combo = [first_segment[1]]
-                new_combo.extend(last_combo)
-                return_list.append(new_combo)
-        return return_list
 
-
-
-
-
-
-
-
+# this class is used to return rotation offset combinations between all 8 segments
+class TransRotaCombos(TranslationCombos):
+    def __init__(self, error_combo, thigh_diameter, shank_diameter, rotation_value=25):
+        super(TransRotaCombos, self).__init__(error_combo, thigh_diameter, shank_diameter)
+        list_all = self._list_all
+        for segment_list in list_all:
+            segment_list[0].set_rotation(rotation_value)
+            segment_list[1].set_rotation(-rotation_value)
 
 
 

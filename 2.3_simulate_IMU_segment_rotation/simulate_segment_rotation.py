@@ -41,6 +41,8 @@ if __name__ == '__main__':
         'r_foot_gyr_x', 'r_foot_gyr_y', 'r_foot_gyr_z',
     ]
 
+    model_name = 'GradientBoostingRegressor'
+
     thread_number = multiprocessing.cpu_count() - 2  # allowed thread number
     pool = multiprocessing.Pool(processes=thread_number)
 
@@ -48,7 +50,7 @@ if __name__ == '__main__':
     sub_df_list = []
     for i_sub in range(SUB_NUM):
         pool.apply_async(get_segment_rotation_result, args=(
-            input_names, output_names, result_column, i_sub, 'evaluator\\gradient_boosting', '20180824'),
+            input_names, output_names, result_column, i_sub, model_name),
                          callback=sub_df_list.append)
     pool.close()
     pool.join()
@@ -56,6 +58,6 @@ if __name__ == '__main__':
     total_result_df = pd.DataFrame()
     for sub_df in sub_df_list:
         total_result_df = pd.concat([total_result_df, sub_df], axis=0)
-    Evaluation.save_result(total_result_df, 'result_segment_rotation')
+    Evaluation.save_result(total_result_df, 'result_segment_rotation', model_name)
     end_time = datetime.now()
     print('Duration: ' + str(end_time - start_time))

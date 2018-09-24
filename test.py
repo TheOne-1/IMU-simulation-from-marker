@@ -1,8 +1,14 @@
-from OffsetClass import *
+
+class People:
+    def __init__(self, name):
+        self._name = name
 
 
-rotation_offsets = OneAxisRotation.get_one_axis_rotation('trunk')
-rotation_len = len(rotation_offsets)
+class Chinese(People):
+    def __init__(self, name):
+        super().__init__(name)
+        print(self._name)
 
-for x in range(rotation_len):
-    y = rotation_offsets[x]
+
+
+my_chinese = Chinese('Tian')
