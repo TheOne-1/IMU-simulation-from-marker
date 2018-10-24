@@ -5,17 +5,18 @@ from sklearn import ensemble
 from sklearn import preprocessing
 from sklearn.model_selection import GridSearchCV
 from sklearn.utils import shuffle
-
+from sklearn.linear_model import LinearRegression
 from DatabaseInfo import DatabaseInfo
 from EvaluationClass import Evaluation
 from SubjectData import SubjectData
-from XYGenerator import XYGenerator
+from XYGenerator import XYGeneratorUni
 from const import *
 
 output_names = [
-    'FP1.ForX',
+    # 'FP1.ForX',
     # 'FP2.ForX',
-    # 'FP1.ForY', 'FP2.ForY',
+    'FP1.ForY',
+    # 'FP2.ForY',
     # 'FP1.ForZ', 'FP2.ForZ',
     # 'FP1.CopX', 'FP1.CopY',
     # 'FP2.CopX',
@@ -45,19 +46,14 @@ input_names = [
 my_database_info = DatabaseInfo()
 total_score_df = Evaluation.initialize_result_df(total_result_columns)
 
-# evaluators = neighbors.KNeighborsRegressor()
-# evaluators = ensemble.AdaBoostRegressor()
-# evaluators = tree.DecisionTreeRegressor()
-# evaluators = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=4000000)
-# evaluators = ensemble.RandomForestRegressor(random_state=100)
-# evaluators = GridSearchCV(ensemble.RandomForestRegressor(random_state=0, n_jobs=4), param_grid={'n_estimators': [40, 200, 1000], 'min_impurity_decrease': [0, 1e-3]})
-# evaluators = GridSearchCV(ensemble.AdaBoostRegressor())
-model = GridSearchCV(ensemble.GradientBoostingRegressor(), param_grid={'n_estimators': [20, 100, 500],
-                                                                       'max_depth': [2, 6, 18],
-                                                                       'learning_rate': [0.01, 0.1],
-                                                                       'min_samples_split': [2, 6, 18],
-                                                                       'min_impurity_decrease': [1e-3, 1e-2]})
-
+# evaluators = GridSearchCV(ensemble.RandomForestRegressor(n_estimators=100, max_depth=20, min_impurity_decrease=1e-5, random_state=0, n_jobs=7),
+#                           param_grid={'min_samples_split': [2, 10, 100], 'max_features': [0.1, 0.5, 0.9]})
+# model = GridSearchCV(ensemble.GradientBoostingRegressor(), param_grid={'n_estimators': [20, 100, 500],
+#                                                                        'max_depth': [2, 6, 18],
+#                                                                        'learning_rate': [0.01, 0.1],
+#                                                                        'min_samples_split': [2, 6, 18],
+#                                                                        'min_impurity_decrease': [1e-3, 1e-2]})
+evaluators = GridSearchCV(LinearRegression(), param_grid={})
 # evaluators = GridSearchCV(SVR(verbose=2, max_iter=4000000), param_grid={'C': [100, 1000, 10000], 'gamma': [0.001, 0.01, 0.1], 'epsilon': [0.001, 0.01, 0.1]})
 # evaluators = GridSearchCV(tree.DecisionTreeRegressor(), param_grid={'max_depth': [10, 100, 1000], 'min_samples_leaf': [2, 20, 200], 'max_features': [5, 10, 24]})
 
@@ -68,7 +64,7 @@ i_sub = 0
 speed = SPEEDS[0]
 
 subject_data = SubjectData(PROCESSED_DATA_PATH, i_sub)
-my_xy_generator = XYGenerator(subject_data, segment_moved, speed, output_names, input_names)
+my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
 x_raw, y_raw = my_xy_generator.get_xy()
 x, y = x_raw[input_names], y_raw[output_names]
 
@@ -81,18 +77,17 @@ y = y_scaler.transform(y)
 # shuffle the data
 x, y = shuffle(x, y)
 
-model.fit(x, y[:, 0])
-
+evaluators.fit(x, y[:, 0])
 # print scores of each estiamtor
-means = model.cv_results_['mean_test_score']
-stds = model.cv_results_['std_test_score']
-for mean, std, params in zip(means, stds, model.cv_results_['params']):
+means = evaluators.cv_results_['mean_test_score']
+stds = evaluators.cv_results_['std_test_score']
+for mean, std, params in zip(means, stds, evaluators.cv_results_['params']):
     print("%0.3f (+/-%0.03f) for %r" % (mean, std * 2, params))
 print('\n')
-print(model.best_estimator_)
+print(evaluators.best_estimator_)
 
 # print feature importances
-print('\n')
+# print('\n')
 # feature_importance = evaluators.best_estimator_.feature_importances_
 # print(feature_importance)
 # plt.bar(input_names, feature_importance)

@@ -1,6 +1,5 @@
 # this file is used to evaluate all the thigh marker position and find the best location
 import multiprocessing
-
 from SubThread import *
 
 if __name__ == '__main__':
@@ -54,6 +53,6 @@ if __name__ == '__main__':
     for sub_df in sub_df_list:
         total_result_df = pd.concat([total_result_df, sub_df], axis=0)
 
-    Evaluation.save_result(total_result_df, 'result_all_trans_rota', model_name)
+    Evaluation.save_result(total_result_df, 'result_segment_trans_rota', model_name)
     end_time = datetime.now()
     print('Duration: ' + str(end_time - start_time))

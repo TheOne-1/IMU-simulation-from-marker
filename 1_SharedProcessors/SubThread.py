@@ -82,7 +82,7 @@ def get_segment_translation_result(input_names, output_names, result_column, i_s
     # the range have to be defined after subject data to get the diameter
     shank_diameter = SubjectData.get_cylinder_diameter(test_sub_data, 'l_shank')
     thigh_diameter = SubjectData.get_cylinder_diameter(test_sub_data, 'l_thigh')
-    for segment_moved in SEGMENT_NAMES:
+    for segment_moved in SEGMENT_NAMES[3:]:
         if i_sub == 0:  # for test
             print('subject 0, ' + segment_moved)
         multi_offset = MultiAxisOffset.get_segment_multi_translation(segment_moved, shank_diameter, thigh_diameter)

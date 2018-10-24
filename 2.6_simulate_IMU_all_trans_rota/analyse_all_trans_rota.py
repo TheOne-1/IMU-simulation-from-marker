@@ -6,7 +6,7 @@ from Presenter import Presenter
 from const import *
 
 
-file_date = '20180831'
+file_date = '20181008'
 folder_name = 'result_all_trans_rota'
 
 result_file = RESULT_PATH + folder_name + '\\' + file_date + '.csv'

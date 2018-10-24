@@ -385,7 +385,8 @@ class Presenter:
                 for i_sub in range(sub_num):
                     for speed in SPEEDS:
                         speed_df = result_df[(result_df['subject_id'] == i_sub) & (result_df['speed'] == float(speed))]
-                        original_value = np.mean(speed_df[['FP1.' + result_name, 'FP2.' + result_name]].as_matrix()[0, :])
+                        # original_value = np.mean(speed_df[['FP1.' + result_name, 'FP2.' + result_name]].as_matrix()[0, :])
+                        original_value = 0
                         result_value = speed_df[['FP1.' + result_name, 'FP2.' + result_name]].as_matrix()
                         result_value = np.mean(result_value[1:, :], axis=1)
                         speed_im = Presenter.__get_all_combined_im(result_value, original_value)

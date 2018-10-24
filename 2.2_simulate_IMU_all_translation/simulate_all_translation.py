@@ -45,7 +45,7 @@ if __name__ == '__main__':
     pool = multiprocessing.Pool(processes=thread_number)
     print('multiple IMU placement error started')
     sub_df_list = []
-    for i_sub in range(1):
+    for i_sub in range(SUB_NUM):
         pool.apply_async(get_all_translation_result,
                          args=(input_names, output_names, result_column, i_sub, 'GradientBoostingRegressor'),
                          callback=sub_df_list.append)

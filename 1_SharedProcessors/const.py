@@ -1,3 +1,5 @@
+from numpy import pi, sqrt
+
 FORCE_PLATE_THRESHOLD = 50      # set 50N as the threshold of the force plate
 
 DO_SCALING = True
@@ -6,6 +8,14 @@ DO_SHUFFLING = True
 
 NORMALIZE_ACC = True
 NORMALIZE_GRF = True
+
+ADD_NOISE = True
+ADD_BIAS = True
+
+SIGMA_NOISE_ACC = 0.02 / sqrt(3)
+SIGMA_BIAS_ACC = 0.001 / sqrt(3)
+SIGMA_NOISE_GYR = pi / 1800 / sqrt(3)
+SIGMA_BIAS_GYR = pi / 64800 / sqrt(3)
 
 SUB_NUM = 12
 RAW_DATA_PATH = 'D:\Tian\Research\Projects\ML Project\gait_database\GaitDatabase\data\\'

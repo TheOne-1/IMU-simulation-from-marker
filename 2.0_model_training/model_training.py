@@ -3,6 +3,7 @@ import multiprocessing
 from datetime import datetime
 from sklearn import ensemble
 from sklearn.svm import SVR
+from sklearn.linear_model import LinearRegression
 from SubThread import *
 
 if __name__ == '__main__':
@@ -44,10 +45,10 @@ if __name__ == '__main__':
 
     # evaluators = ensemble.RandomForestRegressor()
     # min_samples_split was set based on 1 / (sample_frequency * subject_number)
-    # model = ensemble.RandomForestRegressor(n_estimators=100, random_state=0, min_impurity_decrease=0.001,
-    #                                        min_samples_split=0.001)
-    model = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=10000)
     # model = SVR(C=200, epsilon=0.02, gamma=0.1, max_iter=3)
+    model = LinearRegression()
+    # model = ensemble.RandomForestRegressor(n_estimators=100, max_depth=20, min_impurity_decrease=1e-5,
+    #                                        min_samples_split=20, max_features=0.5)
     # model = ensemble.GradientBoostingRegressor(n_estimators=500, learning_rate=0.1, min_impurity_decrease=0.001,
     #                                            min_samples_split=0.001)
     model_name = model.__class__.__name__

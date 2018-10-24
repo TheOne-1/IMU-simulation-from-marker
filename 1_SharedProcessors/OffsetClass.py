@@ -114,10 +114,14 @@ class OneAxisTranslation:
                 raise RuntimeError('Missing the cylinder diameter.')
             for item in iterable_object:
                 theta_radians = item * np.pi / 180  # change degree to radians
-                R_cylinder = Processor.get_cylinder_surface_rotation(theta_radians)
-                x = diameter / 2 * (1 - np.cos(theta_radians))
+                if segment in ['l_thigh', 'l_shank']:
+                    x = diameter / 2 * (1 - np.cos(theta_radians))
+                    R_cylinder = Processor.get_cylinder_surface_rotation(theta_radians)
+                else:
+                    x = - diameter / 2 * (1 - np.cos(theta_radians))
+                    R_cylinder = Processor.get_cylinder_surface_rotation(-theta_radians)
                 y = diameter / 2 * np.sin(theta_radians)
-                offset = Offset(segment=segment, x_offset=x, y_offset=y, theta_offset=item, R=R_cylinder)
+                offset = Offset(self.__segment, x_offset=x, y_offset=y, theta_offset=item, R=R_cylinder)
                 offsets.append(offset)
         elif axis_name is 'rotation':
             for rotation_angle in iterable_object:

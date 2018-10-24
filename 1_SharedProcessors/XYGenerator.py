@@ -6,7 +6,6 @@ class XYGeneratorUni:
 
     def __init__(self, subject_data, speed, output_names, input_names):
         self.__subject_data = subject_data
-        # self.__moved_segment = moved_segment        # 用到这个的都要改掉
         self.__speed = speed
         self.__output_names = output_names
         self.__axis_1_range = []
@@ -24,8 +23,6 @@ class XYGeneratorUni:
 
     def get_speed(self):
         return self.__speed
-
-
 
     def get_cylinder_diameter(self, segment):
         if segment in ['l_thigh', 'r_thigh', 'l_shank', 'r_shank']:

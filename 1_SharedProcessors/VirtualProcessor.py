@@ -63,7 +63,16 @@ class Processor:
         acc_to_IMU = np.zeros([data_len, 3])
         for i_frame in range(data_len):
             acc_to_IMU[i_frame, :] = np.dot(R_IMU_transform[:, :, i_frame], acc_to_ground[i_frame, :].T)
-        #
+
+        if ADD_NOISE:
+            acc_noise = np.random.normal(0, SIGMA_NOISE_ACC, (data_len, 3))
+            acc_to_IMU += acc_noise
+        if ADD_BIAS:
+            acc_bias = np.random.normal(0, SIGMA_BIAS_ACC, 3)
+            acc_to_IMU[:, 0] += acc_bias[0]
+            acc_to_IMU[:, 1] += acc_bias[1]
+            acc_to_IMU[:, 2] += acc_bias[2]
+
         # plt.figure()
         # plt.subplot(221)
         # plt.plot(acc_to_IMU[:, 0])
@@ -111,6 +120,14 @@ class Processor:
         gyr = interpo.splev(step_gyr, tck, der=0)
         gyr = np.column_stack([gyr[0], gyr[1], gyr[2]])
 
+        if ADD_NOISE:
+            gyr_noise = np.random.normal(0, SIGMA_NOISE_GYR, (data_len, 3))
+            gyr += gyr_noise
+        if ADD_BIAS:
+            gyr_bias = np.random.normal(0, SIGMA_BIAS_GYR, 3)
+            gyr[:, 0] += gyr_bias[0]
+            gyr[:, 1] += gyr_bias[1]
+            gyr[:, 2] += gyr_bias[2]
 
         # plt.figure()
         # plt.subplot(221)
