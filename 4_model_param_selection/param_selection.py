@@ -1,23 +1,29 @@
 # this file is used to evaluate all the thigh marker position and find the best location
 # 用processor之前一定要set_segment
 
+import pandas as pd
 from sklearn import ensemble
 from sklearn import preprocessing
 from sklearn.model_selection import GridSearchCV
 from sklearn.utils import shuffle
-from sklearn.linear_model import LinearRegression
+from sklearn.neural_network import MLPRegressor
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.svm import SVR
+from sklearn.model_selection import PredefinedSplit
 from DatabaseInfo import DatabaseInfo
 from EvaluationClass import Evaluation
 from SubjectData import SubjectData
 from XYGenerator import XYGeneratorUni
 from const import *
+import numpy as np
 
 output_names = [
-    # 'FP1.ForX',
+    'FP1.ForX',
     # 'FP2.ForX',
-    'FP1.ForY',
+    # 'FP1.ForY',
     # 'FP2.ForY',
-    # 'FP1.ForZ', 'FP2.ForZ',
+    # 'FP1.ForZ',
+    #  'FP2.ForZ',
     # 'FP1.CopX', 'FP1.CopY',
     # 'FP2.CopX',
     # 'FP2.CopY'
@@ -46,49 +52,58 @@ input_names = [
 my_database_info = DatabaseInfo()
 total_score_df = Evaluation.initialize_result_df(total_result_columns)
 
-# evaluators = GridSearchCV(ensemble.RandomForestRegressor(n_estimators=100, max_depth=20, min_impurity_decrease=1e-5, random_state=0, n_jobs=7),
-#                           param_grid={'min_samples_split': [2, 10, 100], 'max_features': [0.1, 0.5, 0.9]})
-# model = GridSearchCV(ensemble.GradientBoostingRegressor(), param_grid={'n_estimators': [20, 100, 500],
-#                                                                        'max_depth': [2, 6, 18],
-#                                                                        'learning_rate': [0.01, 0.1],
-#                                                                        'min_samples_split': [2, 6, 18],
-#                                                                        'min_impurity_decrease': [1e-3, 1e-2]})
-evaluators = GridSearchCV(LinearRegression(), param_grid={})
-# evaluators = GridSearchCV(SVR(verbose=2, max_iter=4000000), param_grid={'C': [100, 1000, 10000], 'gamma': [0.001, 0.01, 0.1], 'epsilon': [0.001, 0.01, 0.1]})
-# evaluators = GridSearchCV(tree.DecisionTreeRegressor(), param_grid={'max_depth': [10, 100, 1000], 'min_samples_leaf': [2, 20, 200], 'max_features': [5, 10, 24]})
+train_set_num = 10000
+test_set_num = 1000
+test_fold = np.concatenate((np.zeros([train_set_num]), -np.ones([test_set_num])), axis=None)
 
-# evaluators = GridSearchCV(SVR(tol=0.01), param_grid={'kernel': ['rbf', 'sigmoid', 'poly']})
+ps = PredefinedSplit(test_fold=test_fold)
+
+# evaluators = GridSearchCV(ensemble.RandomForestRegressor(n_estimators=300, max_depth=10, min_impurity_decrease=1e-5,
+#                                            min_samples_split=20, max_features=0.5, n_jobs=7),
+#                           param_grid={'max_depth': [5, 10, 20]}, cv=ps)
+# evaluators = GridSearchCV(ensemble.GradientBoostingRegressor(n_estimators=500, learning_rate=0.1,
+#                                                              min_impurity_decrease=0.001,
+#                                                              min_samples_split=0.001, n_iter_no_change=5,
+#                                                              validation_fraction=0.2, max_depth=6),
+#                           param_grid={'tol': [1e-3, 1e-5, 1e-7]}, cv=ps)
+evaluators = GridSearchCV(SVR(gamma=0.01, epsilon=0.1, C=10, max_iter=1e4), param_grid={'epsilon': [1e-1, 1e-5, 1e-7]}, cv=ps)
+# evaluators = GridSearchCV(MLPRegressor(hidden_layer_sizes=(40, 8), early_stopping=True, n_iter_no_change=5, learning_rate_init=0.01, validation_fraction=0.2),
+#                           param_grid={}, cv=ps)      #, tol=1e-8
+# evaluators = GridSearchCV(KNeighborsRegressor(n_neighbors=8, n_jobs=7),
+#                           param_grid={'n_neighbors': [3, 5, 7], 'weights': ['uniform', 'distance']}, cv=ps)
 
 segment_moved = SEGMENT_NAMES[0]
-i_sub = 0
+i_sub = 3
 speed = SPEEDS[0]
 
-subject_data = SubjectData(PROCESSED_DATA_PATH, i_sub)
-my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
-x_raw, y_raw = my_xy_generator.get_xy()
-x, y = x_raw[input_names], y_raw[output_names]
+all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
+other_sub_data = all_sub_data[all_sub_data['subject_id'] != i_sub]
+x_train = other_sub_data[input_names]
+y_train = other_sub_data[output_names]
+the_sub_data = all_sub_data[all_sub_data['subject_id'] == i_sub]
+x_test = the_sub_data[input_names]
+y_test = the_sub_data[output_names]
+
+# shuffle the data
+x_train, y_train = shuffle(x_train, y_train)
+x_train, y_train = x_train.as_matrix()[:train_set_num, :], y_train.as_matrix()[:train_set_num, :]
+x_test, y_test = shuffle(x_test, y_test)
+x_test, y_test = x_test.as_matrix()[:test_set_num, :], y_test.as_matrix()[:test_set_num, :]
 
 x_scaler = preprocessing.StandardScaler()
-x_scaler.fit(x)
-x = x_scaler.transform(x)
+x_train = x_scaler.fit_transform(x_train)
+x_test = x_scaler.transform(x_test)
 y_scaler = preprocessing.StandardScaler()
-y_scaler.fit(y)
-y = y_scaler.transform(y)
-# shuffle the data
-x, y = shuffle(x, y)
+y_train = y_scaler.fit_transform(y_train)
+y_test = y_scaler.transform(y_test)
 
-evaluators.fit(x, y[:, 0])
+x = np.row_stack([x_train, x_test])
+y = np.row_stack([y_train, y_test])
+evaluators.fit(x, y)
 # print scores of each estiamtor
 means = evaluators.cv_results_['mean_test_score']
 stds = evaluators.cv_results_['std_test_score']
-for mean, std, params in zip(means, stds, evaluators.cv_results_['params']):
-    print("%0.3f (+/-%0.03f) for %r" % (mean, std * 2, params))
-print('\n')
-print(evaluators.best_estimator_)
+times = evaluators.cv_results_['mean_fit_time']
 
-# print feature importances
-# print('\n')
-# feature_importance = evaluators.best_estimator_.feature_importances_
-# print(feature_importance)
-# plt.bar(input_names, feature_importance)
-# plt.show()
+for mean, std, time, params in zip(means, stds, times, evaluators.cv_results_['params']):
+    print("%0.3f (+/-%0.03f), time: %0.03f for %r" % (mean, std * 2, time, params))

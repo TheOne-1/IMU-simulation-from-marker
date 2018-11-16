@@ -1,9 +1,10 @@
+# multiple machine models are processed together to save computing time
+
 import json
 import os
 import pickle
 import time
 from datetime import datetime
-
 from EvaluationClass import Evaluation
 from OffsetClass import *
 from SubjectData import SubjectData
@@ -66,13 +67,17 @@ def read_evaluator(date, folder_name):
     return evaluators
 
 
-def get_segment_translation_result(input_names, output_names, result_column, i_sub, model_name):
+def get_segment_translation_result(input_names, output_names, result_column, i_sub, model_names):
+    print('one trans')
     start_time = datetime.now()
     print('Subject ' + str(i_sub) + ', start at ' + start_time.strftime('%H:%M:%S'))
 
-    file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
-    with open(file_path, 'rb') as fp:
-        my_evaluator = pickle.load(fp)
+    my_evaluators = []
+    for model_name in model_names:
+        file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
+        with open(file_path, 'rb') as fp:
+            my_evaluators.append(pickle.load(fp))
+
     all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
     total_sub_df = pd.DataFrame()
     test_sub_data = all_sub_data[all_sub_data['subject_id'] == i_sub]
@@ -83,8 +88,8 @@ def get_segment_translation_result(input_names, output_names, result_column, i_s
     shank_diameter = SubjectData.get_cylinder_diameter(test_sub_data, 'l_shank')
     thigh_diameter = SubjectData.get_cylinder_diameter(test_sub_data, 'l_thigh')
     for segment_moved in SEGMENT_NAMES:
-        if i_sub == 0:  # for test
-            print('subject 0, ' + segment_moved)
+        # if i_sub == 0:  # for test
+            # print('subject 0, ' + segment_moved)
         multi_offset = MultiAxisOffset.get_segment_multi_translation(segment_moved, shank_diameter, thigh_diameter)
         offset_combo_list = multi_offset.get_combos()
         offset_combo_len = len(offset_combo_list)
@@ -94,14 +99,18 @@ def get_segment_translation_result(input_names, output_names, result_column, i_s
             height = test_speed_data['height'].as_matrix()[0]
             x_test = test_speed_data[input_names]
             y_test = test_speed_data[output_names].as_matrix()
-            R2 = np.zeros([offset_combo_len, len(output_names)])
-            RMSEs = np.zeros([offset_combo_len, len(output_names)])
-            NRMSEs = np.zeros([offset_combo_len, len(output_names)])
+            R2 = np.zeros([offset_combo_len, len(output_names)*len(my_evaluators)])
+            RMSEs = np.zeros([offset_combo_len, len(output_names)*len(my_evaluators)])
+            NRMSEs = np.zeros([offset_combo_len, len(output_names)*len(my_evaluators)])
             my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
             for i_combo in range(len(offset_combo_list)):
                 x_test_modified = my_xy_generator.modify_x_segment(x_test, offset_combo_list[i_combo], height)
-                y_pred = my_evaluator.evaluate_sklearn(x_test_modified, y_test)
-                R2[i_combo, :], RMSEs[i_combo, :], NRMSEs[i_combo, :] = my_evaluator.get_all_scores(y_test, y_pred)
+                for i_eval in range(len(my_evaluators)):
+                    y_pred = my_evaluators[i_eval].evaluate_sklearn(x_test_modified, y_test)
+                    R2[i_combo, i_eval*len(output_names):(i_eval+1)*len(output_names)], \
+                        RMSEs[i_combo, i_eval*len(output_names):(i_eval+1)*len(output_names)],\
+                        NRMSEs[i_combo, i_eval*len(output_names):(i_eval+1)*len(output_names)] =\
+                        my_evaluators[i_eval].get_all_scores(y_test, y_pred)
             evaluation_result = np.column_stack([R2, RMSEs, NRMSEs])
             scores_df = pd.DataFrame(evaluation_result, columns=result_column)
             scores_df = scores_df.reset_index(drop=True)
@@ -109,6 +118,7 @@ def get_segment_translation_result(input_names, output_names, result_column, i_s
             speed_df.insert(loc=0, column='segment', value=segment_moved)
             speed_df.insert(loc=0, column='speed', value=str(speed))
             speed_df.insert(loc=0, column='subject_id', value=i_sub)
+            speed_df.insert(loc=0, column='experiment', value='one_trans')
             total_sub_df = pd.concat([total_sub_df, speed_df], axis=0)
 
     end_time = datetime.now()
@@ -116,13 +126,16 @@ def get_segment_translation_result(input_names, output_names, result_column, i_s
     return total_sub_df
 
 
-def get_all_translation_result(input_names, output_names, result_column, i_sub, model_name):
+def get_all_translation_result(input_names, output_names, result_column, i_sub, model_names):
+    print('all trans')
     start_time = datetime.now()
     print('Subject ' + str(i_sub) + ', start at ' + start_time.strftime('%H:%M:%S'))
 
-    file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
-    with open(file_path, 'rb') as fp:
-        my_evaluator = pickle.load(fp)
+    my_evaluators = []
+    for model_name in model_names:
+        file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
+        with open(file_path, 'rb') as fp:
+            my_evaluators.append(pickle.load(fp))
 
     all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
     total_sub_df = pd.DataFrame()
@@ -143,23 +156,34 @@ def get_all_translation_result(input_names, output_names, result_column, i_sub, 
         x_test = test_speed_data[input_names]
         y_test = test_speed_data[output_names].as_matrix()
         height = test_speed_data['height'].as_matrix()[0]
-        R2 = np.zeros([combo_len + 1, len(output_names)])
-        RMSEs = np.zeros([combo_len + 1, len(output_names)])
-        NRMSEs = np.zeros([combo_len + 1, len(output_names)])
-        y_pred = my_evaluator.evaluate_sklearn(x_test, y_test)
-        R2[0, :], RMSEs[0, :], NRMSEs[0, :] = my_evaluator.get_all_scores(y_test, y_pred)
+        R2 = np.zeros([combo_len + 1, len(output_names)*len(my_evaluators)])
+        RMSEs = np.zeros([combo_len + 1, len(output_names)*len(my_evaluators)])
+        NRMSEs = np.zeros([combo_len + 1, len(output_names)*len(my_evaluators)])
+        # get the first data (no placement error)
+        for i_eval in range(len(my_evaluators)):
+            y_pred = my_evaluators[i_eval].evaluate_sklearn(x_test, y_test)
+            R2[0, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                RMSEs[0, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                NRMSEs[0, i_eval * len(output_names):(i_eval + 1) * len(output_names)] = \
+                my_evaluators[i_eval].get_all_scores(y_test, y_pred)
         my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
         for i_combo in range(len(combos_list)):
             x_test_modified = my_xy_generator.modify_x_all_combined(x_test, combos_list[i_combo], height)
-            y_pred = my_evaluator.evaluate_sklearn(x_test_modified, y_test)
-            R2[i_combo + 1, :], RMSEs[i_combo + 1, :], NRMSEs[i_combo + 1, :] = my_evaluator.get_all_scores(y_test,
-                                                                                                            y_pred)
+            # get all other data
+            for i_eval in range(len(my_evaluators)):
+                y_pred = my_evaluators[i_eval].evaluate_sklearn(x_test_modified, y_test)
+                R2[i_combo+1, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                    RMSEs[i_combo + 1, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                    NRMSEs[i_combo + 1, i_eval * len(output_names):(i_eval + 1) * len(output_names)] = \
+                    my_evaluators[i_eval].get_all_scores(y_test, y_pred)
+
         evaluation_result = np.column_stack([R2, RMSEs, NRMSEs])
         scores_df = pd.DataFrame(evaluation_result, columns=result_column)
         scores_df = scores_df.reset_index(drop=True)
         speed_df = pd.concat([all_offsets_df, scores_df], axis=1)
         speed_df.insert(loc=0, column='speed', value=str(speed))
         speed_df.insert(loc=0, column='subject_id', value=i_sub)
+        speed_df.insert(loc=0, column='experiment', value='all_trans')
         total_sub_df = pd.concat([total_sub_df, speed_df], axis=0)
 
     end_time = datetime.now()
@@ -167,13 +191,17 @@ def get_all_translation_result(input_names, output_names, result_column, i_sub, 
     return total_sub_df
 
 
-def get_segment_rotation_result(input_names, output_names, result_column, i_sub, model_name):
+def get_segment_rotation_result(input_names, output_names, result_column, i_sub, model_names):
+    print('one rota')
     start_time = datetime.now()
     print('Subject ' + str(i_sub) + ', start at ' + start_time.strftime('%H:%M:%S'))
 
-    file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
-    with open(file_path, 'rb') as fp:
-        my_evaluator = pickle.load(fp)
+    my_evaluators = []
+    for model_name in model_names:
+        file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
+        with open(file_path, 'rb') as fp:
+            my_evaluators.append(pickle.load(fp))
+
     all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
     total_sub_df = pd.DataFrame()
     test_sub_data = all_sub_data[all_sub_data['subject_id'] == i_sub]
@@ -192,15 +220,19 @@ def get_segment_rotation_result(input_names, output_names, result_column, i_sub,
             height = test_speed_data['height'].as_matrix()[0]
             x_test = test_speed_data[input_names]
             y_test = test_speed_data[output_names].as_matrix()
-            R2 = np.zeros([rotation_len, len(output_names)])
-            RMSEs = np.zeros([rotation_len, len(output_names)])
-            NRMSEs = np.zeros([rotation_len, len(output_names)])
+            R2 = np.zeros([rotation_len, len(output_names)*len(my_evaluators)])
+            RMSEs = np.zeros([rotation_len, len(output_names)*len(my_evaluators)])
+            NRMSEs = np.zeros([rotation_len, len(output_names)*len(my_evaluators)])
             my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
             for i_rotation in range(rotation_len):
                 x_test_modified = my_xy_generator.modify_x_segment(x_test, rotation_offsets[i_rotation], height)
-                y_pred = my_evaluator.evaluate_sklearn(x_test_modified, y_test)
-                R2[i_rotation, :], RMSEs[i_rotation, :], NRMSEs[i_rotation, :] = my_evaluator.get_all_scores(y_test,
-                                                                                                             y_pred)
+                # get all other data
+                for i_eval in range(len(my_evaluators)):
+                    y_pred = my_evaluators[i_eval].evaluate_sklearn(x_test_modified, y_test)
+                    R2[i_rotation, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                        RMSEs[i_rotation, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                        NRMSEs[i_rotation, i_eval * len(output_names):(i_eval + 1) * len(output_names)] = \
+                        my_evaluators[i_eval].get_all_scores(y_test, y_pred)
             evaluation_result = np.column_stack([R2, RMSEs, NRMSEs])
             scores_df = pd.DataFrame(evaluation_result, columns=result_column)
             scores_df = scores_df.reset_index(drop=True)
@@ -208,6 +240,7 @@ def get_segment_rotation_result(input_names, output_names, result_column, i_sub,
             speed_df.insert(loc=0, column='segment', value=segment_moved)
             speed_df.insert(loc=0, column='speed', value=str(speed))
             speed_df.insert(loc=0, column='subject_id', value=i_sub)
+            speed_df.insert(loc=0, column='experiment', value='one_rota')
             total_sub_df = pd.concat([total_sub_df, speed_df], axis=0)
 
     end_time = datetime.now()
@@ -215,13 +248,16 @@ def get_segment_rotation_result(input_names, output_names, result_column, i_sub,
     return total_sub_df
 
 
-def get_all_rotation_result(input_names, output_names, result_column, i_sub, model_name, error_value=25):
+def get_all_rotation_result(input_names, output_names, result_column, i_sub, model_names, error_value=25):
+    print('all rota')
     start_time = datetime.now()
     print('Subject ' + str(i_sub) + ', start at ' + start_time.strftime('%H:%M:%S'))
 
-    file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
-    with open(file_path, 'rb') as fp:
-        my_evaluator = pickle.load(fp)
+    my_evaluators = []
+    for model_name in model_names:
+        file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
+        with open(file_path, 'rb') as fp:
+            my_evaluators.append(pickle.load(fp))
 
     all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
     total_sub_df = pd.DataFrame()
@@ -237,23 +273,33 @@ def get_all_rotation_result(input_names, output_names, result_column, i_sub, mod
         x_test = test_speed_data[input_names]
         y_test = test_speed_data[output_names].as_matrix()
         height = test_speed_data['height'].as_matrix()[0]
-        R2 = np.zeros([combo_len + 1, len(output_names)])
-        RMSEs = np.zeros([combo_len + 1, len(output_names)])
-        NRMSEs = np.zeros([combo_len + 1, len(output_names)])
-        y_pred = my_evaluator.evaluate_sklearn(x_test, y_test)
-        R2[0, :], RMSEs[0, :], NRMSEs[0, :] = my_evaluator.get_all_scores(y_test, y_pred)
+        R2 = np.zeros([combo_len + 1, len(output_names)*len(my_evaluators)])
+        RMSEs = np.zeros([combo_len + 1, len(output_names)*len(my_evaluators)])
+        NRMSEs = np.zeros([combo_len + 1, len(output_names)*len(my_evaluators)])
+        # get the first data (no placement error)
+        for i_eval in range(len(my_evaluators)):
+            y_pred = my_evaluators[i_eval].evaluate_sklearn(x_test, y_test)
+            R2[0, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                RMSEs[0, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                NRMSEs[0, i_eval * len(output_names):(i_eval + 1) * len(output_names)] = \
+                my_evaluators[i_eval].get_all_scores(y_test, y_pred)
         my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
         for i_combo in range(len(combos_list)):
             x_test_modified = my_xy_generator.modify_x_all_combined(x_test, combos_list[i_combo], height)
-            y_pred = my_evaluator.evaluate_sklearn(x_test_modified, y_test)
-            R2[i_combo + 1, :], RMSEs[i_combo + 1, :], NRMSEs[i_combo + 1, :] = my_evaluator.get_all_scores(y_test,
-                                                                                                            y_pred)
+            # get all other data
+            for i_eval in range(len(my_evaluators)):
+                y_pred = my_evaluators[i_eval].evaluate_sklearn(x_test_modified, y_test)
+                R2[i_combo + 1, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                    RMSEs[i_combo + 1, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                    NRMSEs[i_combo + 1, i_eval * len(output_names):(i_eval + 1) * len(output_names)] = \
+                    my_evaluators[i_eval].get_all_scores(y_test, y_pred)
         evaluation_result = np.column_stack([R2, RMSEs, NRMSEs])
         scores_df = pd.DataFrame(evaluation_result, columns=result_column)
         scores_df = scores_df.reset_index(drop=True)
         speed_df = pd.concat([all_offsets_df, scores_df], axis=1)
         speed_df.insert(loc=0, column='speed', value=str(speed))
         speed_df.insert(loc=0, column='subject_id', value=i_sub)
+        speed_df.insert(loc=0, column='experiment', value='all_rota')
         total_sub_df = pd.concat([total_sub_df, speed_df], axis=0)
 
     end_time = datetime.now()
@@ -261,13 +307,17 @@ def get_all_rotation_result(input_names, output_names, result_column, i_sub, mod
     return total_sub_df
 
 
-def get_segment_trans_rota(input_names, output_names, result_column, i_sub, model_name):
+def get_segment_trans_rota(input_names, output_names, result_column, i_sub, model_names):
+    print('one trans rota')
     start_time = datetime.now()
     print('Subject ' + str(i_sub) + ', start at ' + start_time.strftime('%H:%M:%S'))
 
-    file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
-    with open(file_path, 'rb') as fp:
-        my_evaluator = pickle.load(fp)
+    my_evaluators = []
+    for model_name in model_names:
+        file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
+        with open(file_path, 'rb') as fp:
+            my_evaluators.append(pickle.load(fp))
+
     all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
     total_sub_df = pd.DataFrame()
     test_sub_data = all_sub_data[all_sub_data['subject_id'] == i_sub]
@@ -289,14 +339,19 @@ def get_segment_trans_rota(input_names, output_names, result_column, i_sub, mode
             height = test_speed_data['height'].as_matrix()[0]
             x_test = test_speed_data[input_names]
             y_test = test_speed_data[output_names].as_matrix()
-            R2 = np.zeros([offset_combo_len, len(output_names)])
-            RMSEs = np.zeros([offset_combo_len, len(output_names)])
-            NRMSEs = np.zeros([offset_combo_len, len(output_names)])
+            R2 = np.zeros([offset_combo_len, len(output_names)*len(my_evaluators)])
+            RMSEs = np.zeros([offset_combo_len, len(output_names)*len(my_evaluators)])
+            NRMSEs = np.zeros([offset_combo_len, len(output_names)*len(my_evaluators)])
             my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
             for i_combo in range(len(offset_combo_list)):
                 x_test_modified = my_xy_generator.modify_x_segment(x_test, offset_combo_list[i_combo], height)
-                y_pred = my_evaluator.evaluate_sklearn(x_test_modified, y_test)
-                R2[i_combo, :], RMSEs[i_combo, :], NRMSEs[i_combo, :] = my_evaluator.get_all_scores(y_test, y_pred)
+                # get all other data
+                for i_eval in range(len(my_evaluators)):
+                    y_pred = my_evaluators[i_eval].evaluate_sklearn(x_test_modified, y_test)
+                    R2[i_combo, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                        RMSEs[i_combo, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                        NRMSEs[i_combo, i_eval * len(output_names):(i_eval + 1) * len(output_names)] = \
+                        my_evaluators[i_eval].get_all_scores(y_test, y_pred)
             evaluation_result = np.column_stack([R2, RMSEs, NRMSEs])
             scores_df = pd.DataFrame(evaluation_result, columns=result_column)
             scores_df = scores_df.reset_index(drop=True)
@@ -304,6 +359,7 @@ def get_segment_trans_rota(input_names, output_names, result_column, i_sub, mode
             speed_df.insert(loc=0, column='segment', value=segment_moved)
             speed_df.insert(loc=0, column='speed', value=str(speed))
             speed_df.insert(loc=0, column='subject_id', value=i_sub)
+            speed_df.insert(loc=0, column='experiment', value='one_trans_rota')
             total_sub_df = pd.concat([total_sub_df, speed_df], axis=0)
 
     end_time = datetime.now()
@@ -311,13 +367,16 @@ def get_segment_trans_rota(input_names, output_names, result_column, i_sub, mode
     return total_sub_df
 
 
-def get_all_trans_rota(input_names, output_names, result_column, i_sub, model_name, rotation_value=25):
+def get_all_trans_rota(input_names, output_names, result_column, i_sub, model_names, rotation_value=25):
+    print('all trans rota')
     start_time = datetime.now()
     print('Subject ' + str(i_sub) + ', start at ' + start_time.strftime('%H:%M:%S'))
 
-    file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
-    with open(file_path, 'rb') as fp:
-        my_evaluator = pickle.load(fp)
+    my_evaluators = []
+    for model_name in model_names:
+        file_path = RESULT_PATH + 'evaluator\\' + model_name + '\\' + model_name + '_subject_' + str(i_sub) + '.pkl'
+        with open(file_path, 'rb') as fp:
+            my_evaluators.append(pickle.load(fp))
 
     all_sub_data = pd.read_csv(ALL_SUB_FILE, index_col=False)
     total_sub_df = pd.DataFrame()
@@ -336,22 +395,33 @@ def get_all_trans_rota(input_names, output_names, result_column, i_sub, model_na
         x_test = test_speed_data[input_names]
         y_test = test_speed_data[output_names].as_matrix()
         height = test_speed_data['height'].as_matrix()[0]
-        R2 = np.zeros([combo_len + 1, len(output_names)])
-        RMSEs = np.zeros([combo_len + 1, len(output_names)])
-        NRMSEs = np.zeros([combo_len + 1, len(output_names)])
-        y_pred = my_evaluator.evaluate_sklearn(x_test, y_test)
-        R2[0, :], RMSEs[0, :], NRMSEs[0, :] = my_evaluator.get_all_scores(y_test, y_pred)
+        R2 = np.zeros([combo_len + 1, len(output_names)*len(my_evaluators)])
+        RMSEs = np.zeros([combo_len + 1, len(output_names)*len(my_evaluators)])
+        NRMSEs = np.zeros([combo_len + 1, len(output_names)*len(my_evaluators)])
+        # get the first data (no placement error)
+        for i_eval in range(len(my_evaluators)):
+            y_pred = my_evaluators[i_eval].evaluate_sklearn(x_test, y_test)
+            R2[0, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                RMSEs[0, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                NRMSEs[0, i_eval * len(output_names):(i_eval + 1) * len(output_names)] = \
+                my_evaluators[i_eval].get_all_scores(y_test, y_pred)
         my_xy_generator = XYGeneratorUni(subject_data, speed, output_names, input_names)
         for i_combo in range(len(combos_list)):
             x_test_modified = my_xy_generator.modify_x_all_combined(x_test, combos_list[i_combo], height)
-            y_pred = my_evaluator.evaluate_sklearn(x_test_modified, y_test)
-            R2[i_combo + 1, :], RMSEs[i_combo + 1, :], NRMSEs[i_combo + 1, :] = my_evaluator.get_all_scores(y_test, y_pred)
+            # get all other data
+            for i_eval in range(len(my_evaluators)):
+                y_pred = my_evaluators[i_eval].evaluate_sklearn(x_test_modified, y_test)
+                R2[i_combo + 1, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                    RMSEs[i_combo + 1, i_eval * len(output_names):(i_eval + 1) * len(output_names)], \
+                    NRMSEs[i_combo + 1, i_eval * len(output_names):(i_eval + 1) * len(output_names)] = \
+                    my_evaluators[i_eval].get_all_scores(y_test, y_pred)
         evaluation_result = np.column_stack([R2, RMSEs, NRMSEs])
         scores_df = pd.DataFrame(evaluation_result, columns=result_column)
         scores_df = scores_df.reset_index(drop=True)
         speed_df = pd.concat([all_offsets_df, scores_df], axis=1)
         speed_df.insert(loc=0, column='speed', value=str(speed))
         speed_df.insert(loc=0, column='subject_id', value=i_sub)
+        speed_df.insert(loc=0, column='experiment', value='all_trans_rota')
         total_sub_df = pd.concat([total_sub_df, speed_df], axis=0)
 
     end_time = datetime.now()

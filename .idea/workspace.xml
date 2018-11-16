@@ -2,23 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e70d5058-3213-4ea2-8af2-87fbf1c44904" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/1_SharedProcessors/SubThreadModels.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/2.7_simulate_all/simulate_all.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/5_sync_requirement_test/sync_test.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/1_SharedProcessors/OffsetClass.py" afterPath="$PROJECT_DIR$/1_SharedProcessors/OffsetClass.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/1_SharedProcessors/Presenter.py" afterPath="$PROJECT_DIR$/1_SharedProcessors/Presenter.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/1_SharedProcessors/EvaluationClass.py" afterPath="$PROJECT_DIR$/1_SharedProcessors/EvaluationClass.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/1_SharedProcessors/SubThread.py" afterPath="$PROJECT_DIR$/1_SharedProcessors/SubThread.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/1_SharedProcessors/VirtualProcessor.py" afterPath="$PROJECT_DIR$/1_SharedProcessors/VirtualProcessor.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/1_SharedProcessors/XYGenerator.py" afterPath="$PROJECT_DIR$/1_SharedProcessors/XYGenerator.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/1_SharedProcessors/const.py" afterPath="$PROJECT_DIR$/1_SharedProcessors/const.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2.0_model_training/model_training.py" afterPath="$PROJECT_DIR$/2.0_model_training/model_training.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2.1_simulate_IMU_segment_translation/analyse_segment_translation.py" afterPath="$PROJECT_DIR$/2.1_simulate_IMU_segment_translation/analyse_segment_translation.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2.2_simulate_IMU_all_translation/analyse_all_translation.py" afterPath="$PROJECT_DIR$/2.2_simulate_IMU_all_translation/analyse_all_translation.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2.2_simulate_IMU_all_translation/simulate_all_translation.py" afterPath="$PROJECT_DIR$/2.2_simulate_IMU_all_translation/simulate_all_translation.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2.3_simulate_IMU_segment_rotation/analyse_segment_rotation.py" afterPath="$PROJECT_DIR$/2.3_simulate_IMU_segment_rotation/analyse_segment_rotation.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2.4_simulate_IMU_all_rotation/analyse_all_rotation.py" afterPath="$PROJECT_DIR$/2.4_simulate_IMU_all_rotation/analyse_all_rotation.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2.5_simulate_IMU_segment_trans_rota/analyse_segment_trans_rota.py" afterPath="$PROJECT_DIR$/2.5_simulate_IMU_segment_trans_rota/analyse_segment_trans_rota.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2.5_simulate_IMU_segment_trans_rota/simulate_segment_trans_rota.py" afterPath="$PROJECT_DIR$/2.5_simulate_IMU_segment_trans_rota/simulate_segment_trans_rota.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2.6_simulate_IMU_all_trans_rota/analyse_all_trans_rota.py" afterPath="$PROJECT_DIR$/2.6_simulate_IMU_all_trans_rota/analyse_all_trans_rota.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2.6_simulate_IMU_all_trans_rota/simulate_all_trans_rota.py" afterPath="$PROJECT_DIR$/2.6_simulate_IMU_all_trans_rota/simulate_all_trans_rota.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/4_model_param_selection/param_selection.py" afterPath="$PROJECT_DIR$/4_model_param_selection/param_selection.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test.py" afterPath="$PROJECT_DIR$/test.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -29,41 +23,41 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="model_training.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/2.0_model_training/model_training.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="342">
+              <caret line="47" column="70" lean-forward="false" selection-start-line="47" selection-start-column="70" selection-end-line="47" selection-end-column="70" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sync_test.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/5_sync_requirement_test/sync_test.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="simulate_segment_translation.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/2.1_simulate_IMU_segment_translation/simulate_segment_translation.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1012">
+              <caret line="48" column="106" lean-forward="false" selection-start-line="48" selection-start-column="81" selection-end-line="48" selection-end-column="106" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="SubThread.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/1_SharedProcessors/SubThread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="102" column="0" lean-forward="false" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="XYGenerator.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/1_SharedProcessors/XYGenerator.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="100" column="0" lean-forward="false" selection-start-line="100" selection-start-column="0" selection-end-line="100" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="simulate_all_translation.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/2.2_simulate_IMU_all_translation/simulate_all_translation.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="503">
-              <caret line="48" column="42" lean-forward="false" selection-start-line="48" selection-start-column="42" selection-end-line="48" selection-end-column="42" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="simulate_segment_rotation.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/2.3_simulate_IMU_segment_rotation/simulate_segment_rotation.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="880">
-              <caret line="43" column="43" lean-forward="false" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="43" />
+            <state relative-caret-position="5302">
+              <caret line="250" column="64" lean-forward="false" selection-start-line="250" selection-start-column="64" selection-end-line="250" selection-end-column="64" />
               <folding />
             </state>
           </provider>
@@ -72,55 +66,9 @@
       <file leaf-file-name="simulate_all_rotation.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/2.4_simulate_IMU_all_rotation/simulate_all_rotation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1056">
-              <caret line="51" column="37" lean-forward="false" selection-start-line="51" selection-start-column="37" selection-end-line="51" selection-end-column="37" />
+            <state relative-caret-position="1034">
+              <caret line="50" column="30" lean-forward="false" selection-start-line="50" selection-start-column="23" selection-end-line="50" selection-end-column="30" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="simulate_segment_trans_rota.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/2.5_simulate_IMU_segment_trans_rota/simulate_segment_trans_rota.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="759">
-              <caret line="45" column="32" lean-forward="true" selection-start-line="45" selection-start-column="32" selection-end-line="45" selection-end-column="32" />
-              <folding>
-                <element signature="e#89#111#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="model_training.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/2.0_model_training/model_training.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="48" column="28" lean-forward="false" selection-start-line="48" selection-start-column="12" selection-end-line="48" selection-end-column="28" />
-              <folding>
-                <element signature="e#68#90#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="simulate_segment_translation.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/2.1_simulate_IMU_segment_translation/simulate_segment_translation.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="327">
-              <caret line="46" column="30" lean-forward="false" selection-start-line="46" selection-start-column="30" selection-end-line="46" selection-end-column="30" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="param_selection.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/4_model_param_selection/param_selection.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-440">
-              <caret line="55" column="58" lean-forward="false" selection-start-line="55" selection-start-column="58" selection-end-line="55" selection-end-column="58" />
-              <folding>
-                <element signature="e#119#147#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -136,8 +84,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>ALL_SEG</find>
-      <find>16, 1</find>
       <find>16</find>
       <find>my_evaluator</find>
       <find>TranslationCombos</find>
@@ -166,9 +112,10 @@
       <find>axis_na</find>
       <find>norm</find>
       <find>ColorbarBase</find>
+      <find>train</find>
+      <find>job</find>
     </findStrings>
     <replaceStrings>
-      <replace>output</replace>
       <replace>1</replace>
       <replace>offset</replace>
       <replace>GYR_DATA</replace>
@@ -198,6 +145,7 @@
       <replace>r_foot</replace>
       <replace>RotationCombos</replace>
       <replace>degree</replace>
+      <replace>test</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -206,10 +154,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/0_initialize_data/initialize_data.py" />
-        <option value="$PROJECT_DIR$/1_SharedProcessors/DatabaseInfo.py" />
-        <option value="$PROJECT_DIR$/1_SharedProcessors/EvaluationUniClass.py" />
-        <option value="$PROJECT_DIR$/1_SharedProcessors/MyThread.py" />
         <option value="$PROJECT_DIR$/1_SharedProcessors/EvaluationThreadClass.py" />
         <option value="$PROJECT_DIR$/5_simulate_IMU_universal/SubjectDataUni.py" />
         <option value="$APPLICATION_CONFIG_DIR$/pycharm64.exe.vmoptions" />
@@ -236,32 +180,36 @@
         <option value="$PROJECT_DIR$/0_initialize_data/initialize_data_all_sub.py" />
         <option value="$PROJECT_DIR$/1_SharedProcessors/PresenterTransRota.py" />
         <option value="$PROJECT_DIR$/2.3_simulate_IMU_segment_rotation/simulate_segment_rotation.py" />
-        <option value="$PROJECT_DIR$/2.4_simulate_IMU_all_rotation/simulate_all_rotation.py" />
-        <option value="$PROJECT_DIR$/test.py" />
-        <option value="$PROJECT_DIR$/2.6_simulate_IMU_all_trans_rota/simulate_all_trans_rota.py" />
-        <option value="$PROJECT_DIR$/1_SharedProcessors/EvaluationClass.py" />
-        <option value="$PROJECT_DIR$/1_SharedProcessors/const.py" />
         <option value="$PROJECT_DIR$/1_SharedProcessors/VirtualProcessor.py" />
-        <option value="$PROJECT_DIR$/1_SharedProcessors/XYGenerator.py" />
         <option value="$PROJECT_DIR$/2.1_simulate_IMU_segment_translation/analyse_segment_translation.py" />
         <option value="$PROJECT_DIR$/2.3_simulate_IMU_segment_rotation/analyse_segment_rotation.py" />
         <option value="$PROJECT_DIR$/2.2_simulate_IMU_all_translation/simulate_all_translation.py" />
         <option value="$PROJECT_DIR$/2.4_simulate_IMU_all_rotation/analyse_all_rotation.py" />
         <option value="$PROJECT_DIR$/2.5_simulate_IMU_segment_trans_rota/analyse_segment_trans_rota.py" />
         <option value="$PROJECT_DIR$/2.6_simulate_IMU_all_trans_rota/analyse_all_trans_rota.py" />
-        <option value="$PROJECT_DIR$/1_SharedProcessors/SubThread.py" />
         <option value="$PROJECT_DIR$/1_SharedProcessors/OffsetClass.py" />
         <option value="$PROJECT_DIR$/1_SharedProcessors/Presenter.py" />
         <option value="$PROJECT_DIR$/2.2_simulate_IMU_all_translation/analyse_all_translation.py" />
         <option value="$PROJECT_DIR$/2.5_simulate_IMU_segment_trans_rota/simulate_segment_trans_rota.py" />
+        <option value="$PROJECT_DIR$/2.7_simulate_all/simulate_all_trans_rota.py" />
+        <option value="$PROJECT_DIR$/2.6_simulate_IMU_all_trans_rota/simulate_all_trans_rota.py" />
+        <option value="$PROJECT_DIR$/1_SharedProcessors/EvaluationClass.py" />
+        <option value="$PROJECT_DIR$/1_SharedProcessors/SubThread.py" />
+        <option value="$PROJECT_DIR$/1_SharedProcessors/XYGenerator.py" />
+        <option value="$PROJECT_DIR$/2.7_simulate_all/simulate_all.py" />
+        <option value="$PROJECT_DIR$/1_SharedProcessors/SubThreadModels.py" />
+        <option value="$PROJECT_DIR$/1_SharedProcessors/const.py" />
+        <option value="$PROJECT_DIR$/test.py" />
         <option value="$PROJECT_DIR$/4_model_param_selection/param_selection.py" />
         <option value="$PROJECT_DIR$/2.0_model_training/model_training.py" />
         <option value="$PROJECT_DIR$/2.1_simulate_IMU_segment_translation/simulate_segment_translation.py" />
+        <option value="$PROJECT_DIR$/2.4_simulate_IMU_all_rotation/simulate_all_rotation.py" />
+        <option value="$PROJECT_DIR$/5_sync_requirement_test/sync_test.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-2203" />
+    <option name="x" value="-1928" />
     <option name="width" value="1936" />
     <option name="height" value="1056" />
   </component>
@@ -291,42 +239,7 @@
             <path>
               <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
               <item name="0517GaitDatabase" type="462c0819:PsiDirectoryNode" />
-              <item name="0_initialize_data" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="0517GaitDatabase" type="462c0819:PsiDirectoryNode" />
-              <item name="2.0_model_training" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="0517GaitDatabase" type="462c0819:PsiDirectoryNode" />
-              <item name="2.1_simulate_IMU_segment_translation" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="0517GaitDatabase" type="462c0819:PsiDirectoryNode" />
-              <item name="2.2_simulate_IMU_all_translation" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="0517GaitDatabase" type="462c0819:PsiDirectoryNode" />
-              <item name="2.3_simulate_IMU_segment_rotation" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="0517GaitDatabase" type="462c0819:PsiDirectoryNode" />
-              <item name="2.4_simulate_IMU_all_rotation" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="0517GaitDatabase" type="462c0819:PsiDirectoryNode" />
-              <item name="2.5_simulate_IMU_segment_trans_rota" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
-              <item name="0517GaitDatabase" type="462c0819:PsiDirectoryNode" />
-              <item name="2.6_simulate_IMU_all_trans_rota" type="462c0819:PsiDirectoryNode" />
+              <item name="2.7_simulate_all" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="0517GaitDatabase" type="b2602c69:ProjectViewProjectNode" />
@@ -337,22 +250,22 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../0830SimulateIMUFigures" />
-    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://D:/Tian/Research/Projects/ML Project/simulatedIMU/python/0517GaitDatabase/3_analyse_result/analyse_result.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://D:/Tian/Research/Projects/ML Project/simulatedIMU/python/0517GaitDatabase/2.7_simulate_all/simulate_all.py" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\1_SharedProcessors" />
+      <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\2.7_simulate_all" />
       <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\2.6_simulate_IMU_all_trans_rota" />
       <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\2.5_simulate_IMU_segment_trans_rota" />
       <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\2.4_simulate_IMU_all_rotation" />
-      <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase" />
-      <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\1_SharedProcessors" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Tian\Research\Projects\ML Project\simulatedIMU\python\0517GaitDatabase\abandoned" />
@@ -374,24 +287,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.simulate_segment_translation">
-    <configuration name="analyse_all_translation" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/2.2_simulate_IMU_all_translation" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="0517GaitDatabase" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/2.2_simulate_IMU_all_translation/analyse_all_translation.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-    </configuration>
+  <component name="RunManager" selected="Python.simulate_all_rotation">
     <configuration name="model_training" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -426,19 +322,19 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <configuration name="simulate_segment_trans_rota" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="simulate_all_rotation" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/2.5_simulate_IMU_segment_trans_rota" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/2.4_simulate_IMU_all_rotation" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="0517GaitDatabase" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/2.5_simulate_IMU_segment_trans_rota/simulate_segment_trans_rota.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/2.4_simulate_IMU_all_rotation/simulate_all_rotation.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -460,20 +356,37 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="0517GaitDatabase" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.analyse_all_translation" />
-      <item index="1" class="java.lang.String" itemvalue="Python.simulate_segment_trans_rota" />
-      <item index="2" class="java.lang.String" itemvalue="Python.param_selection" />
-      <item index="3" class="java.lang.String" itemvalue="Python.model_training" />
-      <item index="4" class="java.lang.String" itemvalue="Python.simulate_segment_translation" />
+      <item index="0" class="java.lang.String" itemvalue="Python.param_selection" />
+      <item index="1" class="java.lang.String" itemvalue="Python.model_training" />
+      <item index="2" class="java.lang.String" itemvalue="Python.test" />
+      <item index="3" class="java.lang.String" itemvalue="Python.simulate_segment_translation" />
+      <item index="4" class="java.lang.String" itemvalue="Python.simulate_all_rotation" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.simulate_segment_translation" />
-        <item index="1" class="java.lang.String" itemvalue="Python.model_training" />
+        <item index="0" class="java.lang.String" itemvalue="Python.simulate_all_rotation" />
+        <item index="1" class="java.lang.String" itemvalue="Python.simulate_segment_translation" />
         <item index="2" class="java.lang.String" itemvalue="Python.param_selection" />
-        <item index="3" class="java.lang.String" itemvalue="Python.simulate_segment_trans_rota" />
-        <item index="4" class="java.lang.String" itemvalue="Python.analyse_all_translation" />
+        <item index="3" class="java.lang.String" itemvalue="Python.model_training" />
+        <item index="4" class="java.lang.String" itemvalue="Python.test" />
       </list>
     </recent_temporary>
   </component>
@@ -506,17 +419,17 @@
     <frame x="-1928" y="0" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17750533" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15298508" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32861805" sideWeight="0.4978678" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35038084" sideWeight="0.50319827" order="6" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35038084" sideWeight="0.5053305" order="5" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35038084" sideWeight="0.4946695" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297062" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40914038" sideWeight="0.4978678" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35038084" sideWeight="0.4968017" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32861805" sideWeight="0.4978678" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.42546245" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.42546245" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5079957" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4163113" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -554,7 +467,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://E:/ProgramFiles/Python36/Lib/site-packages/sklearn/feature_selection/rfe.py</url>
-          <line>437</line>
+          <line>513</line>
           <option name="timeStamp" value="373" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -608,14 +521,29 @@
           <option name="timeStamp" value="898" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/4_model_param_selection/param_selection.py</url>
-          <line>86</line>
-          <option name="timeStamp" value="911" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/1_SharedProcessors/SubThread.py</url>
           <line>102</line>
           <option name="timeStamp" value="913" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/1_SharedProcessors/Initializer.py</url>
+          <line>52</line>
+          <option name="timeStamp" value="949" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/1_SharedProcessors/SubThreadModels.py</url>
+          <line>350</line>
+          <option name="timeStamp" value="952" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/1_SharedProcessors/SubThreadModels.py</url>
+          <line>174</line>
+          <option name="timeStamp" value="956" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/test.py</url>
+          <line>75</line>
+          <option name="timeStamp" value="965" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -625,29 +553,11 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="914" />
+      <option name="time" value="969" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/2.1_simulate_IMU_segment/segment_result_all.txt" />
-    <entry file="file://$PROJECT_DIR$/abandoned/EvaluationUniClass.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="44">
-          <caret line="19" column="16" lean-forward="false" selection-start-line="19" selection-start-column="16" selection-end-line="19" selection-end-column="16" />
-          <folding>
-            <element signature="e#1#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/DatabaseInfo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1628">
-          <caret line="12" column="28" lean-forward="false" selection-start-line="12" selection-start-column="8" selection-end-line="12" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/abandoned/simulate_IMU_all_combined.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="390">
@@ -698,13 +608,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/2.3_simulate_IMU_all_rotation/SubThreadSaveModel.py" />
-    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/SegmentData.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/abandoned/SubThread.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="157">
@@ -713,13 +616,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/5_simulate_IMU_universal/CrossEvaluation.py" />
-    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/SubjectData.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1166">
-          <caret line="55" column="8" lean-forward="false" selection-start-line="55" selection-start-column="8" selection-end-line="55" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/abandoned/2.0_simulate_IMU_individual_model/simulate_IMU.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="569">
@@ -770,20 +666,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://E:/ProgramFiles/Python36/Lib/multiprocessing/pool.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
-          <caret line="118" column="0" lean-forward="false" selection-start-line="118" selection-start-column="0" selection-end-line="118" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="13" column="28" lean-forward="true" selection-start-line="13" selection-start-column="28" selection-end-line="13" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/1_SharedProcessors/PresenterTransRota.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1628">
@@ -801,34 +683,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/Initializer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="550">
-          <caret line="29" column="13" lean-forward="false" selection-start-line="29" selection-start-column="12" selection-end-line="29" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/0_initialize_data/initialize_data_all_sub.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1078">
-          <caret line="56" column="44" lean-forward="false" selection-start-line="56" selection-start-column="44" selection-end-line="56" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/0_initialize_data/initialize_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/const.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/2.4_simulate_IMU_all_rotation/analyse_all_rotation.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="88">
@@ -840,41 +694,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
           <caret line="12" column="51" lean-forward="false" selection-start-line="12" selection-start-column="51" selection-end-line="12" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/2.6_simulate_IMU_all_trans_rota/analyse_all_trans_rota.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/VirtualProcessor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3080">
-          <caret line="146" column="8" lean-forward="false" selection-start-line="146" selection-start-column="8" selection-end-line="146" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/OffsetClass.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="121" column="74" lean-forward="false" selection-start-line="121" selection-start-column="74" selection-end-line="121" selection-end-column="74" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/EvaluationClass.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2860">
-          <caret line="143" column="68" lean-forward="true" selection-start-line="143" selection-start-column="68" selection-end-line="148" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/2.1_simulate_IMU_segment_translation/analyse_segment_translation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="13" column="0" lean-forward="true" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -890,13 +709,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="88">
           <caret line="8" column="21" lean-forward="false" selection-start-line="8" selection-start-column="21" selection-end-line="8" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/2.6_simulate_IMU_all_trans_rota/simulate_all_trans_rota.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="50" column="32" lean-forward="false" selection-start-line="50" selection-start-column="32" selection-end-line="50" selection-end-column="32" />
         </state>
       </provider>
     </entry>
@@ -916,78 +728,194 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/2.3_simulate_IMU_segment_rotation/simulate_segment_rotation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="880">
+        <state relative-caret-position="352">
           <caret line="43" column="43" lean-forward="false" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/2.4_simulate_IMU_all_rotation/simulate_all_rotation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1056">
-          <caret line="51" column="37" lean-forward="false" selection-start-line="51" selection-start-column="37" selection-end-line="51" selection-end-column="37" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/2.5_simulate_IMU_segment_trans_rota/simulate_segment_trans_rota.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="759">
-          <caret line="45" column="32" lean-forward="true" selection-start-line="45" selection-start-column="32" selection-end-line="45" selection-end-column="32" />
-          <folding>
-            <element signature="e#89#111#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="517">
+          <caret line="40" column="43" lean-forward="false" selection-start-line="40" selection-start-column="18" selection-end-line="40" selection-end-column="43" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/2.2_simulate_IMU_all_translation/simulate_all_translation.py">
+    <entry file="file://$PROJECT_DIR$/2.6_simulate_IMU_all_trans_rota/analyse_all_trans_rota.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="503">
-          <caret line="48" column="42" lean-forward="false" selection-start-line="48" selection-start-column="42" selection-end-line="48" selection-end-column="42" />
-          <folding />
+        <state relative-caret-position="264">
+          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/4_model_param_selection/param_selection.py">
+    <entry file="file://E:/ProgramFiles/Python36/Lib/multiprocessing/pool.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-440">
-          <caret line="55" column="58" lean-forward="false" selection-start-line="55" selection-start-column="58" selection-end-line="55" selection-end-column="58" />
-          <folding>
-            <element signature="e#119#147#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="166">
+          <caret line="118" column="0" lean-forward="false" selection-start-line="118" selection-start-column="0" selection-end-line="118" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/2.0_model_training/model_training.py">
+    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/SegmentData.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="48" column="28" lean-forward="false" selection-start-line="48" selection-start-column="12" selection-end-line="48" selection-end-column="28" />
+        <state relative-caret-position="921">
+          <caret line="52" column="35" lean-forward="false" selection-start-line="52" selection-start-column="35" selection-end-line="52" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/0_initialize_data/initialize_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="45" column="33" lean-forward="false" selection-start-line="45" selection-start-column="24" selection-end-line="45" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/SubjectData.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="329">
+          <caret line="61" column="44" lean-forward="false" selection-start-line="61" selection-start-column="33" selection-end-line="61" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/OffsetClass.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="492" column="40" lean-forward="false" selection-start-line="492" selection-start-column="28" selection-end-line="492" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/VirtualProcessor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="52" column="59" lean-forward="true" selection-start-line="52" selection-start-column="59" selection-end-line="56" selection-end-column="99" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/Initializer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="748">
+          <caret line="34" column="44" lean-forward="true" selection-start-line="34" selection-start-column="44" selection-end-line="36" selection-end-column="43" />
           <folding>
-            <element signature="e#68#90#0" expanded="true" />
+            <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/1_SharedProcessors/XYGenerator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="100" column="0" lean-forward="false" selection-start-line="100" selection-start-column="0" selection-end-line="100" selection-end-column="0" />
+        <state relative-caret-position="-757">
+          <caret line="32" column="8" lean-forward="false" selection-start-line="32" selection-start-column="8" selection-end-line="32" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/const.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="4" column="10" lean-forward="false" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/SubThreadModels.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="44" column="7" lean-forward="false" selection-start-line="44" selection-start-column="7" selection-end-line="44" selection-end-column="7" />
+          <folding>
+            <element signature="e#73#84#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="423">
+          <caret line="75" column="0" lean-forward="false" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/2.2_simulate_IMU_all_translation/simulate_all_translation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="348">
+          <caret line="49" column="106" lean-forward="false" selection-start-line="49" selection-start-column="81" selection-end-line="49" selection-end-column="106" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/2.1_simulate_IMU_segment_translation/analyse_segment_translation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="13" column="0" lean-forward="true" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/1_SharedProcessors/EvaluationClass.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="453">
+          <caret line="47" column="11" lean-forward="false" selection-start-line="47" selection-start-column="11" selection-end-line="47" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/0_initialize_data/initialize_data_all_sub.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="56" column="44" lean-forward="false" selection-start-line="56" selection-start-column="44" selection-end-line="56" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/4_model_param_selection/param_selection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-550">
+          <caret line="25" column="17" lean-forward="true" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/2.7_simulate_all/simulate_all.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="52" column="49" lean-forward="false" selection-start-line="52" selection-start-column="49" selection-end-line="52" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/2.6_simulate_IMU_all_trans_rota/simulate_all_trans_rota.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="50" column="33" lean-forward="true" selection-start-line="50" selection-start-column="33" selection-end-line="50" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/2.1_simulate_IMU_segment_translation/simulate_segment_translation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1012">
+          <caret line="48" column="106" lean-forward="false" selection-start-line="48" selection-start-column="81" selection-end-line="48" selection-end-column="106" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/1_SharedProcessors/SubThread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="102" column="0" lean-forward="false" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
+        <state relative-caret-position="5302">
+          <caret line="250" column="64" lean-forward="false" selection-start-line="250" selection-start-column="64" selection-end-line="250" selection-end-column="64" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/2.1_simulate_IMU_segment_translation/simulate_segment_translation.py">
+    <entry file="file://$PROJECT_DIR$/2.4_simulate_IMU_all_rotation/simulate_all_rotation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="327">
-          <caret line="46" column="30" lean-forward="false" selection-start-line="46" selection-start-column="30" selection-end-line="46" selection-end-column="30" />
+        <state relative-caret-position="1034">
+          <caret line="50" column="30" lean-forward="false" selection-start-line="50" selection-start-column="23" selection-end-line="50" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/2.0_model_training/model_training.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="47" column="70" lean-forward="false" selection-start-line="47" selection-start-column="70" selection-end-line="47" selection-end-column="70" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/5_sync_requirement_test/sync_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>

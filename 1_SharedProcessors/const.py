@@ -6,7 +6,7 @@ DO_SCALING = True
 DO_PCA = False
 DO_SHUFFLING = True
 
-NORMALIZE_ACC = True
+NORMALIZE_ACC = False
 NORMALIZE_GRF = True
 
 ADD_NOISE = True

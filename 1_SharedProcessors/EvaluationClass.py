@@ -105,7 +105,6 @@ class Evaluation:
         df_item = pd.DataFrame([result_item], columns=total_result_columns)
         return df_item
 
-
     @staticmethod
     def initialize_result_df(total_result_columns):
         return pd.DataFrame(columns=total_result_columns)
@@ -157,8 +156,24 @@ class Evaluation:
             with open(readme_path, 'w') as file:
                 file.write(content)
 
+    @staticmethod
+    def save_result_models(total_result_df, folder_name, model_names):
+        date = time.strftime('%Y%m%d')
+        file_path = RESULT_PATH + folder_name + '\\' + date + '.csv'
+        i_file = 0
+        while os.path.isfile(file_path):
+            i_file += 1
+            file_path = RESULT_PATH + folder_name + '\\' + date + '_' + str(i_file) + '.csv'
+        total_result_df.to_csv(file_path, index=False)
 
-
+        readme_path = RESULT_PATH + folder_name + '\\readme.txt'
+        content = date + ': ' + str(model_names) + '\n'
+        if os.path.isfile(readme_path):
+            with open(readme_path, 'a') as file:
+                file.write(content)
+        else:
+            with open(readme_path, 'w') as file:
+                file.write(content)
 
 
 
