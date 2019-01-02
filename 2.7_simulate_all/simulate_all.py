@@ -35,29 +35,29 @@ if __name__ == '__main__':
     result_column = R2_column + RMSE_column + NRMSE_column
 
     thread_number = multiprocessing.cpu_count() - 2  # allowed thread number
-    pool = multiprocessing.Pool(processes=6)
+    pool = multiprocessing.Pool(processes=thread_number)
 
     df_list = []
-    sub_num = 12
+    sub_num = 1
 
-    for i_sub in range(sub_num):
-        pool.apply_async(get_segment_translation_result, args=(input_names, output_names, result_column, i_sub,
-                                                               model_names), callback=df_list.append)
-    for i_sub in range(sub_num):
-        pool.apply_async(get_segment_rotation_result, args=(input_names, output_names, result_column, i_sub,
-                                                            model_names), callback=df_list.append)
-    for i_sub in range(sub_num):
-        pool.apply_async(get_segment_trans_rota, args=(input_names, output_names, result_column, i_sub,
-                                                       model_names), callback=df_list.append)
+    # for i_sub in range(sub_num):
+    #     pool.apply_async(get_segment_translation_result, args=(input_names, output_names, result_column, i_sub,
+    #                                                            model_names), callback=df_list.append)
+    # for i_sub in range(sub_num):
+    #     pool.apply_async(get_segment_rotation_result, args=(input_names, output_names, result_column, i_sub,
+    #                                                         model_names), callback=df_list.append)
+    # for i_sub in range(sub_num):
+    #     pool.apply_async(get_segment_trans_rota, args=(input_names, output_names, result_column, i_sub,
+    #                                                    model_names), callback=df_list.append)
     for i_sub in range(sub_num):
         pool.apply_async(get_all_translation_result, args=(input_names, output_names, result_column, i_sub,
                                                            model_names), callback=df_list.append)
-    for i_sub in range(sub_num):
-        pool.apply_async(get_all_rotation_result, args=(input_names, output_names, result_column, i_sub,
-                                                        model_names), callback=df_list.append)
-    for i_sub in range(sub_num):
-        pool.apply_async(get_all_trans_rota, args=(input_names, output_names, result_column, i_sub,
-                                                   model_names), callback=df_list.append)
+    # for i_sub in range(sub_num):
+    #     pool.apply_async(get_all_rotation_result, args=(input_names, output_names, result_column, i_sub,
+    #                                                     model_names), callback=df_list.append)
+    # for i_sub in range(sub_num):
+    #     pool.apply_async(get_all_trans_rota, args=(input_names, output_names, result_column, i_sub,
+    #                                                model_names), callback=df_list.append)
     pool.close()
     pool.join()
 

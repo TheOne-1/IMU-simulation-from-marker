@@ -41,7 +41,7 @@ if __name__ == '__main__':
     ]
 
     # min_samples_split was set based on 1 / (sample_frequency * subject_number)
-    model = SVR(gamma=0.01, epsilon=0.0002, C=10, max_iter=5e3)
+    model = SVR(gamma=1e-3, epsilon=0.0002, C=100, max_iter=5e3)
     # model = MLPRegressor(hidden_layer_sizes=(40, 8), early_stopping=True, n_iter_no_change=5, tol=1e-8,
     #                      learning_rate_init=0.01, validation_fraction=0.2)
     # model = ensemble.RandomForestRegressor(n_estimators=300, max_depth=10, min_impurity_decrease=1e-5,

@@ -66,7 +66,7 @@ ps = PredefinedSplit(test_fold=test_fold)
 #                                                              min_samples_split=0.001, n_iter_no_change=5,
 #                                                              validation_fraction=0.2, max_depth=6),
 #                           param_grid={'tol': [1e-3, 1e-5, 1e-7]}, cv=ps)
-evaluators = GridSearchCV(SVR(gamma=0.01, epsilon=0.1, C=10, max_iter=1e4), param_grid={'epsilon': [1e-1, 1e-5, 1e-7]}, cv=ps)
+evaluators = GridSearchCV(SVR(epsilon=1e-5, max_iter=1e4), param_grid={'gamma': [1e-3, 1e-2, 1e-1], 'C': [1, 10, 100, 1000]}, cv=ps)
 # evaluators = GridSearchCV(MLPRegressor(hidden_layer_sizes=(40, 8), early_stopping=True, n_iter_no_change=5, learning_rate_init=0.01, validation_fraction=0.2),
 #                           param_grid={}, cv=ps)      #, tol=1e-8
 # evaluators = GridSearchCV(KNeighborsRegressor(n_neighbors=8, n_jobs=7),
